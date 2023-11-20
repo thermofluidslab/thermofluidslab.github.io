@@ -2,7 +2,7 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: Thermo-Fluids Laboratory in Kogakuin University # the website title (if blank, full name will be used instead)
+title: Thermo-Fluids Lab. in Kogakuin University # the website title (if blank, full name will be used instead)
 first_name: Thermo-Fluids
 middle_name: 
 last_name: Laboratory
@@ -149,7 +149,8 @@ giscus:
   input_position: bottom         # whether to display input form below (bottom) or above (top) the comments
   theme: preferred_color_scheme  # name of the color scheme (preferred works well with al-folio light/dark mode)
   emit_metadata: 0
-  lang: en
+#  lang: en
+  lang: jp
 
 # Disqus comments (DEPRECATED)
 disqus_shortname: al-folio # put your disqus shortname
