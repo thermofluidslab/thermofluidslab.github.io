@@ -1,9 +1,10 @@
 ---
 layout: page
-title: スポーツ流体力学
-description: a project with a background image
-img: img/ball_cfd.png
-importance: 1
+title: project 3
+description: a project that redirects to another website
+img: assets/img/7.jpg
+redirect: https://unsplash.com
+importance: 3
 category: work
 ---
 

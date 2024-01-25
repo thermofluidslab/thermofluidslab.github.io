@@ -1,9 +1,9 @@
 ---
 layout: page
-title: スポーツ流体力学
+title: project 2
 description: a project with a background image
-img: img/ball_cfd.png
-importance: 1
+img: assets/img/3.jpg
+importance: 2
 category: work
 ---
 

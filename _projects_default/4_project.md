@@ -1,10 +1,10 @@
 ---
 layout: page
-title: スポーツ流体力学
-description: a project with a background image
-img: img/ball_cfd.png
-importance: 1
-category: work
+title: project 4
+description: another without an image
+img:
+importance: 3
+category: fun
 ---
 
 Every project has a beautiful feature showcase page.
