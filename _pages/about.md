@@ -9,7 +9,7 @@ profile:
   image: fig000.png
   image_circular: false # crops the image to make it circular
   address: >
-    <p>8-201, Hachioji Campus</p>
+    <p>8-255, Hachioji Campus</p>
     <p>2665-1, Nakano</p>
     <p>Hachioji, Tokyo 192-0015</p>
 
