@@ -48,6 +48,7 @@ function cacheDOMElements() {
     DOM.hamburger = document.getElementById('hamburger');
     DOM.navMenu = document.getElementById('nav-menu');
     DOM.navbar = document.querySelector('.navbar');
+    DOM.header = document.querySelector('.header'); // ヘッダー全体を追加
     DOM.newsContainer = document.getElementById('news-container');
 }
 
@@ -147,12 +148,12 @@ function initSmoothScrolling() {
 }
 
 /**
- * ヘッダーのスクロール効果（改良版）
+ * ヘッダーのスクロール効果（完全修正版）
  */
 function initHeaderScrollEffect() {
-    if (!DOM.navbar) return;
-    
     const header = document.querySelector('.header');
+    if (!header) return;
+    
     let lastScrollTop = 0;
     let ticking = false;
     
@@ -166,7 +167,7 @@ function initHeaderScrollEffect() {
             header.classList.remove('scrolled');
         }
         
-        // ヘッダーの表示/非表示制御（改良版）
+        // ヘッダーの表示/非表示制御
         if (Math.abs(lastScrollTop - scrollTop) <= 5) {
             // スクロール量が小さい場合は何もしない
             ticking = false;
@@ -174,10 +175,10 @@ function initHeaderScrollEffect() {
         }
         
         if (scrollTop > lastScrollTop && scrollTop > 100) {
-            // 下にスクロール時 - ヘッダーを隠す（ただし最上部では常に表示）
+            // 下にスクロール時 - ヘッダー全体を隠す
             header.classList.add('hidden');
         } else {
-            // 上にスクロール時 - ヘッダーを表示
+            // 上にスクロール時 - ヘッダー全体を表示
             header.classList.remove('hidden');
         }
         
@@ -201,6 +202,13 @@ function initHeaderScrollEffect() {
     // ヘッダーホバー時は常に表示
     header.addEventListener('mouseenter', function() {
         header.classList.remove('hidden');
+    });
+    
+    // タッチデバイス対応：画面上部タップでヘッダー表示
+    document.addEventListener('touchstart', function(e) {
+        if (e.touches[0].clientY < 50) {
+            header.classList.remove('hidden');
+        }
     });
 }
 
