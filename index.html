@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="熱流体工学の基礎から応用まで幅広い研究を行う研究室です。最新の数値シミュレーションと実験技術を用いて、伝熱・流体現象の解明に取り組んでいます。">
+    <meta name="keywords" content="熱流体, 伝熱, 流体力学, CFD, 数値シミュレーション, 研究室">
+    <title>熱流体研究室 - Thermal-Fluid Engineering Laboratory</title>
+    
+    <!-- Open Graph for social media -->
+    <meta property="og:title" content="熱流体研究室 - Thermal-Fluid Engineering Laboratory">
+    <meta property="og:description" content="熱流体工学の基礎から応用まで幅広い研究を行う研究室">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://thermofluidslab.github.io/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/images/icons/favicon.svg">
+    <link rel="icon" type="image/png" href="assets/images/icons/favicon.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    
+    <!-- Preload key resources -->
+    <link rel="preload" href="assets/css/main.css" as="style">
+    <link rel="preload" href="assets/js/main.js" as="script">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar" role="navigation" aria-label="メインナビゲーション">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>熱流体研究室 準備中です！！！内容は仮のものです</h1>
+                    <span>Thermal-Fluid Engineering Lab</span>
+                </div>
+                
+                <ul class="nav-menu" id="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link active" aria-current="page">ホーム</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="research.html" class="nav-link">研究内容</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="publications.html" class="nav-link">研究発表</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="members.html" class="nav-link">メンバー</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="contact.html" class="nav-link">連絡先</a>
+                    </li>
+                    <li class="nav-item language-toggle">
+                        <a href="en/index.html" class="nav-link lang-btn" lang="en">English</a>
+                    </li>
+                </ul>
+                
+                <button class="hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <h2 id="hero-title">先端的熱・流体工学研究</h2>
+                    <p class="hero-description">
+                        基礎から応用まで、熱・流体現象の本質を探求し、<br>
+                        社会に貢献する技術開発を目指しています。
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="research.html" class="btn btn-primary">研究内容を見る</a>
+                        <a href="publications.html" class="btn btn-secondary">研究成果</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-image-placeholder">
+                        <img src="assets/images/hero/lab-overview.jpg" 
+                             alt="研究室の様子" 
+                             class="hero-image"
+                             loading="lazy"
+                             onerror="this.parentElement.innerHTML='<div class=placeholder-content><span>🔬</span><p>研究室画像</p></div>'">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Research Areas -->
+        <section class="research-areas" aria-labelledby="research-title">
+            <div class="container">
+                <h2 id="research-title">主な研究分野</h2>
+                <div class="research-grid">
+                    <article class="research-card">
+                        <div class="card-icon" aria-hidden="true">🌡️</div>
+                        <h3>熱伝導・伝熱現象</h3>
+                        <p>固体内熱伝導の数値解析、相変化を伴う伝熱現象、マイクロ・ナノスケール伝熱の研究を行っています。</p>
+                        <a href="research.html#heat-transfer" class="card-link">詳細を見る</a>
+                    </article>
+                    
+                    <article class="research-card">
+                        <div class="card-icon" aria-hidden="true">🌊</div>
+                        <h3>流体力学・流体工学</h3>
+                        <p>層流・乱流解析、混相流・多相流、マイクロ流体デバイスの開発と解析を行っています。</p>
+                        <a href="research.html#fluid-dynamics" class="card-link">詳細を見る</a>
+                    </article>
+                    
+                    <article class="research-card">
+                        <div class="card-icon" aria-hidden="true">💻</div>
+                        <h3>数値シミュレーション</h3>
+                        <p>計算流体力学（CFD）、有限要素法・有限差分法、機械学習を用いた流体解析を行っています。</p>
+                        <a href="research.html#simulation" class="card-link">詳細を見る</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent News -->
+        <section class="news-section" aria-labelledby="news-title">
+            <div class="container">
+                <h2 id="news-title">最新情報</h2>
+                <div class="news-container" id="news-container">
+                    <!-- ニュースはJavaScriptで動的に読み込み -->
+                    <div class="news-loading">ニュースを読み込み中...</div>
+                </div>
+                <div class="news-actions">
+                    <a href="news.html" class="btn btn-outline">すべてのニュースを見る</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Contact -->
+        <section class="quick-contact">
+            <div class="container">
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <h2>お問い合わせ</h2>
+                        <p>研究に関するご質問、共同研究のご相談など、お気軽にお問い合わせください。</p>
+                    </div>
+                    <div class="contact-actions">
+                        <a href="contact.html" class="btn btn-primary">連絡先情報</a>
+                        <a href="mailto:contact@thermofluidslab.example.com" class="btn btn-secondary">メールする</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>熱流体研究室</h3>
+                    <address>
+                        〒000-0000<br>
+                        大学名・学部名<br>
+                        研究室番号
+                    </address>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>連絡先</h3>
+                    <ul class="contact-list">
+                        <li>
+                            <a href="mailto:contact@thermofluidslab.example.com">
+                                contact@thermofluidslab.example.com
+                            </a>
+                        </li>
+                        <li>Tel: 000-000-0000</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>関連リンク</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" rel="external">大学ホームページ</a></li>
+                        <li><a href="#" rel="external">学部ホームページ</a></li>
+                        <li><a href="#" rel="external">日本伝熱学会</a></li>
+                        <li><a href="#" rel="external">日本機械学会</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Thermal-Fluid Engineering Laboratory. All rights reserved.</p>
+                <div class="footer-meta">
+                    <a href="#" class="footer-link">プライバシーポリシー</a>
+                    <a href="en/index.html" class="footer-link" lang="en">English</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
