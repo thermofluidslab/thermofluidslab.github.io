@@ -147,41 +147,60 @@ function initSmoothScrolling() {
 }
 
 /**
- * ヘッダーのスクロール効果
+ * ヘッダーのスクロール効果（改良版）
  */
 function initHeaderScrollEffect() {
     if (!DOM.navbar) return;
     
+    const header = document.querySelector('.header');
     let lastScrollTop = 0;
     let ticking = false;
     
     function updateHeader() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
-        if (scrollTop > lastScrollTop && scrollTop > 100) {
-            // 下にスクロール - ヘッダーを隠す
-            DOM.navbar.style.transform = 'translateY(-100%)';
+        // スクロール位置に応じた背景効果
+        if (scrollTop > 50) {
+            header.classList.add('scrolled');
         } else {
-            // 上にスクロール - ヘッダーを表示
-            DOM.navbar.style.transform = 'translateY(0)';
+            header.classList.remove('scrolled');
         }
         
-        // スクロール位置に応じて背景の透明度を調整
-        if (scrollTop > 50) {
-            DOM.navbar.classList.add('scrolled');
+        // ヘッダーの表示/非表示制御（改良版）
+        if (Math.abs(lastScrollTop - scrollTop) <= 5) {
+            // スクロール量が小さい場合は何もしない
+            ticking = false;
+            return;
+        }
+        
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // 下にスクロール時 - ヘッダーを隠す（ただし最上部では常に表示）
+            header.classList.add('hidden');
         } else {
-            DOM.navbar.classList.remove('scrolled');
+            // 上にスクロール時 - ヘッダーを表示
+            header.classList.remove('hidden');
+        }
+        
+        // ページの最上部付近では常に表示
+        if (scrollTop < 100) {
+            header.classList.remove('hidden');
         }
         
         lastScrollTop = scrollTop;
         ticking = false;
     }
     
+    // スクロールイベントにスロットリングを適用
     window.addEventListener('scroll', function() {
         if (!ticking) {
             requestAnimationFrame(updateHeader);
             ticking = true;
         }
+    });
+    
+    // ヘッダーホバー時は常に表示
+    header.addEventListener('mouseenter', function() {
+        header.classList.remove('hidden');
     });
 }
 
