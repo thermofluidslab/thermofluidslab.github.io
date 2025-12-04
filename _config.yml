@@ -2,11 +2,12 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: blank # the website title (if blank, full name will be used instead)
-first_name: You
-middle_name: R.
-last_name: Name
-keywords: jekyll, jekyll-theme, academic-website, portfolio-website # add your own keywords or leave empty
+title: Hiratsuka lab # the website title (if blank, full name will be used instead)
+first_name: 工学院大学
+#middle_name: R.
+last_name: 熱流体力学研究室
+email: hiratsuka[@]cc.kogakuin.ac.jp # your email address (used for gravatar and contact form)
+keywords: 熱流体力学, CFD, 分子シミュレーション, 分子動力学, 第一原理 # add your own keywords or leave empty
 icon: ⚛️ # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
 url: https://thermofluidslab.github.io # the base hostname & protocol for your site
@@ -14,6 +15,13 @@ baseurl: "" # the subpath of your site, e.g. /blog/. Leave blank for root
 last_updated: false # set to true if you want to display last updated in the footer
 impressum_path: # set to path to include impressum link in the footer, use the same path as permalink in a page, helps to conform with EU GDPR
 back_to_top: true # set to false to disable the back to top button
+
+# --------------------------------------------------------
+# Footer
+# --------------------------------------------------------
+footer_text: >
+  〒163-8677 東京都新宿区西新宿1-24-2<br>
+  工学院大学 熱流体力学研究室
 
 # -----------------------------------------------------------------------------
 # Theme
@@ -344,8 +352,8 @@ external_links:
 # Jekyll Polyglot
 # -----------------------------------------------------------------------------
 
-languages: ["en-us", "pt-br", "fr-ca"]
-default_lang: "en-us"
+languages: ["ja", "en"]
+default_lang: "ja"
 exclude_from_localization: ["assets"]
 lang_from_path: true
 country_flag: false # set true for allowing flag symbol in language toggle
