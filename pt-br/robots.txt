@@ -1,4 +1,0 @@
-User-agent: *
-Disallow:
-
-Sitemap: https://thermofluidslab.github.io/sitemap.xml
