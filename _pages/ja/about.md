@@ -6,8 +6,8 @@ permalink: /
 subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
 
 profile:
-  align: right
-  image: ball_cfd.png
+  align: center
+  image: 0000_water.png
   image_circular: false # crops the image to make it circular
   more_info: >
     <p>A-1823</p>
