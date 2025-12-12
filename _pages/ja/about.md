@@ -5,14 +5,14 @@ title: ホーム
 permalink: /
 subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
 
-profile:
-  align: center
-  image: 0000_water.png
-  image_circular: false # crops the image to make it circular
-  more_info: >
-    <p>A-1823</p>
-    <p>163-8677</p>
-    <p>東京都新宿区西新宿１丁目２４−２</p>
+#profile:
+#  align: center
+#  image: 0000_water.png
+#  image_circular: false # crops the image to make it circular
+#  more_info: >
+#    <p>A-1823</p>
+#    <p>163-8677</p>
+#    <p>東京都新宿区西新宿１丁目２４−２</p>
 
 selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
@@ -29,6 +29,7 @@ latest_posts:
 ---
 
 工学院大学熱流体力学研究室のwebページです．現在制作中です．
+0000_water.png
 
 <!--
 Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](http://reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
