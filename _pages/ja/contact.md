@@ -1,7 +1,7 @@
 ---
-page_id: cv
+page_id: contact
 layout: cv
-permalink: /cv/
+permalink: /contact/
 title: 連絡先
 nav: true
 nav_order: 5

@@ -1,7 +1,7 @@
 ---
-page_id: profiles
+page_id: member
 layout: profiles
-permalink: /people/
+permalink: /member/
 title: メンバー
 description: members of the lab or group
 nav: true
