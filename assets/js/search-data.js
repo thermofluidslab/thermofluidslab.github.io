@@ -48,8 +48,8 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/repositories/";
           },
-        },{id: "nav-連絡先",
-          title: "連絡先",
+        },{id: "nav-contact",
+          title: "Contact",
           description: "This is a description of the page. You can modify it in &#39;_pages/cv.md&#39;. You can also change or remove the top pdf download button.",
           section: "Navigation menu",
           handler: () => {
@@ -69,12 +69,12 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/teaching/";
           },
-        },{id: "nav-メンバー",
-          title: "メンバー",
+        },{id: "nav-member",
+          title: "member",
           description: "members of the lab or group",
           section: "Navigation menu",
           handler: () => {
-            window.location.href = "/member/";
+            window.location.href = "/Member/";
           },
         },{id: "nav-people",
           title: "people",
