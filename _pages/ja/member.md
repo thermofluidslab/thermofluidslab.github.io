@@ -1,8 +1,8 @@
 ---
 page_id: member
 layout: profiles
-permalink: /member/
-title: メンバー
+permalink: /Member/
+title: member
 description: members of the lab or group
 nav: true
 nav_order: 7

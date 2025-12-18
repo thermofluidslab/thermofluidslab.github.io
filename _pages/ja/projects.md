@@ -1,7 +1,7 @@
 ---
 page_id: projects
 layout: page
-title: 研究内容
+title: Research
 permalink: /projects/
 description: A growing collection of your cool projects.
 nav: true

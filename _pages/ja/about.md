@@ -1,7 +1,7 @@
 ---
 page_id: about
 layout: about
-title: ホーム
+title: Home
 permalink: /
 subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
 
