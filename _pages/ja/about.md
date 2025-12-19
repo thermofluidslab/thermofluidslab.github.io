@@ -30,7 +30,8 @@ latest_posts:
 
 工学院大学熱流体力学研究室のwebページです．現在制作中です．
 '0000_water.png'
-
+`prof_pic.jpg`
+prof_pic.jpg
 <!--
 Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](http://reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
 
