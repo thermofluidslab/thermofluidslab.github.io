@@ -33,6 +33,8 @@ latest_posts:
 `0000_water.png`
 0000_water.png
 
+'1.jpg'
+`1.jpg`
 1.jpg
 
 
