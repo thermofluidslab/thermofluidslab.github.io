@@ -5,14 +5,27 @@ title: Home
 permalink: /
 subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
 
-profile:
-  align: center
-  image: 0000_water.png
-  image_circular: false # crops the image to make it circular
-  more_info: >
-    <p>A-1823</p>
-    <p>163-8677</p>
-    <p>東京都新宿区西新宿１丁目２４−２</p>
+#profile:
+#  align: center
+#  image: 0000_water.png
+#  image_circular: false # crops the image to make it circular
+#  more_info: >
+#    <p>A-1823</p>
+#    <p>163-8677</p>
+#    <p>東京都新宿区西新宿１丁目２４−２</p>
+
+image: assets/img/0000_water.png
+
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        {% include figure.liquid loading="eager" path="assets/img/0000_water.png" title="example image" class="img-fluid rounded z-depth-1" %}
+    </div>
+</div>
+<div class="caption">
+    This image can also have a caption. It's like magic.
+</div>
+
 
 selected_papers: false # includes a list of papers marked as "selected={true}"
 social: false # includes social icons at the bottom of the page
