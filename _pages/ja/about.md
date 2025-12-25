@@ -31,7 +31,7 @@ latest_posts:
 工学院大学熱流体力学研究室のwebページです．現在制作中です．
 '0000_water.png'
 `0000_water.png`
-0000_water.png
+image: 0000_water.png
 
 '1.jpg'
 `1.jpg`
