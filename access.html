@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="アクセス・連絡先 — 熱流体力学研究室 工学院大学">
+  <title>アクセス | 熱流体力学研究室</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <script src="js/header.js"></script>
+  <script>initSharedLayout('access');</script>
+
+  <main class="page-main">
+    <div class="container">
+      <h1 class="page-title" data-i18n="access.title"></h1>
+      <div class="access-content">
+        <div class="access-info">
+          <dl>
+            <dt id="accessAddressLabel"></dt>
+            <dd id="accessAddressValue"></dd>
+            <dt id="accessEmailLabel"></dt>
+            <dd id="accessEmailValue"></dd>
+            <dt id="accessTelLabel"></dt>
+            <dd id="accessTelValue"></dd>
+            <dt id="accessDirectionsLabel"></dt>
+            <dd id="accessDirectionsValue"></dd>
+          </dl>
+        </div>
+        <div id="mapContainer"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer><div class="container footer-inner"><p id="footerCopy"></p></div></footer>
+
+  <script src="data/content.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
