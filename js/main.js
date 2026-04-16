@@ -67,12 +67,50 @@
   }
 
   function renderResearch(c) {
+    // research.html: 全テーマをインライン展開
+    const topicsEl = document.getElementById("researchTopics");
+    if (topicsEl) {
+      topicsEl.innerHTML = c.research.topics
+        .map((t) => {
+          const proj = c.research.projects && c.research.projects[t.id];
+          if (!proj) return "";
+
+          const bodyHtml = proj.body
+            .split("\n\n")
+            .map((para) => {
+              const html = escHtml(para).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+              return `<p>${html}</p>`;
+            })
+            .join("");
+
+          const imgHtml = proj.image
+            ? `<div class="rt-img"><img src="${escHtml(proj.image)}" alt="${escHtml(proj.imageAlt || "")}" loading="lazy"></div>`
+            : "";
+
+          const kwHtml = proj.keywords && proj.keywords.length
+            ? `<p class="rt-keywords">${proj.keywords.map((k) => `<span class="keyword-tag">${escHtml(k)}</span>`).join("")}</p>`
+            : "";
+
+          const pubsHtml = proj.relatedPublications && proj.relatedPublications.length
+            ? `<ul class="rt-pubs">${proj.relatedPublications.map((p) => `<li>${escHtml(p)}</li>`).join("")}</ul>`
+            : "";
+
+          return `<div class="rt-section">
+            <h3 class="rt-title"><span class="rt-icon">${t.icon}</span>${escHtml(proj.title)}</h3>
+            <div class="rt-inner">
+              ${imgHtml}
+              <div class="rt-body">${bodyHtml}${kwHtml}</div>
+            </div>
+            ${pubsHtml}
+          </div>`;
+        })
+        .join("");
+      return;
+    }
+
+    // 旧カードグリッド（後方互換）
     const grid = document.getElementById("researchGrid");
     if (!grid) return;
-
-    const intro = document.getElementById("researchIntro");
-    if (intro) intro.textContent = c.research.intro;
-
     grid.innerHTML = c.research.topics
       .map((t) => {
         const proj = c.research.projects && c.research.projects[t.id];
@@ -90,13 +128,6 @@
           </a>`;
       })
       .join("");
-
-    const imgWrap = document.getElementById("researchImage");
-    if (imgWrap) {
-      imgWrap.innerHTML = c.research.image
-        ? `<img src="${escHtml(c.research.image)}" alt="${escHtml(c.research.imageAlt || "")}" class="research-overview-img">`
-        : "";
-    }
   }
 
   // ── メンバーページ ────────────────────────────────────────
@@ -108,22 +139,30 @@
         (group) =>
           `<div class="member-group">
             <h2 class="member-group-label">${escHtml(group.label)}</h2>
-            <div class="member-grid">
+            <ul class="member-list">
               ${group.members
                 .map(
                   (m) =>
-                    `<div class="member-card">
-                      <p class="member-name">${escHtml(m.name)}</p>
-                      <p class="member-title">${escHtml(m.title)}</p>
-                      ${m.desc ? `<p class="member-desc">${escHtml(m.desc)}</p>` : ""}
+                    `<li class="member-item">
+                      <span class="member-name">${escHtml(m.name)}</span>
+                      <span class="member-title">${escHtml(m.title)}</span>
+                      ${m.desc ? `<span class="member-desc">${escHtml(m.desc)}</span>` : ""}
                       ${m.email ? `<a class="member-email" href="mailto:${escHtml(m.email)}">${escHtml(m.email)}</a>` : ""}
-                    </div>`
+                    </li>`
                 )
                 .join("")}
-            </div>
+            </ul>
           </div>`
       )
       .join("");
+  }
+
+  // DOI URL を自動リンク化（escHtml 後に適用）
+  function linkDoi(text) {
+    return escHtml(text).replace(
+      /(https:\/\/doi\.org\/[^\s<]+)/g,
+      '<a href="$1" target="_blank" rel="noopener">$1</a>'
+    );
   }
 
   // ── 業績ページ ────────────────────────────────────────────
@@ -136,7 +175,7 @@
           `<div class="pub-section">
             <h2 class="pub-section-label">${escHtml(sec.label)}</h2>
             <ol class="pub-list">
-              ${sec.items.map((item) => `<li>${escHtml(item)}</li>`).join("")}
+              ${sec.items.map((item) => `<li>${linkDoi(item)}</li>`).join("")}
             </ol>
           </div>`
       )
