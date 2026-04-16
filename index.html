@@ -14,16 +14,36 @@
   <script src="js/header.js"></script>
   <script>initSharedLayout('home');</script>
 
-  <!-- ヒーロー -->
-  <section id="hero">
-    <div class="container">
-      <h1 data-i18n="hero.title"></h1>
-      <p class="hero-affiliation" data-i18n="hero.affiliation"></p>
-      <p class="hero-tagline" data-i18n="hero.tagline"></p>
+  <!-- ─── フルワイドスライドショー ─────────────────────────── -->
+  <div class="slideshow-wrap" id="mainSlideshow">
+    <div class="slideshow-inner">
+      <div class="slide active">
+        <img src="images/headfig000.png" alt="クラスレートハイドレートのかご型構造" loading="eager">
+      </div>
+      <div class="slide">
+        <img src="images/headfig001.png" alt="ナノ構造面の分子動力学シミュレーション" loading="lazy">
+      </div>
+      <div class="slide">
+        <img src="images/headfig002.png" alt="風洞試験でのサッカーボール空気力学実験" loading="lazy">
+      </div>
+//      <div class="slide">
+//        <img src="images/research_ml_fig6.png" alt="機械学習によるブロック共重合体のミクロ相分離構造" loading="lazy">
+//      </div>
+//      <div class="slide">
+//        <img src="images/research1.webp" alt="熱流体力学研究室 研究テーマ" loading="lazy">
+//      </div>
     </div>
-  </section>
+    <button class="slide-prev" aria-label="前へ">&#10094;</button>
+    <button class="slide-next" aria-label="次へ">&#10095;</button>
+    <div class="slide-dots" id="slideDots"></div>
+    <div class="slide-caption">
+      <span data-i18n="hero.title"></span>
+      <span class="slide-caption-sep">|</span>
+      <span data-i18n="hero.affiliation"></span>
+    </div>
+  </div>
 
-  <!-- 研究室概要（簡略） -->
+  <!-- ─── 研究室概要 ────────────────────────────────────────── -->
   <section id="intro">
     <div class="container">
       <div class="intro-wrap">
@@ -36,7 +56,7 @@
     </div>
   </section>
 
-  <!-- お知らせ -->
+  <!-- ─── お知らせ ──────────────────────────────────────────── -->
   <section id="news">
     <div class="container">
       <h2 data-i18n="news.title"></h2>
@@ -48,6 +68,7 @@
 
   <script src="data/content.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/slideshow.js"></script>
   <script>
     (function () {
       var obs = new IntersectionObserver(function (entries) {
@@ -55,7 +76,7 @@
           if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); }
         });
       }, { threshold: 0.07 });
-      document.querySelectorAll("section:not(#hero)").forEach(function (s) { obs.observe(s); });
+      document.querySelectorAll("#intro, #news").forEach(function (s) { obs.observe(s); });
     })();
   </script>
 </body>
