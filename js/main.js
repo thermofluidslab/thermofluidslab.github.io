@@ -96,7 +96,7 @@
             : "";
 
           return `<div class="rt-section">
-            <h3 class="rt-title"><span class="rt-icon">${t.icon}</span>${escHtml(proj.title)}</h3>
+            <h3 class="rt-title">${t.icon ? `<span class="rt-icon">${t.icon}</span>` : ""}${escHtml(proj.title)}</h3>
             <div class="rt-inner">
               ${imgHtml}
               <div class="rt-body">${bodyHtml}${kwHtml}</div>

@@ -585,12 +585,8 @@ a.research-card p  { font-size: 0.875rem; color: var(--text-light); line-height:
 }
 .project-keywords { display: flex; flex-wrap: wrap; gap: 8px; }
 .keyword-tag {
-  background: var(--bg-alt);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 4px 14px;
   font-size: 0.85rem;
-  color: var(--primary);
+  color: var(--text-light);
 }
 .project-pub-list { list-style: disc; padding-left: 20px; }
 .project-pub-list li { font-size: 0.9rem; line-height: 1.7; margin-bottom: 8px; }
