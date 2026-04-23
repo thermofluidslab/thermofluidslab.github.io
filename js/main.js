@@ -169,16 +169,22 @@
   function renderPublications(c) {
     const container = document.getElementById("publicationsContent");
     if (!container) return;
+    const limitAttr = container.getAttribute("data-limit");
+    const limit = limitAttr ? parseInt(limitAttr, 10) : 0;
+    const moreLabel = c.publications.moreLabel || "すべて見る →";
+    const allPageUrl = "publications_all.html";
     container.innerHTML = c.publications.sections
-      .map(
-        (sec) =>
-          `<div class="pub-section">
+      .map((sec) => {
+        const items = (limit && sec.items.length > limit) ? sec.items.slice(0, limit) : sec.items;
+        const hasMore = limit && sec.items.length > limit;
+        return `<div class="pub-section">
             <h2 class="pub-section-label">${escHtml(sec.label)}</h2>
             <ol class="pub-list">
-              ${sec.items.map((item) => `<li>${linkDoi(item)}</li>`).join("")}
+              ${items.map((item) => `<li>${linkDoi(item)}</li>`).join("")}
             </ol>
-          </div>`
-      )
+            ${hasMore ? `<p class="pub-more"><a href="${allPageUrl}">${escHtml(moreLabel)}</a></p>` : ""}
+          </div>`;
+      })
       .join("");
   }
 

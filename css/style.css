@@ -499,6 +499,10 @@ a.research-card p  { font-size: 0.875rem; color: var(--text-light); line-height:
 }
 .pub-list { list-style: decimal; padding-left: 24px; }
 .pub-list li { font-size: 0.9rem; line-height: 1.75; margin-bottom: 8px; }
+.pub-more { margin-top: 10px; font-size: 0.9rem; }
+.pub-more a { color: var(--primary-light); font-weight: 700; }
+.pub-back-link { margin-bottom: 24px; font-size: 0.9rem; }
+.pub-back-link a { color: var(--primary-light); }
 
 /* ── アクセスページ ──────────────────────────────────────── */
 .access-content {
