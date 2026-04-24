@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>CFD 概論 | 研究室メンバー専用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">熱流体力学研究室 <span>メンバー専用</span></div>
+    <div class="header-nav">
+      <a href="index.html">← メニュー</a>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <nav class="toc">
+        <h2>目次</h2>
+        <ul>
+          <li><a href="#sec1">1. CFD とは</a></li>
+          <li><a href="#sec2">2. 支配方程式</a></li>
+          <li><a href="#sec3">3. 離散化手法</a></li>
+          <li><a href="#sec4">4. 乱流モデル</a></li>
+          <li><a href="#sec5">5. メッシュ生成</a></li>
+          <li><a href="#sec6">6. 境界条件</a></li>
+          <li><a href="#sec7">7. CFD ソフトウェア比較</a></li>
+          <li><a href="#sec8">8. 参考文献</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="article-header">
+        <h1>CFD 概論<br>— 数値流体力学の基礎 —</h1>
+        <p class="article-meta">熱流体力学研究室 内部資料 | 2026年4月</p>
+        <div class="article-tags"><span class="tag">CFD</span><span class="tag">流体力学</span><span class="tag">乱流</span></div>
+      </div>
+
+      <section class="section" id="sec1">
+        <h2>1. CFD とは</h2>
+        <p>
+          <strong>数値流体力学（Computational Fluid Dynamics, CFD）</strong>は，
+          流体の支配方程式（連続の式，Navier–Stokes 方程式，エネルギー方程式）を
+          数値的に離散化・求解することで，流れ場を計算する手法です．
+        </p>
+        <p>
+          当研究室の CFD 応用例：車椅子マラソンの熱流体解析，トンネル換気，スポーツ球体の空気力学，水泳の流れ解析など．
+        </p>
+        <table>
+          <thead><tr><th>手法</th><th>特徴</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td>RANS（定常・非定常）</td><td>乱流を時間平均，計算コスト小</td><td>工学的設計，外部流れ</td></tr>
+            <tr><td>LES（Large Eddy Simulation）</td><td>大渦を直接解像，中程度コスト</td><td>剥離流れ，後流，音響</td></tr>
+            <tr><td>DNS（直接数値シミュレーション）</td><td>全スケール解像，計算コスト最大</td><td>乱流研究，基礎研究</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec2">
+        <h2>2. 支配方程式</h2>
+        <h3>連続の式（質量保存）</h3>
+        <div class="eq-block">
+          $$\frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \mathbf{u}) = 0$$
+        </div>
+        <p>非圧縮性流れ（$\rho = \text{const.}$）では：</p>
+        <div class="eq-block">
+          $$\nabla \cdot \mathbf{u} = 0$$
+        </div>
+
+        <h3>Navier–Stokes 方程式（運動量保存）</h3>
+        <div class="eq-block">
+          $$\rho \frac{D\mathbf{u}}{Dt} = \rho\left(\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u}\cdot\nabla)\mathbf{u}\right) = -\nabla p + \mu \nabla^2 \mathbf{u} + \rho\mathbf{g}$$
+        </div>
+        <p>
+          左辺：慣性項（移流項 + 時間微分），右辺：圧力勾配，粘性項，体積力
+        </p>
+
+        <h3>エネルギー方程式</h3>
+        <div class="eq-block">
+          $$\rho c_p \frac{DT}{Dt} = \nabla \cdot (k \nabla T) + \dot{q}$$
+        </div>
+
+        <h3>無次元パラメータ</h3>
+        <table>
+          <thead><tr><th>無次元数</th><th>定義</th><th>物理的意味</th></tr></thead>
+          <tbody>
+            <tr><td>Reynolds 数 $Re$</td><td>$\rho U L / \mu$</td><td>慣性力 / 粘性力（層流・乱流の指標）</td></tr>
+            <tr><td>Mach 数 $Ma$</td><td>$U / c$</td><td>流速 / 音速（圧縮性の指標）</td></tr>
+            <tr><td>Nusselt 数 $Nu$</td><td>$hL / k$</td><td>対流 / 伝導熱伝達の比</td></tr>
+            <tr><td>Prandtl 数 $Pr$</td><td>$\mu c_p / k$</td><td>運動量 / 熱拡散の比</td></tr>
+            <tr><td>Strouhal 数 $St$</td><td>$fL / U$</td><td>振動現象の無次元周波数</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec3">
+        <h2>3. 離散化手法</h2>
+        <table>
+          <thead><tr><th>手法</th><th>略称</th><th>特徴</th><th>使用例</th></tr></thead>
+          <tbody>
+            <tr><td>有限体積法</td><td>FVM</td><td>保存則を厳密に満足，任意形状対応</td><td>OpenFOAM, FLUENT</td></tr>
+            <tr><td>有限差分法</td><td>FDM</td><td>実装が単純，構造格子向け</td><td>DNS コード</td></tr>
+            <tr><td>有限要素法</td><td>FEM</td><td>複雑形状・構造解析と親和性高</td><td>COMSOL, Code_Aster</td></tr>
+            <tr><td>スペクトル法</td><td>—</td><td>高精度，周期境界問題向け</td><td>DNS, Dedalus</td></tr>
+          </tbody>
+        </table>
+
+        <h3>有限体積法の基本</h3>
+        <p>計算領域を制御体積（CV）に分割し，各 CV について積分形支配方程式を離散化：</p>
+        <div class="eq-block">
+          $$\frac{\partial}{\partial t}\int_V \phi\, dV + \oint_S \phi \mathbf{u}\cdot d\mathbf{S} = \oint_S \Gamma \nabla\phi \cdot d\mathbf{S} + \int_V S_\phi\, dV$$
+        </div>
+        <p>面積分を各面の値で近似することで代数方程式系に変換します．</p>
+      </section>
+
+      <section class="section" id="sec4">
+        <h2>4. 乱流モデル</h2>
+        <h3>RANS モデル</h3>
+        <p>
+          Reynolds 平均 NS 方程式（RANS）には Reynolds 応力テンソル $\overline{u_i' u_j'}$ が出現し，
+          これを「閉じる」ためにモデルが必要です（<strong>乱流クロージャ問題</strong>）．
+        </p>
+        <table>
+          <thead><tr><th>モデル</th><th>特徴</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td>$k$-$\varepsilon$ 標準</td><td>壁面境界層に注意が必要</td><td>一般的な内部流れ</td></tr>
+            <tr><td>$k$-$\omega$ SST</td><td>壁面近傍と自由流れの両方に適合</td><td>外部空気力学（推奨）</td></tr>
+            <tr><td>Spalart-Allmaras</td><td>1 方程式，航空機設計向け</td><td>翼周り流れ</td></tr>
+            <tr><td>RSM（Reynolds Stress）</td><td>高精度だが収束が難しい</td><td>旋回流れ，二次流れ</td></tr>
+          </tbody>
+        </table>
+
+        <h3>壁面処理</h3>
+        <p>
+          乱流の壁面近傍では粘性底層（$y^+ < 5$）が存在します．
+          壁関数を使う場合は $30 < y^+ < 300$ が適切，
+          低 Reynolds 数モデルを使う場合は $y^+ \approx 1$ が必要です．
+        </p>
+        <div class="point-box">
+          <strong>スポーツ球体のシミュレーションでは：</strong>
+          剥離点の位置が重要なため，$k$-$\omega$ SST + 低 $y^+$ メッシュが推奨されます．
+          臨界 Reynolds 数付近では LES も有効です．
+        </div>
+      </section>
+
+      <section class="section" id="sec5">
+        <h2>5. メッシュ生成</h2>
+        <table>
+          <thead><tr><th>ツール</th><th>種別</th><th>特徴</th></tr></thead>
+          <tbody>
+            <tr><td>blockMesh（OpenFOAM）</td><td>構造格子</td><td>シンプル形状に適した入力ベースのメッシャー</td></tr>
+            <tr><td>snappyHexMesh（OpenFOAM）</td><td>非構造</td><td>STL 形状を自動的にメッシュ化，並列対応</td></tr>
+            <tr><td>GMSH</td><td>非構造（FEM/FVM）</td><td>オープンソース，Python API あり</td></tr>
+            <tr><td>ANSYS Meshing</td><td>非構造</td><td>商用，GUI 操作，高品質</td></tr>
+            <tr><td>Pointwise / Fidelity Pointwise</td><td>構造/非構造</td><td>航空宇宙向け高品質メッシュ</td></tr>
+          </tbody>
+        </table>
+
+        <h3>メッシュ品質の指標</h3>
+        <ul class="disc">
+          <li><strong>直交性（Orthogonality）</strong>：隣接セル間のベクトルと面法線の角度（90° が理想）</li>
+          <li><strong>スキュー性（Skewness）</strong>：セルの歪み（0 に近いほど良い）</li>
+          <li><strong>アスペクト比（Aspect Ratio）</strong>：セルの辺長比（境界層では大きくなる）</li>
+          <li><strong>$y^+$</strong>：壁面近傍の無次元距離（乱流モデルに応じた値が必要）</li>
+        </ul>
+      </section>
+
+      <section class="section" id="sec6">
+        <h2>6. 境界条件</h2>
+        <table>
+          <thead><tr><th>境界条件</th><th>内容</th><th>OpenFOAM での設定</th></tr></thead>
+          <tbody>
+            <tr><td>inlet（流入）</td><td>速度・乱流強度を指定</td><td><code>fixedValue</code> for U</td></tr>
+            <tr><td>outlet（流出）</td><td>圧力を指定（速度はゼロ勾配）</td><td><code>zeroGradient</code> for U, <code>fixedValue</code> for p</td></tr>
+            <tr><td>wall（壁面）</td><td>すべり無し条件（$\mathbf{u}=0$）</td><td><code>noSlip</code></td></tr>
+            <tr><td>symmetry（対称）</td><td>対称平面（法線方向速度=0）</td><td><code>symmetry</code></td></tr>
+            <tr><td>cyclic（周期）</td><td>周期境界（入口と出口をペア）</td><td><code>cyclic</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec7">
+        <h2>7. CFD ソフトウェア比較</h2>
+        <table>
+          <thead><tr><th>ソフト</th><th>種別</th><th>得意な用途</th><th>学習コスト</th></tr></thead>
+          <tbody>
+            <tr><td><strong>OpenFOAM</strong></td><td>オープンソース</td><td>汎用，研究用，カスタマイズ自由</td><td>高（テキストベース）</td></tr>
+            <tr><td><strong>ANSYS Fluent</strong></td><td>商用</td><td>産業設計，GUI 操作，豊富なモデル</td><td>中（GUI）</td></tr>
+            <tr><td><strong>STAR-CCM+</strong></td><td>商用</td><td>複雑形状，CAD 連携</td><td>中</td></tr>
+            <tr><td><strong>SU2</strong></td><td>オープンソース</td><td>形状最適化，航空宇宙</td><td>中</td></tr>
+            <tr><td><strong>COMSOL</strong></td><td>商用</td><td>多物理連成（流体+熱+電気など）</td><td>低（GUI）</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec8">
+        <h2>8. 参考文献</h2>
+        <ol class="decimal">
+          <li>H.K. Versteeg and W. Malalasekera, <em>An Introduction to Computational Fluid Dynamics: The Finite Volume Method</em>, 2nd ed., Pearson (2007).</li>
+          <li>J.H. Ferziger, M. Perić, and R.L. Street, <em>Computational Methods for Fluid Dynamics</em>, 4th ed., Springer (2020).</li>
+          <li>S.B. Pope, <em>Turbulent Flows</em>, Cambridge University Press (2000).</li>
+          <li>OpenFOAM Foundation, <em>OpenFOAM User Guide</em>, openfoam.org.</li>
+        </ol>
+      </section>
+
+      <div class="back-link"><a href="index.html">← メンバーメニューに戻る</a></div>
+    </main>
+  </div>
+</body>
+</html>

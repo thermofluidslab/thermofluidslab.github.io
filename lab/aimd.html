@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>第一原理 MD (AIMD) | 研究室メンバー専用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">熱流体力学研究室 <span>メンバー専用</span></div>
+    <div class="header-nav">
+      <a href="index.html">← メニュー</a>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <nav class="toc">
+        <h2>目次</h2>
+        <ul>
+          <li><a href="#sec1">1. AIMD とは</a></li>
+          <li><a href="#sec2">2. DFT の基礎</a></li>
+          <li><a href="#sec3">3. Born-Oppenheimer MD</a></li>
+          <li><a href="#sec4">4. Car-Parrinello MD</a></li>
+          <li><a href="#sec5">5. VASP による AIMD</a></li>
+          <li><a href="#sec6">6. CP2K による AIMD</a></li>
+          <li><a href="#sec7">7. 解析方法</a></li>
+          <li><a href="#sec8">8. 参考文献</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="article-header">
+        <h1>第一原理分子動力学法 (AIMD)</h1>
+        <p class="article-meta">熱流体力学研究室 内部資料 | 2026年4月</p>
+        <div class="article-tags">
+          <span class="tag">DFT</span><span class="tag">AIMD</span><span class="tag">VASP</span><span class="tag">CP2K</span>
+        </div>
+      </div>
+
+      <section class="section" id="sec1">
+        <h2>1. AIMD とは</h2>
+        <p>
+          <strong>第一原理分子動力学法（Ab initio Molecular Dynamics, AIMD）</strong>は，古典的な力場を使わず，
+          密度汎関数理論（DFT）などの第一原理電子状態計算によってその場で原子間力を求めながら
+          ニュートンの運動方程式を解く MD 手法です．
+        </p>
+        <p>
+          古典 MD に比べて計算コストは数桁大きいですが，化学結合の形成・切断，
+          電子的効果，分極，vdW 相互作用（補正付き）などを直接取り扱えます．
+          当研究室では主にクラスレートハイドレートの振動スペクトル・ゲスト-ホスト相互作用の解析に用いています．
+        </p>
+        <table>
+          <thead><tr><th>手法</th><th>力の計算</th><th>適用規模</th><th>代表ソフト</th></tr></thead>
+          <tbody>
+            <tr><td>古典 MD</td><td>力場（パラメトリック）</td><td>〜10⁶ 原子</td><td>LAMMPS, GROMACS</td></tr>
+            <tr><td>ML-FF MD</td><td>機械学習ポテンシャル</td><td>〜10⁵ 原子</td><td>LAMMPS + MACE</td></tr>
+            <tr><td>AIMD (BO-MD)</td><td>DFT（毎ステップ）</td><td>〜100 原子</td><td>VASP, CP2K</td></tr>
+            <tr><td>AIMD (CP-MD)</td><td>DFT（拡張ラグランジアン）</td><td>〜100 原子</td><td>CPMD, CP2K</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec2">
+        <h2>2. DFT の基礎</h2>
+        <p>
+          <strong>密度汎関数理論（DFT）</strong>は，多電子系のシュレーディンガー方程式を
+          電子密度 $\rho(\mathbf{r})$ の汎関数として解く方法です．Kohn–Sham 方程式：
+        </p>
+        <div class="eq-block">
+          $$\left[ -\frac{\hbar^2}{2m}\nabla^2 + V_\text{ext}(\mathbf{r}) + V_\text{Hartree}(\mathbf{r}) + V_\text{xc}(\mathbf{r}) \right] \psi_i(\mathbf{r}) = \varepsilon_i \psi_i(\mathbf{r})$$
+        </div>
+        <p>
+          $V_\text{xc}$ が交換相関汎関数で，近似の違いが計算精度に大きく影響します：
+        </p>
+        <table>
+          <thead><tr><th>分類</th><th>例</th><th>特徴</th></tr></thead>
+          <tbody>
+            <tr><td>LDA</td><td>PW92</td><td>過結合傾向，高速</td></tr>
+            <tr><td>GGA</td><td>PBE, BLYP</td><td>固体・分子に広く使用</td></tr>
+            <tr><td>GGA+D</td><td>PBE-D3, revPBE-D3</td><td>vdW 分散力補正あり（ハイドレートに必要）</td></tr>
+            <tr><td>Hybrid</td><td>PBE0, HSE06</td><td>高精度，計算コスト大</td></tr>
+            <tr><td>meta-GGA</td><td>SCAN, r²SCAN</td><td>水・氷の記述に優れる</td></tr>
+          </tbody>
+        </table>
+        <div class="note-box">
+          <strong>vdW 補正について：</strong>
+          クラスレートハイドレートは水素結合に加えてロンドン分散力が重要です．
+          GGA 汎関数（PBE 等）は分散力を過小評価するため，<strong>DFT-D3</strong>（Grimme の補正）を使うことが重要です（当研究室の論文でも PBE-D3 を使用）．
+        </div>
+      </section>
+
+      <section class="section" id="sec3">
+        <h2>3. Born-Oppenheimer MD（BO-MD）</h2>
+        <p>
+          Born-Oppenheimer 近似のもと，各 MD ステップで核の配置を固定し，
+          電子系を完全に収束させてから原子に働く力 $\mathbf{F}_I = -\nabla_{\mathbf{R}_I} E_\text{DFT}$ を計算します．
+        </p>
+        <div class="eq-block">
+          $$M_I \ddot{\mathbf{R}}_I = -\nabla_{\mathbf{R}_I} \min_{\{\psi_i\}} E_\text{DFT}[\rho]$$
+        </div>
+        <p>
+          各ステップで SCF（自己無撞着場）計算を収束させる必要があるため，
+          1ステップあたりの計算コストが大きいですが，実装が単純で安定性が高いため，
+          現在の主流です（VASP の AIMD はこの方式）．
+        </p>
+      </section>
+
+      <section class="section" id="sec4">
+        <h2>4. Car-Parrinello MD（CP-MD）</h2>
+        <p>
+          Car と Parrinello（1985）が提案した手法で，電子の自由度（Kohn-Sham 軌道係数）を
+          原子と同様に「仮想的な質量」を持つ古典変数として扱う拡張ラグランジアン法です．
+        </p>
+        <div class="eq-block">
+          $$\mathcal{L}_\text{CP} = \frac{1}{2}\sum_I M_I \dot{\mathbf{R}}_I^2 + \frac{\mu}{2}\sum_i \langle\dot\psi_i|\dot\psi_i\rangle - E_\text{DFT}[\{\psi_i\}, \{\mathbf{R}_I\}]$$
+        </div>
+        <p>
+          SCF 計算を各ステップで行わず，軌道を連続的に伝播させるため高速ですが，
+          仮想質量 $\mu$ の適切な選択や時間刻みの制約があります．
+          現在は BO-MD の方が広く使われていますが，CP2K は両方をサポートします．
+        </p>
+      </section>
+
+      <section class="section" id="sec5">
+        <h2>5. VASP による AIMD</h2>
+        <h3>INCAR の設定例（NVT アンサンブル）</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>INCAR — AIMD（NVT, 300 K）</span><button class="copy-btn" onclick="copyCode('vasp1')">コピー</button></div>
+          <pre id="vasp1">SYSTEM = clathrate hydrate AIMD
+
+<span class="cm"># 基本設定</span>
+ISTART = 0         <span class="cm"># 新規計算（0）/ 継続（1）</span>
+ICHARG = 2         <span class="cm"># 原子の重ね合わせから電荷密度初期化</span>
+ENCUT  = 400       <span class="cm"># プレーンウェーブカットオフ [eV]</span>
+EDIFF  = 1E-5      <span class="cm"># SCF 収束判定</span>
+PREC   = Normal
+
+<span class="cm"># 交換相関汎関数 (PBE + D3 vdW 補正)</span>
+GGA    = PE        <span class="cm"># PBE 汎関数</span>
+IVDW   = 11        <span class="cm"># DFT-D3 (Grimme 2010)</span>
+
+<span class="cm"># MD 設定</span>
+IBRION = 0         <span class="cm"># MD モード</span>
+NSW    = 20000     <span class="cm"># MD ステップ数</span>
+POTIM  = 0.5       <span class="cm"># 時間刻み [fs]</span>
+SMASS  = 0         <span class="cm"># Nosé–Hoover サーモスタット</span>
+TEBEG  = 300       <span class="cm"># 初期温度 [K]</span>
+TEEND  = 300       <span class="cm"># 終了温度 [K]</span>
+
+<span class="cm"># アンサンブル</span>
+MDALGO = 2         <span class="cm"># Nosé–Hoover (NVT)</span>
+ISYM   = 0         <span class="cm"># 対称性を使わない（MD では必須）</span>
+
+<span class="cm"># 出力制御</span>
+NWRITE = 0         <span class="cm"># 出力頻度最小化</span>
+NBLOCK = 1         <span class="cm"># XDATCAR への書き出し間隔</span>
+LWAVE  = .FALSE.   <span class="cm"># WAVECAR を書かない</span>
+LCHARG = .FALSE.   <span class="cm"># CHGCAR を書かない</span>
+
+<span class="cm"># k点（Γ点のみで十分な場合）</span>
+KSPACING = 1000    <span class="cm"># 実質 Γ 点のみ</span></pre>
+        </div>
+
+        <h3>計算の流れ</h3>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-body"><strong>構造最適化</strong>（IBRION=2, NSW=100 程度）で初期構造を緩和</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-body"><strong>速度初期化</strong>：VASP は TEBEG から Maxwell-Boltzmann 分布で速度を自動設定</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-body"><strong>平衡化</strong>（1〜2 ps 程度，速度スケーリングまたはサーモスタット使用）</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-body"><strong>本計算</strong>（10〜50 ps，OSZICAR・XDATCAR・OUTCAR に記録）</div>
+          </div>
+        </div>
+
+        <h3>出力ファイル</h3>
+        <table>
+          <thead><tr><th>ファイル</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td><code>XDATCAR</code></td><td>全ステップの原子座標（軌跡）</td></tr>
+            <tr><td><code>OSZICAR</code></td><td>各ステップの温度・エネルギー</td></tr>
+            <tr><td><code>OUTCAR</code></td><td>詳細な計算情報（力，ストレス等）</td></tr>
+            <tr><td><code>vasprun.xml</code></td><td>全情報を含む XML（ASE で読み込み可）</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec6">
+        <h2>6. CP2K による AIMD</h2>
+        <p>
+          CP2K は Gaussian と平面波（GPW）の混合基底を使うオープンソースの AIMD コードです．
+          大規模系でも効率よく計算でき，AIMD・NMR・Born-Effective-Charge などに対応しています．
+        </p>
+        <div class="code-wrap">
+          <div class="code-title"><span>cp2k.inp — AIMD（NVT, 300 K）の最小例</span><button class="copy-btn" onclick="copyCode('cp2k1')">コピー</button></div>
+          <pre id="cp2k1">&GLOBAL
+  PROJECT  hydrate_md
+  RUN_TYPE MD
+  PRINT_LEVEL LOW
+&END GLOBAL
+
+&MOTION
+  &MD
+    ENSEMBLE   NVT
+    STEPS      10000
+    TIMESTEP   0.5        ! [fs]
+    TEMPERATURE 300
+    &THERMOSTAT
+      TYPE NOSE
+      &NOSE
+        TIMECON 100.0
+      &END NOSE
+    &END THERMOSTAT
+  &END MD
+  &PRINT
+    &TRAJECTORY
+      &EACH
+        MD 1
+      &END EACH
+    &END TRAJECTORY
+    &VELOCITIES ON
+    &END VELOCITIES
+  &END PRINT
+&END MOTION
+
+&FORCE_EVAL
+  METHOD Quickstep
+  &DFT
+    BASIS_SET_FILE_NAME  BASIS_MOLOPT
+    POTENTIAL_FILE_NAME  GTH_POTENTIALS
+    &QS
+      METHOD GPW
+      EPS_DEFAULT 1.0E-10
+    &END QS
+    &MGRID
+      CUTOFF 400
+      REL_CUTOFF 40
+    &END MGRID
+    &XC
+      &XC_FUNCTIONAL PBE
+      &END XC_FUNCTIONAL
+      &VDW_POTENTIAL          ! DFT-D3 vdW 補正
+        POTENTIAL_TYPE PAIR_POTENTIAL
+        &PAIR_POTENTIAL
+          TYPE DFTD3
+          PARAMETER_FILE_NAME dftd3.dat
+          REFERENCE_FUNCTIONAL PBE
+        &END PAIR_POTENTIAL
+      &END VDW_POTENTIAL
+    &END XC
+    &SCF
+      SCF_GUESS ATOMIC
+      EPS_SCF 1.0E-6
+      MAX_SCF 50
+    &END SCF
+  &END DFT
+  &SUBSYS
+    &CELL
+      ABC 12.0 12.0 12.0    ! ボックスサイズ [Å]
+    &END CELL
+    &TOPOLOGY
+      COORD_FILE_NAME  init.xyz
+      COORD_FILE_FORMAT XYZ
+    &END TOPOLOGY
+    &KIND O
+      BASIS_SET  DZVP-MOLOPT-GTH
+      POTENTIAL  GTH-PBE-q6
+    &END KIND
+    &KIND H
+      BASIS_SET  DZVP-MOLOPT-GTH
+      POTENTIAL  GTH-PBE-q1
+    &END KIND
+  &END SUBSYS
+&END FORCE_EVAL</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec7">
+        <h2>7. 解析方法</h2>
+        <h3>振動スペクトル（VDOS）の計算</h3>
+        <p>
+          速度自己相関関数（VACF）のフーリエ変換から振動状態密度（VDOS）を得られます：
+        </p>
+        <div class="eq-block">
+          $$g(\omega) = \int_0^\infty \langle \mathbf{v}(t) \cdot \mathbf{v}(0) \rangle \cos(\omega t)\, dt$$
+        </div>
+        <div class="code-wrap">
+          <div class="code-title"><span>vdos.py — VACF と VDOS の計算</span><button class="copy-btn" onclick="copyCode('vdos1')">コピー</button></div>
+          <pre id="vdos1"><span class="op">import</span> numpy <span class="op">as</span> np
+<span class="op">import</span> matplotlib.pyplot <span class="op">as</span> plt
+<span class="op">from</span> ase.io <span class="op">import</span> read
+
+<span class="cm"># VASP の vasprun.xml または XYZ トラジェクトリを読み込む</span>
+traj = read(<span class="st">"vasprun.xml"</span>, index=<span class="st">":"</span>, format=<span class="st">"vasp-xml"</span>)
+dt = <span class="nm">0.5e-15</span>   <span class="cm"># 時間刻み [s]</span>
+
+<span class="cm"># 速度を取得（[nstep, natom, 3]）</span>
+vel = np.array([atoms.get_velocities() <span class="kw">for</span> atoms <span class="kw">in</span> traj])
+
+<span class="cm"># VACF（全原子平均）</span>
+nstep, natom, _ = vel.shape
+vacf = np.zeros(nstep)
+<span class="kw">for</span> lag <span class="kw">in</span> range(nstep):
+    vacf[lag] = np.mean(np.sum(vel[:nstep-lag] * vel[lag:], axis=-<span class="nm">1</span>))
+
+<span class="cm"># フーリエ変換 → VDOS</span>
+vdos = np.abs(np.fft.rfft(vacf))**<span class="nm">2</span>
+freq = np.fft.rfftfreq(nstep, d=dt)
+freq_cm = freq / (<span class="nm">3e10</span>)   <span class="cm"># Hz → cm⁻¹</span>
+
+plt.plot(freq_cm, vdos)
+plt.xlabel(<span class="st">"Wavenumber (cm⁻¹)"</span>)
+plt.ylabel(<span class="st">"VDOS (a.u.)"</span>)
+plt.xlim(<span class="nm">0</span>, <span class="nm">4000</span>)
+plt.tight_layout()
+plt.savefig(<span class="st">"vdos.png"</span>, dpi=<span class="nm">150</span>)
+plt.show()</pre>
+        </div>
+
+        <h3>平均二乗変位（MSD）と拡散係数</h3>
+        <div class="eq-block">
+          $$\text{MSD}(t) = \langle |\mathbf{r}(t) - \mathbf{r}(0)|^2 \rangle，\quad D = \lim_{t\to\infty} \frac{\text{MSD}(t)}{6t}$$
+        </div>
+      </section>
+
+      <section class="section" id="sec8">
+        <h2>8. 参考文献</h2>
+        <ol class="decimal">
+          <li>R. Car and M. Parrinello, "Unified Approach for Molecular Dynamics and Density-Functional Theory," PRL 55, 2471 (1985).</li>
+          <li>D. Marx and J. Hutter, <em>Ab Initio Molecular Dynamics: Basic Theory and Advanced Methods</em>, Cambridge (2009).</li>
+          <li>G. Kresse and J. Furthmüller, "Efficient iterative schemes for ab initio total-energy calculations using a plane-wave basis set," Phys. Rev. B 54, 11169 (1996). [VASP]</li>
+          <li>J. VandeVondele et al., "Quickstep: Fast and accurate density functional calculations using a mixed Gaussian and plane waves approach," Comput. Phys. Commun. 167, 103 (2005). [CP2K]</li>
+          <li>S. Grimme et al., "A consistent and accurate ab initio parametrization of density functional dispersion correction (DFT-D) for the 94 elements H-Pu," J. Chem. Phys. 132, 154104 (2010). [DFT-D3]</li>
+          <li>M. Hiratsuka et al., "Molecular vibrations of methane molecules in the structure I clathrate hydrate from ab initio MD simulation," J. Chem. Phys. 136, 044508 (2012). [当研究室]</li>
+        </ol>
+      </section>
+
+      <div class="back-link"><a href="index.html">← メンバーメニューに戻る</a></div>
+    </main>
+  </div>
+  <script>
+    function copyCode(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const btn = el.previousElementSibling.querySelector('.copy-btn');
+        if (btn) { btn.textContent = "コピー済み"; setTimeout(() => btn.textContent = "コピー", 2000); }
+      });
+    }
+  </script>
+</body>
+</html>

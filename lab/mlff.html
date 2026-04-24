@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>機械学習力場 (ML-FF) | 研究室メンバー専用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">熱流体力学研究室 <span>メンバー専用</span></div>
+    <div class="header-nav">
+      <a href="index.html">← メニュー</a>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <nav class="toc">
+        <h2>目次</h2>
+        <ul>
+          <li><a href="#sec1">1. ML-FF とは</a></li>
+          <li><a href="#sec2">2. 各手法の概要</a></li>
+          <li><a href="#sec3">3. MACE の理論</a></li>
+          <li><a href="#sec4">4. MACE-MP-0（汎用力場）</a></li>
+          <li><a href="#sec5">5. MACE のファインチューニング</a></li>
+          <li><a href="#sec6">6. LAMMPS との連携</a></li>
+          <li><a href="#sec7">7. Active Learning</a></li>
+          <li><a href="#sec8">8. 参考文献</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="article-header">
+        <h1>機械学習力場 (ML-FF)</h1>
+        <p class="article-meta">熱流体力学研究室 内部資料 | 2026年4月</p>
+        <div class="article-tags">
+          <span class="tag">ML-FF</span><span class="tag">MACE</span><span class="tag">NequIP</span><span class="tag">Python</span>
+        </div>
+      </div>
+
+      <section class="section" id="sec1">
+        <h2>1. ML-FF とは</h2>
+        <p>
+          <strong>機械学習力場（Machine Learning Force Field, ML-FF）</strong>は，DFT などの第一原理計算データを
+          教師データとして機械学習モデルを訓練し，古典 MD と同程度の計算コストで
+          第一原理精度に近いエネルギー・力を予測する手法です．
+        </p>
+        <div class="point-box">
+          <strong>ML-FF の位置づけ：</strong>古典 MD（速い・精度低）と AIMD（遅い・精度高）の間を埋める手法．
+          原子数 10³〜10⁵ 規模で DFT 精度を実現できます．
+        </div>
+        <p>ML-FF が予測する物理量は：</p>
+        <div class="eq-block">
+          $$E_\text{tot} = \sum_i \varepsilon_i(\{r_{ij}, Z_j\}_{j \in \mathcal{N}(i)})$$
+        </div>
+        <p>
+          原子 $i$ のエネルギー寄与 $\varepsilon_i$ は，その近傍原子の配置（局所環境）のみに依存すると仮定します（局所性の原理）．
+        </p>
+      </section>
+
+      <section class="section" id="sec2">
+        <h2>2. 各手法の概要</h2>
+        <table>
+          <thead><tr><th>手法</th><th>記述子・モデル</th><th>特徴</th><th>代表実装</th></tr></thead>
+          <tbody>
+            <tr><td><strong>HDNN (Behler-Parrinello)</strong></td><td>対称関数 + MLP</td><td>先駆的，汎用性高</td><td>n2p2, RuNNer</td></tr>
+            <tr><td><strong>GAP (Gaussian Approximation Potential)</strong></td><td>SOAP 記述子 + GPR</td><td>不確実性推定可能</td><td>QUIP/GAP</td></tr>
+            <tr><td><strong>NequIP</strong></td><td>等変グラフニューラルネット</td><td>データ効率が高い</td><td>nequip (PyTorch)</td></tr>
+            <tr><td><strong>MACE</strong></td><td>等変 + メッセージパッシング</td><td>高精度・高速・汎用</td><td>mace-torch</td></tr>
+            <tr><td><strong>ACE (Atomic Cluster Expansion)</strong></td><td>体系的クラスター展開</td><td>数学的に厳密</td><td>PACE (LAMMPS)</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec3">
+        <h2>3. MACE の理論</h2>
+        <p>
+          <strong>MACE（Multi Atomic Cluster Expansion）</strong>は Batatia らが開発した等変グラフニューラルネットワークです．
+          <strong>E(3) 等変性</strong>（回転・反転・並進対称性）を厳密に満たし，少ない訓練データで高精度を達成します．
+        </p>
+        <p>各原子の特徴ベクトルはメッセージパッシングで更新されます：</p>
+        <div class="eq-block">
+          $$\mathbf{h}_i^{(t+1)} = f_\text{update}\!\left(\mathbf{h}_i^{(t)},\; \sum_{j \in \mathcal{N}(i)} f_\text{msg}\!\left(\mathbf{h}_i^{(t)}, \mathbf{h}_j^{(t)}, \mathbf{r}_{ij}\right)\right)$$
+        </div>
+        <p>
+          等変メッセージには球面調和関数 $Y_l^m(\hat{\mathbf{r}}_{ij})$ が使われ，
+          回転変換に対して正しく変換するテンソル特徴量として扱われます．
+        </p>
+      </section>
+
+      <section class="section" id="sec4">
+        <h2>4. MACE-MP-0（汎用力場）</h2>
+        <p>
+          <strong>MACE-MP-0</strong>は Materials Project の DFT データ（〜150,000 構造）で訓練された
+          汎用 ML-FF です．元素周期表の大部分の元素をカバーし，特別な訓練なしに多くの系に適用できます．
+        </p>
+
+        <h3>インストール</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>Terminal</span></div>
+          <pre>pip install mace-torch</pre>
+        </div>
+
+        <h3>基本的な使い方（ASE 経由）</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>mace_mp_example.py</span><button class="copy-btn" onclick="copyCode('mace1')">コピー</button></div>
+          <pre id="mace1"><span class="op">from</span> mace.calculators <span class="op">import</span> mace_mp
+<span class="op">from</span> ase.build <span class="op">import</span> bulk
+<span class="op">from</span> ase.optimize <span class="op">import</span> BFGS
+<span class="op">from</span> ase <span class="op">import</span> units
+<span class="op">from</span> ase.md.nvtberendsen <span class="op">import</span> NVTBerendsen
+<span class="op">from</span> ase.io.trajectory <span class="op">import</span> Trajectory
+
+<span class="cm"># MACE-MP-0 カルキュレーターの設定</span>
+<span class="cm"># dispersion=True で DFT-D3 補正を追加</span>
+calc = mace_mp(model=<span class="st">"medium"</span>, dispersion=<span class="kw">True</span>, device=<span class="st">"cpu"</span>)
+
+<span class="cm"># 構造の作成（例：FCC アルミニウム）</span>
+atoms = bulk(<span class="st">"Al"</span>, <span class="st">"fcc"</span>, a=<span class="nm">4.05</span>) * (<span class="nm">3</span>, <span class="nm">3</span>, <span class="nm">3</span>)
+atoms.calc = calc
+
+<span class="cm"># 構造最適化</span>
+opt = BFGS(atoms, logfile=<span class="st">"opt.log"</span>)
+opt.run(fmax=<span class="nm">0.01</span>)   <span class="cm"># eV/Å</span>
+<span class="kw">print</span>(<span class="st">f"Energy: {atoms.get_potential_energy():.4f} eV"</span>)
+
+<span class="cm"># NVT MD（Berendsen サーモスタット）</span>
+atoms.set_momenta(
+    [<span class="nm">0</span>] * (<span class="fn">len</span>(atoms) * <span class="nm">3</span>)  <span class="cm"># まずゼロ初期化</span>
+)
+<span class="op">from</span> ase.md <span class="op">import</span> velocitydistribution <span class="op">as</span> vd
+vd.MaxwellBoltzmannDistribution(atoms, temperature_K=<span class="nm">300</span>)
+
+dyn = NVTBerendsen(atoms, timestep=<span class="nm">1.0</span>*units.fs,
+                   temperature_K=<span class="nm">300</span>, taut=<span class="nm">100</span>*units.fs)
+traj = Trajectory(<span class="st">"md.traj"</span>, <span class="st">"w"</span>, atoms)
+dyn.attach(traj.write, interval=<span class="nm">10</span>)
+dyn.run(<span class="nm">1000</span>)   <span class="cm"># 1000 ステップ = 1 ps</span>
+<span class="kw">print</span>(<span class="st">"MD done"</span>)</pre>
+        </div>
+
+        <div class="note-box">
+          <strong>モデルサイズ：</strong>
+          <code>"small"</code>（速い），<code>"medium"</code>（推奨），<code>"large"</code>（高精度・遅い）の3種類．
+          GPU がある場合は <code>device="cuda"</code> で大幅に高速化できます．
+        </div>
+      </section>
+
+      <section class="section" id="sec5">
+        <h2>5. MACE のファインチューニング</h2>
+        <p>
+          汎用モデル MACE-MP-0 を出発点として，特定の系の DFT データで追加訓練（ファインチューニング）することで
+          高精度な専用力場を作成できます．
+        </p>
+
+        <h3>訓練データの作成フロー</h3>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-body"><strong>AIMD 計算</strong>（VASP/CP2K）で対象系のトラジェクトリを生成（数百〜数千構造）</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-body"><strong>データセット作成</strong>：各構造のエネルギー・力・応力を DFT で計算し，XYZ 形式に変換</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-body"><strong>訓練・検証・テスト分割</strong>（例：8:1:1）</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-body"><strong>ファインチューニング実行</strong></div>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-title"><span>Terminal — MACE のファインチューニング</span><button class="copy-btn" onclick="copyCode('mace2')">コピー</button></div>
+          <pre id="mace2">mace_run_train \
+  --name="hydrate_mace" \
+  --foundation_model="medium" \
+  --train_file="train.xyz" \
+  --valid_file="valid.xyz" \
+  --test_file="test.xyz" \
+  --energy_weight=1.0 \
+  --forces_weight=10.0 \
+  --stress_weight=1.0 \
+  --max_num_epochs=200 \
+  --batch_size=4 \
+  --device=cuda \
+  --seed=42</pre>
+        </div>
+
+        <h3>XYZ 形式（訓練データ）の例</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>train.xyz — 拡張 XYZ 形式</span></div>
+          <pre>3
+energy=-123.456 pbc="T T T" Lattice="12.0 0.0 0.0 0.0 12.0 0.0 0.0 0.0 12.0" Properties=species:S:1:pos:R:3:forces:R:3
+O   0.000  0.000  0.000   0.012 -0.005  0.001
+H   0.960  0.000  0.000  -0.008  0.003  0.000
+H  -0.240  0.927  0.000  -0.004  0.002 -0.001</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec6">
+        <h2>6. LAMMPS との連携</h2>
+        <p>
+          訓練済みの MACE モデルを LAMMPS から呼び出して大規模 MD を行えます．
+          <code>pair_style mace</code> が LAMMPS に組み込まれています．
+        </p>
+        <div class="code-wrap">
+          <div class="code-title"><span>LAMMPS input — MACE 力場の使用例</span></div>
+          <pre>pair_style   mace no_domain_decomposition
+pair_coeff   * * hydrate_mace.model O H C</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec7">
+        <h2>7. Active Learning（能動学習）</h2>
+        <p>
+          ML-FF の精度は訓練データの網羅性に依存します．
+          <strong>Active Learning</strong>では，ML-FF の不確実性が高い構造（未知の化学空間）を
+          自動的に DFT で再計算し，訓練データに追加する反復プロセスで力場を改善します．
+        </p>
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-body">初期 ML-FF で MD を実行</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-body">不確実性（アンサンブル分散）が閾値を超えた構造を抽出</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-body">抽出構造の DFT 計算を実行</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-body">データを追加して ML-FF を再訓練</div></div>
+          <div class="step-item"><div class="step-num">5</div><div class="step-body">収束するまで繰り返す</div></div>
+        </div>
+      </section>
+
+      <section class="section" id="sec8">
+        <h2>8. 参考文献</h2>
+        <ol class="decimal">
+          <li>I. Batatia et al., "MACE: Higher Order Equivariant Message Passing Neural Networks for Fast and Accurate Force Fields," NeurIPS 2022.</li>
+          <li>I. Batatia et al., "A foundation model for atomistic materials chemistry," arXiv:2401.00096 (2024). [MACE-MP-0]</li>
+          <li>S. Batzner et al., "E(3)-equivariant graph neural networks for data-efficient and accurate interatomic potentials," Nat. Commun. 13, 2453 (2022). [NequIP]</li>
+          <li>A.P. Bartók et al., "Gaussian Approximation Potentials: The accuracy of quantum mechanics, without the electrons," PRL 104, 136403 (2010). [GAP]</li>
+          <li>J. Behler and M. Parrinello, "Generalized Neural-Network Representation of High-Dimensional Potential-Energy Surfaces," PRL 98, 146401 (2007). [HDNN]</li>
+        </ol>
+      </section>
+
+      <div class="back-link"><a href="index.html">← メンバーメニューに戻る</a></div>
+    </main>
+  </div>
+  <script>
+    function copyCode(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const btn = el.previousElementSibling.querySelector('.copy-btn');
+        if (btn) { btn.textContent = "コピー済み"; setTimeout(() => btn.textContent = "コピー", 2000); }
+      });
+    }
+  </script>
+</body>
+</html>

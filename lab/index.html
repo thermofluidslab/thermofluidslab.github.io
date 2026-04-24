@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>メンバー専用 | 熱流体力学研究室</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Noto Sans JP", sans-serif; background: #f4f6f9; color: #2c2c2c; line-height: 1.8; }
+    header {
+      background: #1b3a6b; color: #fff; padding: 0 24px;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .header-title { font-weight: 700; font-size: 1rem; }
+    .header-title span { opacity: 0.7; font-size: 0.85rem; margin-left: 12px; }
+    .logout-btn {
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+      color: #fff; border-radius: 6px; padding: 6px 14px; font-size: 0.85rem;
+      font-family: inherit; cursor: pointer;
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.25); }
+    main { max-width: 960px; margin: 48px auto; padding: 0 24px 80px; }
+    h1 { font-size: 1.6rem; color: #1b3a6b; margin-bottom: 8px; }
+    .subtitle { color: #5a5a6a; margin-bottom: 40px; }
+    .section-label {
+      font-size: 0.82rem; font-weight: 700; color: #5a5a6a;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin: 36px 0 14px; border-bottom: 1px solid #d8dde4; padding-bottom: 6px;
+    }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .card {
+      background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      padding: 24px 20px; text-decoration: none; color: inherit;
+      border: 1px solid #e8ecf1; transition: box-shadow 0.2s, transform 0.2s; display: block;
+    }
+    .card:hover { box-shadow: 0 6px 22px rgba(0,0,0,0.12); transform: translateY(-2px); text-decoration: none; }
+    .card-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .card h2 { font-size: 1rem; color: #1b3a6b; margin-bottom: 6px; }
+    .card p { font-size: 0.84rem; color: #5a5a6a; line-height: 1.6; }
+    .card-tags { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px; }
+    .tag {
+      display: inline-block; font-size: 0.75rem; background: #eef2f8;
+      color: #2a5298; padding: 2px 8px; border-radius: 20px; font-weight: 500;
+    }
+    .back-link { margin-top: 40px; font-size: 0.88rem; }
+    .back-link a { color: #2a5298; }
+  </style>
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">熱流体力学研究室 <span>メンバー専用</span></div>
+    <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+  </header>
+
+  <main>
+    <h1>メンバー専用ページ</h1>
+    <p class="subtitle">研究に役立つ理論・ソフトウェア・チュートリアルをまとめています．</p>
+
+    <div class="section-label">環境構築</div>
+    <div class="card-grid">
+      <a href="env_setup.html" class="card">
+        <div class="card-icon">🖥️</div>
+        <h2>環境設定（Windows + VSCode）</h2>
+        <p>WSL2，Python，Conda，Git，SSH，計算サーバーへの接続方法</p>
+        <div class="card-tags"><span class="tag">Windows</span><span class="tag">VSCode</span><span class="tag">WSL2</span></div>
+      </a>
+    </div>
+
+    <div class="section-label">分子シミュレーション</div>
+    <div class="card-grid">
+      <a href="md_lj.html" class="card">
+        <div class="card-icon">⚛️</div>
+        <h2>分子動力学法の基礎</h2>
+        <p>LJ ポテンシャルを用いた MD の理論と Python プログラム例</p>
+        <div class="card-tags"><span class="tag">MD</span><span class="tag">Python</span></div>
+      </a>
+      <a href="aimd.html" class="card">
+        <div class="card-icon">🔬</div>
+        <h2>第一原理 MD (AIMD)</h2>
+        <p>DFT-MD の理論（Born-Oppenheimer / Car-Parrinello），VASP・CP2K での設定</p>
+        <div class="card-tags"><span class="tag">DFT</span><span class="tag">VASP</span><span class="tag">CP2K</span></div>
+      </a>
+      <a href="mlff.html" class="card">
+        <div class="card-icon">🤖</div>
+        <h2>機械学習力場 (ML-FF)</h2>
+        <p>NNP・GAP・MACE・NequIP の理論と MACE-MP-0 の使い方</p>
+        <div class="card-tags"><span class="tag">MACE</span><span class="tag">NequIP</span><span class="tag">Python</span></div>
+      </a>
+      <a href="lammps.html" class="card">
+        <div class="card-icon">⚙️</div>
+        <h2>LAMMPS</h2>
+        <p>入力ファイル構成，LJ 系・力場の設定，dumpファイルと解析</p>
+        <div class="card-tags"><span class="tag">LAMMPS</span><span class="tag">MD</span></div>
+      </a>
+      <a href="gromacs.html" class="card">
+        <div class="card-icon">🧬</div>
+        <h2>GROMACS</h2>
+        <p>ファイル構成，平衡化・本計算のワークフロー，解析コマンド</p>
+        <div class="card-tags"><span class="tag">GROMACS</span><span class="tag">生体分子</span></div>
+      </a>
+      <a href="ase.html" class="card">
+        <div class="card-icon">🐍</div>
+        <h2>ASE (Atomic Simulation Environment)</h2>
+        <p>Python による原子構造操作，構造最適化，MD，各種コードとの連携</p>
+        <div class="card-tags"><span class="tag">ASE</span><span class="tag">Python</span></div>
+      </a>
+    </div>
+
+    <div class="section-label">第一原理計算</div>
+    <div class="card-grid">
+      <a href="vasp.html" class="card">
+        <div class="card-icon">📐</div>
+        <h2>VASP</h2>
+        <p>INCAR / POSCAR / KPOINTS / POTCAR の書き方，構造最適化，状態密度</p>
+        <div class="card-tags"><span class="tag">VASP</span><span class="tag">DFT</span></div>
+      </a>
+    </div>
+
+    <div class="section-label">流体シミュレーション (CFD)</div>
+    <div class="card-grid">
+      <a href="cfd_intro.html" class="card">
+        <div class="card-icon">🌊</div>
+        <h2>CFD 概論</h2>
+        <p>Navier–Stokes 方程式，有限体積法，乱流モデル，メッシュ生成の基礎</p>
+        <div class="card-tags"><span class="tag">CFD</span><span class="tag">FVM</span></div>
+      </a>
+      <a href="openfoam.html" class="card">
+        <div class="card-icon">🫧</div>
+        <h2>OpenFOAM</h2>
+        <p>ケース構造，simpleFoam / pimpleFoam，境界条件設定，ParaView 可視化</p>
+        <div class="card-tags"><span class="tag">OpenFOAM</span><span class="tag">CFD</span></div>
+      </a>
+    </div>
+
+    <div class="section-label">解析ツール・手法</div>
+    <div class="card-grid">
+      <a href="lop_malio.html" class="card">
+        <div class="card-icon">🔍</div>
+        <h2>局所秩序変数 / MALIO</h2>
+        <p>局所秩序変数（LOP）の理論，MALIO による LOP 自動探索手法と研究室での応用</p>
+        <div class="card-tags"><span class="tag">LOP</span><span class="tag">MALIO</span><span class="tag">ML</span></div>
+      </a>
+    </div>
+
+    <p class="back-link"><a href="../index.html">← 研究室トップページに戻る</a></p>
+  </main>
+</body>
+</html>

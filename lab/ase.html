@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>ASE チュートリアル | 研究室メンバー専用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">熱流体力学研究室 <span>メンバー専用</span></div>
+    <div class="header-nav">
+      <a href="index.html">← メニュー</a>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <nav class="toc">
+        <h2>目次</h2>
+        <ul>
+          <li><a href="#sec1">1. ASE とは</a></li>
+          <li><a href="#sec2">2. インストール</a></li>
+          <li><a href="#sec3">3. Atoms オブジェクト</a></li>
+          <li><a href="#sec4">4. 構造ファイルの読み書き</a></li>
+          <li><a href="#sec5">5. カルキュレーターとの連携</a></li>
+          <li><a href="#sec6">6. 構造最適化</a></li>
+          <li><a href="#sec7">7. MD シミュレーション</a></li>
+          <li><a href="#sec8">8. 便利な機能集</a></li>
+          <li><a href="#sec9">9. 参考文献</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="article-header">
+        <h1>ASE<br>— Atomic Simulation Environment —</h1>
+        <p class="article-meta">熱流体力学研究室 内部資料 | 2026年4月</p>
+        <div class="article-tags"><span class="tag">ASE</span><span class="tag">Python</span><span class="tag">VASP</span><span class="tag">MACE</span></div>
+      </div>
+
+      <section class="section" id="sec1">
+        <h2>1. ASE とは</h2>
+        <p>
+          <strong>ASE（Atomic Simulation Environment）</strong>は，
+          原子・分子・結晶の構造操作・シミュレーション・解析を Python で行うためのオープンソースライブラリです．
+          VASP, LAMMPS, CP2K, MACE などの主要シミュレーションソフトとのインターフェースを提供します．
+        </p>
+        <p>ASE でできること：</p>
+        <ul class="disc">
+          <li>100 以上のファイル形式の読み書き（POSCAR, XYZ, CIF, GRO, LAMMPS dump ...）</li>
+          <li>構造の可視化，操作（平行移動，回転，複製，表面作成）</li>
+          <li>構造最適化（BFGS, FIRE, NEB）</li>
+          <li>分子動力学（NVE, NVT, NPT）</li>
+          <li>振動解析（Hessian 行列，基準振動）</li>
+          <li>VASP, CP2K などの外部コードのジョブ生成・実行・解析</li>
+        </ul>
+      </section>
+
+      <section class="section" id="sec2">
+        <h2>2. インストール</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>Terminal</span></div>
+          <pre>pip install ase
+
+<span class="cm"># 可視化に必要（オプション）</span>
+pip install matplotlib
+
+<span class="cm"># バージョン確認</span>
+python -c "import ase; print(ase.__version__)"</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec3">
+        <h2>3. Atoms オブジェクト</h2>
+        <p>
+          ASE の基本データ構造は <code>Atoms</code> オブジェクトです．
+          原子種，座標，単位格子，PBC などの情報を保持します．
+        </p>
+        <div class="code-wrap">
+          <div class="code-title"><span>atoms_basics.py</span><button class="copy-btn" onclick="copyCode('ase_atoms')">コピー</button></div>
+          <pre id="ase_atoms"><span class="op">from</span> ase <span class="op">import</span> Atoms
+<span class="op">from</span> ase.build <span class="op">import</span> bulk, molecule, surface, fcc111
+<span class="op">import</span> numpy <span class="op">as</span> np
+
+<span class="cm"># ── 手動で Atoms を作成 ───────────────────────────────</span>
+water = Atoms(
+    symbols=<span class="st">'H2O'</span>,
+    positions=[
+        [<span class="nm">0.96</span>, <span class="nm">0.00</span>, <span class="nm">0.00</span>],
+        [<span class="nm">0.00</span>, <span class="nm">0.00</span>, <span class="nm">0.00</span>],
+        [-<span class="nm">0.24</span>, <span class="nm">0.93</span>, <span class="nm">0.00</span>],
+    ]
+)
+<span class="kw">print</span>(water)
+<span class="kw">print</span>(<span class="st">"原子数:"</span>, <span class="fn">len</span>(water))
+<span class="kw">print</span>(<span class="st">"元素:"</span>, water.get_chemical_symbols())
+<span class="kw">print</span>(<span class="st">"座標:\n"</span>, water.get_positions())
+
+<span class="cm"># ── 結晶構造のビルダー ────────────────────────────────</span>
+cu_bulk = bulk(<span class="st">'Cu'</span>, <span class="st">'fcc'</span>, a=<span class="nm">3.615</span>)
+cu_super = cu_bulk * (<span class="nm">4</span>, <span class="nm">4</span>, <span class="nm">4</span>)   <span class="cm"># 4×4×4 スーパーセル</span>
+<span class="kw">print</span>(<span class="st">f"FCC Cu スーパーセル: {len(cu_super)} 原子"</span>)
+
+<span class="cm"># 分子（ASE 内蔵データベース）</span>
+ch4 = molecule(<span class="st">'CH4'</span>)
+
+<span class="cm"># FCC(111) 表面スラブ</span>
+slab = fcc111(<span class="st">'Cu'</span>, size=(<span class="nm">4</span>, <span class="nm">4</span>, <span class="nm">4</span>), vacuum=<span class="nm">10.0</span>)
+
+<span class="cm"># ── 操作 ────────────────────────────────────────────</span>
+<span class="cm"># PBC の設定</span>
+cu_bulk.set_pbc([<span class="kw">True</span>, <span class="kw">True</span>, <span class="kw">True</span>])
+
+<span class="cm"># 質量・電荷の取得</span>
+masses = cu_bulk.get_masses()
+<span class="cm"># 格子ベクトル</span>
+cell = cu_bulk.get_cell()
+<span class="cm"># 体積</span>
+volume = cu_bulk.get_volume()
+
+<span class="cm"># 原子の追加・削除</span>
+<span class="op">from</span> ase <span class="op">import</span> Atom
+atoms = bulk(<span class="st">'Al'</span>, <span class="st">'fcc'</span>, a=<span class="nm">4.05</span>) * (<span class="nm">2</span>, <span class="nm">2</span>, <span class="nm">2</span>)
+atoms += Atom(<span class="st">'H'</span>, position=[<span class="nm">0</span>, <span class="nm">0</span>, <span class="nm">1.5</span>])
+del atoms[<span class="nm">0</span>]   <span class="cm"># 最初の原子を削除（空孔作成）</span></pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec4">
+        <h2>4. 構造ファイルの読み書き</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>io_examples.py</span><button class="copy-btn" onclick="copyCode('ase_io')">コピー</button></div>
+          <pre id="ase_io"><span class="op">from</span> ase.io <span class="op">import</span> read, write
+
+<span class="cm"># ── 読み込み ─────────────────────────────────────────</span>
+<span class="cm"># VASP POSCAR/CONTCAR</span>
+atoms = read(<span class="st">'POSCAR'</span>)
+atoms = read(<span class="st">'CONTCAR'</span>)
+
+<span class="cm"># XYZ ファイル</span>
+atoms = read(<span class="st">'structure.xyz'</span>)
+
+<span class="cm"># CIF（結晶構造データベース）</span>
+atoms = read(<span class="st">'structure.cif'</span>)
+
+<span class="cm"># GROMACS .gro</span>
+atoms = read(<span class="st">'structure.gro'</span>)
+
+<span class="cm"># LAMMPS dump（トラジェクトリ全フレーム）</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">'dump.lammpstrj'</span>) <span class="kw">as</span> f:
+    <span class="op">from</span> ase.io.lammpsrun <span class="op">import</span> read_lammps_dump_text
+    traj = list(read_lammps_dump_text(f))
+
+<span class="cm"># VASP vasprun.xml（AIMD トラジェクトリ）</span>
+traj = read(<span class="st">'vasprun.xml'</span>, index=<span class="st">':'</span>, format=<span class="st">'vasp-xml'</span>)
+<span class="kw">print</span>(<span class="st">f"{len(traj)} フレームを読み込みました"</span>)
+
+<span class="cm"># ── 書き込み ─────────────────────────────────────────</span>
+<span class="cm"># VASP POSCAR 形式</span>
+write(<span class="st">'POSCAR_new'</span>, atoms, format=<span class="st">'vasp'</span>, direct=<span class="kw">True</span>)
+
+<span class="cm"># XYZ</span>
+write(<span class="st">'output.xyz'</span>, atoms)
+
+<span class="cm"># トラジェクトリを XYZ に保存</span>
+write(<span class="st">'traj.xyz'</span>, traj)
+
+<span class="cm"># ASE trajectory 形式（バイナリ，高速）</span>
+<span class="op">from</span> ase.io.trajectory <span class="op">import</span> Trajectory
+<span class="kw">with</span> Trajectory(<span class="st">'output.traj'</span>, <span class="st">'w'</span>) <span class="kw">as</span> t:
+    <span class="kw">for</span> frame <span class="kw">in</span> traj:
+        t.write(frame)</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec5">
+        <h2>5. カルキュレーターとの連携</h2>
+        <p>
+          <code>Calculator</code> オブジェクトを <code>Atoms</code> に付けることで，
+          エネルギー・力・応力を計算できます．
+        </p>
+        <div class="code-wrap">
+          <div class="code-title"><span>calculators.py — 各種カルキュレーターの設定</span><button class="copy-btn" onclick="copyCode('ase_calc')">コピー</button></div>
+          <pre id="ase_calc"><span class="op">from</span> ase.build <span class="op">import</span> bulk
+atoms = bulk(<span class="st">'Al'</span>, <span class="st">'fcc'</span>, a=<span class="nm">4.05</span>)
+
+<span class="cm"># ── EMT（内蔵簡易力場）：テスト用 ─────────────────────</span>
+<span class="op">from</span> ase.calculators.emt <span class="op">import</span> EMT
+atoms.calc = EMT()
+e = atoms.get_potential_energy()
+f = atoms.get_forces()
+<span class="kw">print</span>(<span class="st">f"EMT energy: {e:.4f} eV"</span>)
+
+<span class="cm"># ── MACE（機械学習力場）────────────────────────────────</span>
+<span class="op">from</span> mace.calculators <span class="op">import</span> mace_mp
+atoms.calc = mace_mp(model=<span class="st">"medium"</span>, dispersion=<span class="kw">True</span>, device=<span class="st">"cpu"</span>)
+
+<span class="cm"># ── VASP（外部コード，計算サーバー上で実行） ────────────</span>
+<span class="op">from</span> ase.calculators.vasp <span class="op">import</span> Vasp
+atoms.calc = Vasp(
+    xc=<span class="st">'PBE'</span>,
+    encut=<span class="nm">520</span>,
+    ediff=<span class="nm">1e-6</span>,
+    kpts=(<span class="nm">4</span>, <span class="nm">4</span>, <span class="nm">4</span>),
+    lwave=<span class="kw">False</span>,
+    lcharg=<span class="kw">False</span>,
+    ivdw=<span class="nm">12</span>,        <span class="cm"># DFT-D3(BJ)</span>
+)
+
+<span class="cm"># ── LAMMPS（外部コード） ────────────────────────────────</span>
+<span class="op">from</span> ase.calculators.lammpsrun <span class="op">import</span> LAMMPS
+params = {
+    <span class="st">'pair_style'</span>: <span class="st">'lj/cut 2.5'</span>,
+    <span class="st">'pair_coeff'</span>: [<span class="st">'* * 1.0 1.0'</span>],
+}
+atoms.calc = LAMMPS(parameters=params)</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec6">
+        <h2>6. 構造最適化</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>optimize.py — 構造最適化の例</span><button class="copy-btn" onclick="copyCode('ase_opt')">コピー</button></div>
+          <pre id="ase_opt"><span class="op">from</span> ase.build <span class="op">import</span> molecule
+<span class="op">from</span> ase.calculators.emt <span class="op">import</span> EMT
+<span class="op">from</span> ase.optimize <span class="op">import</span> BFGS, FIRE
+<span class="op">from</span> ase.constraints <span class="op">import</span> FixAtoms
+<span class="op">from</span> ase.io import write
+
+<span class="cm"># 構造の準備</span>
+atoms = molecule(<span class="st">'H2O'</span>)
+atoms.calc = EMT()
+
+<span class="cm"># BFGS 最適化（一般的な構造最適化）</span>
+opt = BFGS(atoms, logfile=<span class="st">'opt.log'</span>, trajectory=<span class="st">'opt.traj'</span>)
+opt.run(fmax=<span class="nm">0.01</span>)    <span class="cm"># 最大力 0.01 eV/Å 以下で収束</span>
+<span class="kw">print</span>(<span class="st">f"最適化後エネルギー: {atoms.get_potential_energy():.4f} eV"</span>)
+write(<span class="st">'optimized.xyz'</span>, atoms)
+
+<span class="cm"># ── 表面スラブの最適化（下層を固定） ──────────────────</span>
+<span class="op">from</span> ase.build <span class="op">import</span> fcc111
+slab = fcc111(<span class="st">'Al'</span>, size=(<span class="nm">2</span>, <span class="nm">2</span>, <span class="nm">4</span>), vacuum=<span class="nm">10.0</span>)
+slab.calc = EMT()
+
+<span class="cm"># 下2層を固定</span>
+fixed = FixAtoms(indices=[atom.index <span class="kw">for</span> atom <span class="kw">in</span> slab <span class="kw">if</span> atom.position[<span class="nm">2</span>] < <span class="nm">5.0</span>])
+slab.set_constraint(fixed)
+
+opt = BFGS(slab)
+opt.run(fmax=<span class="nm">0.05</span>)
+
+<span class="cm"># ── FIRE 最適化（高速，ランダム初期構造に有効） ────────</span>
+atoms2 = molecule(<span class="st">'CH4'</span>)
+atoms2.calc = EMT()
+opt2 = FIRE(atoms2)
+opt2.run(fmax=<span class="nm">0.01</span>)</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec7">
+        <h2>7. MD シミュレーション</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>md_ase.py — ASE で MD シミュレーション</span><button class="copy-btn" onclick="copyCode('ase_md')">コピー</button></div>
+          <pre id="ase_md"><span class="op">from</span> ase.build <span class="op">import</span> bulk
+<span class="op">from</span> ase.calculators.emt <span class="op">import</span> EMT
+<span class="op">from</span> ase <span class="op">import</span> units
+<span class="op">from</span> ase.md <span class="op">import</span> velocitydistribution <span class="op">as</span> vd
+<span class="op">from</span> ase.md.verlet <span class="op">import</span> VelocityVerlet
+<span class="op">from</span> ase.md.nvtberendsen <span class="op">import</span> NVTBerendsen
+<span class="op">from</span> ase.md.npt <span class="op">import</span> NPT
+<span class="op">from</span> ase.io.trajectory <span class="op">import</span> Trajectory
+
+<span class="cm"># 系の準備</span>
+atoms = bulk(<span class="st">'Cu'</span>, <span class="st">'fcc'</span>, a=<span class="nm">3.615</span>) * (<span class="nm">4</span>, <span class="nm">4</span>, <span class="nm">4</span>)
+atoms.calc = EMT()
+
+<span class="cm"># Maxwell-Boltzmann 速度分布（300 K）</span>
+vd.MaxwellBoltzmannDistribution(atoms, temperature_K=<span class="nm">300</span>)
+vd.Stationary(atoms)   <span class="cm"># 重心速度を 0 に</span>
+
+<span class="cm"># ── NVE（マイクロカノニカル）────────────────────────────</span>
+dyn_nve = VelocityVerlet(atoms, timestep=<span class="nm">5.0</span>*units.fs)
+traj = Trajectory(<span class="st">'nve.traj'</span>, <span class="st">'w'</span>, atoms)
+dyn_nve.attach(traj.write, interval=<span class="nm">10</span>)
+dyn_nve.run(<span class="nm">1000</span>)   <span class="cm"># 5 ps</span>
+
+<span class="cm"># ── NVT（Berendsen サーモスタット）──────────────────────</span>
+dyn_nvt = NVTBerendsen(
+    atoms, timestep=<span class="nm">1.0</span>*units.fs,
+    temperature_K=<span class="nm">500</span>, taut=<span class="nm">100</span>*units.fs
+)
+dyn_nvt.run(<span class="nm">2000</span>)   <span class="cm"># 2 ps</span>
+
+<span class="cm"># ── NPT（Nosé-Hoover チェーン）──────────────────────────</span>
+dyn_npt = NPT(
+    atoms, timestep=<span class="nm">1.0</span>*units.fs,
+    temperature_K=<span class="nm">300</span>,
+    externalstress=<span class="nm">0</span>,    <span class="cm"># [eV/Å³]</span>
+    ttime=<span class="nm">25</span>*units.fs,
+    pfactor=<span class="nm">75</span>*units.fs**<span class="nm">2</span> * units.GPa,
+)
+dyn_npt.run(<span class="nm">5000</span>)   <span class="cm"># 5 ps</span>
+
+<span class="cm"># ── 物理量のモニタリング ────────────────────────────────</span>
+<span class="kw">def</span> <span class="fn">print_step</span>():
+    e = atoms.get_potential_energy()
+    t = atoms.get_temperature()
+    <span class="kw">print</span>(<span class="st">f"T={t:.1f} K, E={e:.3f} eV"</span>)
+
+dyn_nvt2 = NVTBerendsen(atoms, timestep=<span class="nm">1.0</span>*units.fs,
+                         temperature_K=<span class="nm">300</span>, taut=<span class="nm">100</span>*units.fs)
+dyn_nvt2.attach(print_step, interval=<span class="nm">100</span>)
+dyn_nvt2.run(<span class="nm">500</span>)</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec8">
+        <h2>8. 便利な機能集</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>utilities.py — よく使う操作のまとめ</span><button class="copy-btn" onclick="copyCode('ase_util')">コピー</button></div>
+          <pre id="ase_util"><span class="op">from</span> ase.io <span class="op">import</span> read
+<span class="op">import</span> numpy <span class="op">as</span> np
+
+traj = read(<span class="st">'vasprun.xml'</span>, index=<span class="st">':'</span>, format=<span class="st">'vasp-xml'</span>)
+
+<span class="cm"># ── エネルギー・力の取得 ────────────────────────────────</span>
+energies = [a.get_potential_energy() <span class="kw">for</span> a <span class="kw">in</span> traj]
+forces   = [a.get_forces()           <span class="kw">for</span> a <span class="kw">in</span> traj]
+temps    = [a.get_temperature()      <span class="kw">for</span> a <span class="kw">in</span> traj]
+
+<span class="cm"># ── 原子間距離の計算 ────────────────────────────────────</span>
+atoms = traj[<span class="nm">0</span>]
+dist = atoms.get_distance(<span class="nm">0</span>, <span class="nm">1</span>, mic=<span class="kw">True</span>)   <span class="cm"># mic=True で PBC 考慮</span>
+
+<span class="cm"># ── 角度の計算 ──────────────────────────────────────────</span>
+angle = atoms.get_angle(<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">2</span>)   <span class="cm"># 0-1-2 の角度（度）</span>
+
+<span class="cm"># ── 近傍原子リスト ──────────────────────────────────────</span>
+<span class="op">from</span> ase.neighborlist <span class="op">import</span> NeighborList
+cutoffs = [<span class="nm">1.5</span>] * <span class="fn">len</span>(atoms)   <span class="cm"># 全原子のカットオフ</span>
+nl = NeighborList(cutoffs, self_interaction=<span class="kw">False</span>, bothways=<span class="kw">True</span>)
+nl.update(atoms)
+indices, offsets = nl.get_neighbors(<span class="nm">0</span>)   <span class="cm"># 原子 0 の近傍</span>
+
+<span class="cm"># ── 振動解析（基準振動・ZPE） ──────────────────────────</span>
+<span class="op">from</span> ase.vibrations <span class="op">import</span> Vibrations
+atoms = traj[-<span class="nm">1</span>].copy()
+atoms.calc = atoms.calc   <span class="cm"># カルキュレーターを再設定</span>
+vib = Vibrations(atoms)
+vib.run()
+vib.summary()   <span class="cm"># 振動数一覧を出力</span>
+vib.write_mode()   <span class="cm"># 振動モードの可視化ファイルを出力</span>
+
+<span class="cm"># ── 対称性の解析 ────────────────────────────────────────</span>
+<span class="op">from</span> ase.spacegroup <span class="op">import</span> get_spacegroup
+sg = get_spacegroup(atoms)
+<span class="kw">print</span>(<span class="st">f"空間群: {sg.symbol} ({sg.no})"</span>)
+
+<span class="cm"># ── MSD の計算 ──────────────────────────────────────────</span>
+pos0 = traj[<span class="nm">0</span>].get_positions()
+msd = [np.mean(np.sum((t.get_positions() - pos0)**<span class="nm">2</span>, axis=<span class="nm">1</span>))
+       <span class="kw">for</span> t <span class="kw">in</span> traj]</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec9">
+        <h2>9. 参考文献</h2>
+        <ol class="decimal">
+          <li>A. Hjorth Larsen et al., "The atomic simulation environment—a Python library for working with atoms," J. Phys.: Condens. Matter 29, 273002 (2017).</li>
+          <li>ASE 公式ドキュメント：wiki.fysik.dtu.dk/ase/</li>
+          <li>ASE GitHub：github.com/askhl/ase</li>
+        </ol>
+      </section>
+
+      <div class="back-link"><a href="index.html">← メンバーメニューに戻る</a></div>
+    </main>
+  </div>
+  <script>
+    function copyCode(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const btn = el.previousElementSibling.querySelector('.copy-btn');
+        if (btn) { btn.textContent = "コピー済み"; setTimeout(() => btn.textContent = "コピー", 2000); }
+      });
+    }
+  </script>
+</body>
+</html>

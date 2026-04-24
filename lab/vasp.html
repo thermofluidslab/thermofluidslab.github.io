@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>VASP チュートリアル | 研究室メンバー専用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">熱流体力学研究室 <span>メンバー専用</span></div>
+    <div class="header-nav">
+      <a href="index.html">← メニュー</a>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <nav class="toc">
+        <h2>目次</h2>
+        <ul>
+          <li><a href="#sec1">1. VASP とは</a></li>
+          <li><a href="#sec2">2. 4つの入力ファイル</a></li>
+          <li><a href="#sec3">3. 構造最適化</a></li>
+          <li><a href="#sec4">4. 電子状態計算（DOS・バンド）</a></li>
+          <li><a href="#sec5">5. 第一原理 MD</a></li>
+          <li><a href="#sec6">6. 出力ファイルの解析</a></li>
+          <li><a href="#sec7">7. INCAR タグ早見表</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="article-header">
+        <h1>VASP チュートリアル</h1>
+        <p class="article-meta">熱流体力学研究室 内部資料 | 2026年4月</p>
+        <div class="article-tags"><span class="tag">VASP</span><span class="tag">DFT</span><span class="tag">AIMD</span></div>
+      </div>
+
+      <section class="section" id="sec1">
+        <h2>1. VASP とは</h2>
+        <p>
+          <strong>VASP（Vienna Ab initio Simulation Package）</strong>は，プレーンウェーブ基底と
+          PAW（Projector Augmented Wave）法を用いた DFT コードです．
+          固体・表面・分子のエネルギー最小化・電子状態・AIMD に広く使われています．
+          商用ライセンスのため，大学・機関単位でライセンスを取得する必要があります．
+        </p>
+        <div class="warn-box">
+          <strong>ライセンス：</strong>VASP は商用ソフトです．ライセンスなしでの使用は禁止されています．
+          指導教員に使用許可を確認してください．
+        </div>
+      </section>
+
+      <section class="section" id="sec2">
+        <h2>2. 4つの入力ファイル</h2>
+        <p>VASP の実行には必ず以下の4ファイルが必要です：</p>
+
+        <h3>POSCAR — 結晶構造</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>POSCAR — 氷 Ih のユニットセル例</span></div>
+          <pre>Ice Ih unit cell
+1.0
+  4.4930   0.0000   0.0000
+  0.0000   7.7821   0.0000
+  0.0000   0.0000   7.3190
+O H
+8 16
+Direct
+  0.0000  0.0626  0.2500
+  0.0000  0.9374  0.7500
+  0.5000  0.5626  0.2500
+  0.5000  0.4374  0.7500
+  ...</pre>
+        </div>
+
+        <h3>INCAR — 計算パラメータ</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>INCAR — 構造最適化</span><button class="copy-btn" onclick="copyCode('vasp_incar')">コピー</button></div>
+          <pre id="vasp_incar">SYSTEM = Ice Ih optimization
+
+<span class="cm"># 基本設定</span>
+ISTART = 0
+ICHARG = 2
+ENCUT  = 520       <span class="cm"># プレーンウェーブカットオフ [eV]</span>
+EDIFF  = 1E-6      <span class="cm"># SCF 収束条件</span>
+PREC   = Accurate
+
+<span class="cm"># 汎関数 + vdW 補正</span>
+GGA    = PE        <span class="cm"># PBE</span>
+IVDW   = 11        <span class="cm"># DFT-D3</span>
+
+<span class="cm"># 構造最適化</span>
+IBRION = 2         <span class="cm"># 共役勾配法</span>
+NSW    = 200        <span class="cm"># 最大ステップ数</span>
+ISIF   = 3         <span class="cm"># 全体積・形状・内部座標を最適化</span>
+EDIFFG = -0.01     <span class="cm"># 力の収束条件 [eV/Å]</span>
+
+<span class="cm"># スメアリング</span>
+ISMEAR = 0         <span class="cm"># ガウス型（絶縁体・分子向け）</span>
+SIGMA  = 0.05
+
+<span class="cm"># 出力</span>
+LWAVE  = .FALSE.
+LCHARG = .FALSE.</pre>
+        </div>
+
+        <h3>KPOINTS — k 点サンプリング</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>KPOINTS — Monkhorst-Pack グリッド</span></div>
+          <pre>Automatic mesh
+0              ! 自動生成
+Monkhorst-Pack
+4 4 4          ! k点グリッド
+0 0 0          ! シフト</pre>
+        </div>
+        <div class="note-box">
+          <strong>分子・大規模セルの場合：</strong>
+          Γ 点のみで十分な場合は <code>1 1 1</code>（またはKSPACING=1000をINCAR に記載）を使用します．
+          ハイドレートの AIMD では通常 Γ 点のみです．
+        </div>
+
+        <h3>POTCAR — PAW ポテンシャル</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>Terminal — POTCAR の作成</span></div>
+          <pre><span class="cm"># POSCAR の元素順に POTCAR を結合</span>
+cat $VASP_PP_PATH/PAW_PBE/O/POTCAR \
+    $VASP_PP_PATH/PAW_PBE/H/POTCAR > POTCAR</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec3">
+        <h2>3. 構造最適化</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>Terminal — 実行とモニタリング</span><button class="copy-btn" onclick="copyCode('vasp_run')">コピー</button></div>
+          <pre id="vasp_run"><span class="cm"># 実行（並列）</span>
+mpirun -np 16 vasp_std > vasp.out 2>&1 &
+
+<span class="cm"># 収束状況のモニタリング</span>
+tail -f OSZICAR
+
+<span class="cm"># 力の収束確認</span>
+grep "reached required accuracy" OUTCAR
+
+<span class="cm"># 最適化後の構造確認（ASE）</span>
+python -c "from ase.io import read; a=read('CONTCAR'); print(a)"</pre>
+        </div>
+
+        <h3>OSZICAR の見方</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>OSZICAR の出力例</span></div>
+          <pre>  N       E                     dE             d eps       ncg     rms          rms(c)
+DAV:   1     -0.100000000E+03   -0.100E+03    -0.100E+03  1000   0.123E+01
+DAV:   2     -0.102345678E+03   -0.234E+00    -0.123E-01  1000   0.456E-01
+...（SCF ループ）...
+   1 F= -.10250E+03 E0= -.10249E+03  d E =-.102E+03  mag=  0.000
+   2 F= -.10251E+03 E0= -.10251E+03  d E =-.010E-03  mag=  0.000</pre>
+        </div>
+        <p><code>F</code>：自由エネルギー，<code>d E</code>：ステップ間エネルギー変化（収束で小さくなる）</p>
+      </section>
+
+      <section class="section" id="sec4">
+        <h2>4. 電子状態計算（DOS・バンド）</h2>
+        <h3>状態密度（DOS）</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>INCAR — DOS 計算</span></div>
+          <pre>ISTART = 1         <span class="cm"># 構造最適化の WAVECAR を継続使用</span>
+ICHARG = 11        <span class="cm"># 電荷密度を読んで固定（CHGCAR から）</span>
+NSW    = 0
+IBRION = -1
+ISMEAR = -5        <span class="cm"># テトラへドロン法（正確な DOS に推奨）</span>
+LORBIT = 11        <span class="cm"># 部分 DOS を出力（DOSCAR）</span>
+NEDOS  = 2000      <span class="cm"># DOS の点数</span></pre>
+        </div>
+
+        <h3>pyiron / py4vasp による解析（Python）</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>read_dos.py</span><button class="copy-btn" onclick="copyCode('vasp_dos')">コピー</button></div>
+          <pre id="vasp_dos"><span class="op">from</span> vaspkit_tools <span class="op">import</span> Doscar   <span class="cm"># または pyiron</span>
+<span class="op">import</span> numpy <span class="op">as</span> np
+<span class="op">import</span> matplotlib.pyplot <span class="op">as</span> plt
+
+<span class="cm"># ASE でも DOSCAR を読める</span>
+<span class="op">from</span> ase.calculators.vasp <span class="op">import</span> VaspChargeDensity
+<span class="op">from</span> ase.dft.dos <span class="op">import</span> DOS
+
+calc = VaspChargeDensity(<span class="st">"CHGCAR"</span>)
+dos = DOS(calc, width=<span class="nm">0.2</span>)
+e, d = dos.get_dos()
+plt.plot(e, d)
+plt.xlabel(<span class="st">"Energy (eV)"</span>)
+plt.ylabel(<span class="st">"DOS (states/eV)"</span>)
+plt.savefig(<span class="st">"dos.png"</span>, dpi=<span class="nm">150</span>)</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec5">
+        <h2>5. 第一原理 MD</h2>
+        <p>→ <a href="aimd.html">AIMD ページ</a>を参照してください（VASP での詳細設定を記載しています）．</p>
+      </section>
+
+      <section class="section" id="sec6">
+        <h2>6. 出力ファイルの解析</h2>
+        <table>
+          <thead><tr><th>ファイル</th><th>内容</th><th>読み込み方</th></tr></thead>
+          <tbody>
+            <tr><td><code>OUTCAR</code></td><td>全計算情報（力，ストレス，振動数等）</td><td><code>grep</code> または ASE</td></tr>
+            <tr><td><code>CONTCAR</code></td><td>最終構造（最適化後の POSCAR 形式）</td><td><code>ase.io.read("CONTCAR")</code></td></tr>
+            <tr><td><code>vasprun.xml</code></td><td>全情報の XML（トラジェクトリ等）</td><td><code>ase.io.read("vasprun.xml", ":")</code></td></tr>
+            <tr><td><code>EIGENVAL</code></td><td>バンド固有値</td><td>pyiron, vaspkit</td></tr>
+            <tr><td><code>DOSCAR</code></td><td>状態密度</td><td>ASE, pyiron</td></tr>
+            <tr><td><code>XDATCAR</code></td><td>MD トラジェクトリ（AIMD 用）</td><td><code>ase.io.read("XDATCAR", ":")</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec7">
+        <h2>7. INCAR タグ早見表</h2>
+        <table>
+          <thead><tr><th>タグ</th><th>説明</th><th>代表値</th></tr></thead>
+          <tbody>
+            <tr><td><code>ENCUT</code></td><td>プレーンウェーブカットオフ [eV]</td><td>400〜600</td></tr>
+            <tr><td><code>EDIFF</code></td><td>SCF 収束条件</td><td>1E-5 〜 1E-7</td></tr>
+            <tr><td><code>EDIFFG</code></td><td>構造最適化収束（負: 力 eV/Å）</td><td>-0.01</td></tr>
+            <tr><td><code>NSW</code></td><td>イオン緩和/MD ステップ数</td><td>100〜50000</td></tr>
+            <tr><td><code>IBRION</code></td><td>-1: 静的, 0: MD, 1: RMM, 2: CG</td><td>2 (最適化)</td></tr>
+            <tr><td><code>ISIF</code></td><td>最適化対象（0:内部, 3:体積+形状+内部）</td><td>2 or 3</td></tr>
+            <tr><td><code>GGA</code></td><td>汎関数（PE=PBE, PS=PBEsol）</td><td>PE</td></tr>
+            <tr><td><code>IVDW</code></td><td>vdW 補正（0:なし, 11:D3, 12:D3(BJ)）</td><td>12</td></tr>
+            <tr><td><code>ISPIN</code></td><td>スピン（1: 非磁性, 2: 磁性）</td><td>1</td></tr>
+            <tr><td><code>ISMEAR</code></td><td>スメアリング（0: Gauss, -5: tetra）</td><td>0（絶縁体）</td></tr>
+            <tr><td><code>POTIM</code></td><td>MD 時間刻み [fs]</td><td>0.5〜2.0</td></tr>
+            <tr><td><code>TEBEG / TEEND</code></td><td>MD 初期・終了温度 [K]</td><td>300 300</td></tr>
+            <tr><td><code>NPAR</code></td><td>並列化（バンドの分割数）</td><td>4〜8</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="back-link"><a href="index.html">← メンバーメニューに戻る</a></div>
+    </main>
+  </div>
+  <script>
+    function copyCode(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const btn = el.previousElementSibling.querySelector('.copy-btn');
+        if (btn) { btn.textContent = "コピー済み"; setTimeout(() => btn.textContent = "コピー", 2000); }
+      });
+    }
+  </script>
+</body>
+</html>

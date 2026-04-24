@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>環境設定（Windows + VSCode） | 研究室メンバー専用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">熱流体力学研究室 <span>メンバー専用</span></div>
+    <div class="header-nav">
+      <a href="index.html">← メニュー</a>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <nav class="toc">
+        <h2>目次</h2>
+        <ul>
+          <li><a href="#sec1">1. WSL2 のインストール</a></li>
+          <li><a href="#sec2">2. VSCode のインストール</a></li>
+          <li><a href="#sec3">3. Python / Conda 環境</a></li>
+          <li><a href="#sec4">4. Git の設定</a></li>
+          <li><a href="#sec5">5. SSH 設定</a></li>
+          <li><a href="#sec6">6. 推奨 VSCode 拡張機能</a></li>
+          <li><a href="#sec7">7. トラブルシューティング</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="article-header">
+        <h1>環境設定<br>— Windows + VSCode + WSL2 —</h1>
+        <p class="article-meta">熱流体力学研究室 内部資料 | 2026年4月</p>
+        <div class="article-tags">
+          <span class="tag">Windows</span><span class="tag">VSCode</span><span class="tag">WSL2</span><span class="tag">Python</span><span class="tag">Git</span>
+        </div>
+      </div>
+
+      <!-- Section 1 -->
+      <section class="section" id="sec1">
+        <h2>1. WSL2 のインストール</h2>
+        <p>
+          Windows Subsystem for Linux 2（WSL2）を使うと，Windows 上で Ubuntu 環境を動かせます．
+          LAMMPS・OpenFOAM などのシミュレーションソフトは Linux ネイティブで動作するため，WSL2 の利用を推奨します．
+        </p>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-body"><strong>管理者権限で PowerShell を起動</strong>し，以下を実行：</div>
+          </div>
+        </div>
+        <div class="code-wrap">
+          <div class="code-title"><span>PowerShell（管理者）</span></div>
+          <pre>wsl --install</pre>
+        </div>
+        <p>再起動後，Ubuntu が自動的にインストールされます．ユーザー名とパスワードを設定してください．</p>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-body"><strong>WSL バージョンの確認：</strong></div>
+          </div>
+        </div>
+        <div class="code-wrap">
+          <div class="code-title"><span>PowerShell</span></div>
+          <pre>wsl --list --verbose</pre>
+        </div>
+        <p><code>VERSION</code> が <code>2</code> になっていれば OK です．</p>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-body"><strong>Ubuntu の初期設定：</strong></div>
+          </div>
+        </div>
+        <div class="code-wrap">
+          <div class="code-title"><span>Ubuntu (WSL2)</span><button class="copy-btn" onclick="copyCode('c1')">コピー</button></div>
+          <pre id="c1">sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential curl wget git vim unzip</pre>
+        </div>
+        <div class="note-box">
+          <strong>ファイルシステムの注意：</strong>
+          Windows のファイル（<code>C:\Users\...</code>）は WSL2 から <code>/mnt/c/Users/...</code> としてアクセスできますが，
+          I/O が遅いため，シミュレーションファイルは WSL2 のホームディレクトリ（<code>~/</code>）に置くことを推奨します．
+        </div>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="section" id="sec2">
+        <h2>2. VSCode のインストール</h2>
+        <p>
+          VSCode（Visual Studio Code）は Microsoft 製の無料エディタです．WSL2 上のファイルを Windows GUI から編集できます．
+        </p>
+        <ol class="decimal">
+          <li><a href="https://code.visualstudio.com/" target="_blank" rel="noopener">https://code.visualstudio.com/</a> からインストーラをダウンロード・実行</li>
+          <li>インストール時に「<strong>PATH への追加</strong>」にチェックを入れる</li>
+          <li>VSCode を起動し，左サイドバーの拡張機能アイコンから <strong>WSL</strong> 拡張機能をインストール</li>
+          <li>WSL2 ターミナルで <code>code .</code> を実行すると VSCode が WSL 接続モードで起動します</li>
+        </ol>
+        <div class="code-wrap">
+          <div class="code-title"><span>Ubuntu (WSL2) — VSCode を WSL モードで起動</span></div>
+          <pre>cd ~/myproject
+code .</pre>
+        </div>
+        <div class="point-box">
+          <strong>ポイント：</strong>
+          <code>code .</code> で開いた VSCode は Linux ファイルシステムに直接アクセスするため，
+          ファイル保存・実行が高速です．ターミナルも VSCode 内から WSL2 を使用します．
+        </div>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="section" id="sec3">
+        <h2>3. Python / Conda 環境</h2>
+        <h3>Miniforge のインストール（推奨）</h3>
+        <p>Anaconda より軽量な Miniforge（conda-forge チャンネルベース）を推奨します．</p>
+        <div class="code-wrap">
+          <div class="code-title"><span>Ubuntu (WSL2)</span><button class="copy-btn" onclick="copyCode('c2')">コピー</button></div>
+          <pre id="c2">curl -L https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -o miniforge.sh
+bash miniforge.sh -b -p ~/miniforge3
+~/miniforge3/bin/conda init bash
+source ~/.bashrc</pre>
+        </div>
+
+        <h3>研究用 conda 環境の作成</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>Ubuntu (WSL2)</span><button class="copy-btn" onclick="copyCode('c3')">コピー</button></div>
+          <pre id="c3"><span class="cm"># 基本的な計算科学環境</span>
+conda create -n sim python=3.11 -y
+conda activate sim
+
+<span class="cm"># 基本パッケージ</span>
+conda install -y numpy scipy matplotlib pandas jupyter
+
+<span class="cm"># 分子シミュレーション関連</span>
+pip install ase          <span class="cm"># Atomic Simulation Environment</span>
+pip install ovito        <span class="cm"># 可視化・解析（CLIモード）</span>
+
+<span class="cm"># 機械学習力場</span>
+pip install mace-torch   <span class="cm"># MACE</span></pre>
+        </div>
+
+        <h3>環境の管理</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>よく使うコマンド</span></div>
+          <pre>conda activate sim        <span class="cm"># 環境を有効化</span>
+conda deactivate          <span class="cm"># 環境を無効化</span>
+conda env list            <span class="cm"># 環境一覧</span>
+conda list                <span class="cm"># インストール済みパッケージ一覧</span>
+conda env export > env.yml  <span class="cm"># 環境をエクスポート（共有用）</span>
+conda env create -f env.yml  <span class="cm"># 環境をインポート</span></pre>
+        </div>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="section" id="sec4">
+        <h2>4. Git の設定</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>Ubuntu (WSL2)</span><button class="copy-btn" onclick="copyCode('c4')">コピー</button></div>
+          <pre id="c4"><span class="cm"># ユーザー情報の設定</span>
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+git config --global core.editor "code --wait"
+
+<span class="cm"># 日本語ファイル名の文字化け防止</span>
+git config --global core.quotepath false
+
+<span class="cm"># デフォルトブランチを main に設定</span>
+git config --global init.defaultBranch main</pre>
+        </div>
+
+        <h3>基本的な Git ワークフロー</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>よく使うコマンド</span></div>
+          <pre>git init                   <span class="cm"># 新規リポジトリ作成</span>
+git clone URL              <span class="cm"># リモートからクローン</span>
+git status                 <span class="cm"># 変更状態確認</span>
+git add file.py            <span class="cm"># ステージング</span>
+git commit -m "message"    <span class="cm"># コミット</span>
+git push origin main       <span class="cm"># プッシュ</span>
+git pull                   <span class="cm"># プル（最新取得）</span>
+git log --oneline          <span class="cm"># 履歴確認</span></pre>
+        </div>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="section" id="sec5">
+        <h2>5. SSH 設定（計算サーバーへの接続）</h2>
+        <h3>SSH 鍵の生成</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>Ubuntu (WSL2)</span><button class="copy-btn" onclick="copyCode('c5')">コピー</button></div>
+          <pre id="c5"><span class="cm"># ED25519 鍵ペアを生成</span>
+ssh-keygen -t ed25519 -C "your@email.com"
+<span class="cm"># → ~/.ssh/id_ed25519 (秘密鍵) と ~/.ssh/id_ed25519.pub (公開鍵) が生成される</span>
+
+<span class="cm"># 公開鍵をサーバーに登録</span>
+ssh-copy-id -i ~/.ssh/id_ed25519.pub username@server.address</pre>
+        </div>
+
+        <h3>~/.ssh/config の設定（接続の簡略化）</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>~/.ssh/config</span></div>
+          <pre>Host calc-server
+    HostName  server.address.ac.jp
+    User      your_username
+    IdentityFile ~/.ssh/id_ed25519
+    ServerAliveInterval 60</pre>
+        </div>
+        <p>設定後は <code>ssh calc-server</code> だけで接続できます．</p>
+        <div class="point-box">
+          <strong>VSCode Remote-SSH：</strong>
+          VSCode の Remote-SSH 拡張機能を使うと，計算サーバー上のファイルを VSCode GUI で直接編集できます．
+          接続先の <code>~/.ssh/config</code> に登録されたホスト名が自動的に候補として表示されます．
+        </div>
+
+        <h3>ファイル転送</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>ファイル転送コマンド</span></div>
+          <pre><span class="cm"># ローカル → サーバー</span>
+scp local_file.txt calc-server:~/remote_dir/
+
+<span class="cm"># サーバー → ローカル</span>
+scp calc-server:~/result.txt ./
+
+<span class="cm"># ディレクトリごと転送（rsync 推奨）</span>
+rsync -avz ./local_dir/ calc-server:~/remote_dir/</pre>
+        </div>
+      </section>
+
+      <!-- Section 6 -->
+      <section class="section" id="sec6">
+        <h2>6. 推奨 VSCode 拡張機能</h2>
+        <table>
+          <thead><tr><th>拡張機能名</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td><strong>WSL</strong></td><td>WSL2 上のファイルを VSCode から操作（必須）</td></tr>
+            <tr><td><strong>Python</strong> (Microsoft)</td><td>Python の補完・デバッグ・Jupyter サポート</td></tr>
+            <tr><td><strong>Pylance</strong></td><td>Python の高速な型チェック・補完</td></tr>
+            <tr><td><strong>Jupyter</strong></td><td>VSCode 内で Jupyter Notebook を実行</td></tr>
+            <tr><td><strong>Remote - SSH</strong></td><td>計算サーバーへの SSH 接続</td></tr>
+            <tr><td><strong>GitLens</strong></td><td>Git の変更履歴・差分を可視化</td></tr>
+            <tr><td><strong>GitHub Copilot</strong></td><td>AI コード補完（学生は無料）</td></tr>
+            <tr><td><strong>indent-rainbow</strong></td><td>インデントを色分け（Python に便利）</td></tr>
+            <tr><td><strong>Rainbow CSV</strong></td><td>CSV ファイルを色分け表示</td></tr>
+            <tr><td><strong>LAMMPS</strong></td><td>LAMMPS 入力ファイルのシンタックスハイライト</td></tr>
+          </tbody>
+        </table>
+        <div class="point-box">
+          <strong>GitHub Student Developer Pack：</strong>
+          学生は GitHub Education に登録すると GitHub Copilot が無料で使えます．
+          <code>github.com/education</code> から申請（大学メールアドレスが必要）．
+        </div>
+      </section>
+
+      <!-- Section 7 -->
+      <section class="section" id="sec7">
+        <h2>7. トラブルシューティング</h2>
+        <table>
+          <thead><tr><th>症状</th><th>原因・解決策</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>wsl --install</code> が失敗する</td>
+              <td>BIOS で仮想化（Intel VT-x / AMD-V）が有効か確認．Windows の「Windows の機能の有効化または無効化」から「仮想マシン プラットフォーム」と「Linux 用 Windows サブシステム」を有効にする</td>
+            </tr>
+            <tr>
+              <td>WSL2 から GPU が使えない</td>
+              <td>NVIDIA の WSL2 対応ドライバーをインストール（<code>nvidia-smi</code> で確認）</td>
+            </tr>
+            <tr>
+              <td><code>code .</code> を実行しても VSCode が開かない</td>
+              <td>VSCode の <code>Remote - WSL</code> 拡張機能をインストール後，<code>PATH</code> を確認．<code>export PATH="$PATH:/mnt/c/Users/username/AppData/Local/Programs/Microsoft VS Code/bin"</code> を <code>~/.bashrc</code> に追記</td>
+            </tr>
+            <tr>
+              <td>conda activate が効かない</td>
+              <td><code>source ~/.bashrc</code> を実行後，再度試す</td>
+            </tr>
+            <tr>
+              <td>SSH 接続でパスワードを求められる</td>
+              <td><code>~/.ssh/</code> のパーミッション確認：<code>chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_ed25519</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="back-link"><a href="index.html">← メンバーメニューに戻る</a></div>
+    </main>
+  </div>
+  <script>
+    function copyCode(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const btn = el.previousElementSibling.querySelector('.copy-btn');
+        if (btn) { btn.textContent = "コピー済み"; setTimeout(() => btn.textContent = "コピー", 2000); }
+      });
+    }
+  </script>
+</body>
+</html>

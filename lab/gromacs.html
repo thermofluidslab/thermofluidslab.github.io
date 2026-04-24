@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>GROMACS チュートリアル | 研究室メンバー専用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">熱流体力学研究室 <span>メンバー専用</span></div>
+    <div class="header-nav">
+      <a href="index.html">← メニュー</a>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <nav class="toc">
+        <h2>目次</h2>
+        <ul>
+          <li><a href="#sec1">1. GROMACS とは</a></li>
+          <li><a href="#sec2">2. インストール</a></li>
+          <li><a href="#sec3">3. ファイル構成</a></li>
+          <li><a href="#sec4">4. 基本ワークフロー</a></li>
+          <li><a href="#sec5">5. mdp ファイルの設定</a></li>
+          <li><a href="#sec6">6. 解析コマンド</a></li>
+          <li><a href="#sec7">7. よく使うコマンド</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="article-header">
+        <h1>GROMACS チュートリアル</h1>
+        <p class="article-meta">熱流体力学研究室 内部資料 | 2026年4月</p>
+        <div class="article-tags"><span class="tag">GROMACS</span><span class="tag">MD</span><span class="tag">生体分子</span></div>
+      </div>
+
+      <section class="section" id="sec1">
+        <h2>1. GROMACS とは</h2>
+        <p>
+          <strong>GROMACS（GROningen MAchine for Chemical Simulations）</strong>は，
+          主に生体分子（タンパク質・脂質・核酸）のシミュレーションに特化した高性能 MD ソフトウェアです．
+          AMBER・CHARMM・GROMOS・OPLS などの主要な力場に対応しています．
+        </p>
+        <table>
+          <thead><tr><th>特徴</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td>ライセンス</td><td>LGPL（オープンソース）</td></tr>
+            <tr><td>得意な系</td><td>水溶液中のタンパク質・膜・ハイドレート</td></tr>
+            <tr><td>並列化</td><td>MPI + OpenMP + GPU (CUDA/OpenCL)</td></tr>
+            <tr><td>解析</td><td>豊富な組み込み解析ツール（gmx コマンド群）</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec2">
+        <h2>2. インストール</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>Ubuntu (WSL2)</span><button class="copy-btn" onclick="copyCode('gmx_inst')">コピー</button></div>
+          <pre id="gmx_inst"><span class="cm"># conda からインストール（推奨）</span>
+conda install -c conda-forge gromacs
+
+<span class="cm"># または apt から</span>
+sudo apt install gromacs
+
+<span class="cm"># バージョン確認</span>
+gmx --version</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec3">
+        <h2>3. ファイル構成</h2>
+        <table>
+          <thead><tr><th>拡張子</th><th>ファイル名</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td><code>.gro</code></td><td>structure.gro</td><td>原子座標（GROMOS 形式），ボックスサイズ</td></tr>
+            <tr><td><code>.top</code></td><td>topol.top</td><td>トポロジー（質量・電荷・結合・力場パラメータ）</td></tr>
+            <tr><td><code>.itp</code></td><td>molecule.itp</td><td>分子ごとのトポロジー（.top から include）</td></tr>
+            <tr><td><code>.mdp</code></td><td>md.mdp</td><td>MD パラメータ（時間刻み・アンサンブル・出力間隔等）</td></tr>
+            <tr><td><code>.tpr</code></td><td>topol.tpr</td><td>バイナリ実行ファイル（grompp が生成）</td></tr>
+            <tr><td><code>.trr</code></td><td>traj.trr</td><td>完全なトラジェクトリ（座標・速度・力）</td></tr>
+            <tr><td><code>.xtc</code></td><td>traj.xtc</td><td>圧縮トラジェクトリ（座標のみ）</td></tr>
+            <tr><td><code>.edr</code></td><td>ener.edr</td><td>エネルギー・温度・圧力の時系列</td></tr>
+            <tr><td><code>.log</code></td><td>md.log</td><td>実行ログ</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec4">
+        <h2>4. 基本ワークフロー</h2>
+        <p>一般的な GROMACS の計算手順：</p>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-body"><strong>初期構造の準備</strong>（PDB から .gro に変換）
+              <div class="code-wrap" style="margin-top:8px;">
+                <div class="code-title"><span>Terminal</span></div>
+                <pre>gmx pdb2gmx -f protein.pdb -o protein.gro -water spce -ff amber99sb</pre>
+              </div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-body"><strong>ボックスと溶媒の設定</strong>
+              <div class="code-wrap" style="margin-top:8px;">
+                <div class="code-title"><span>Terminal</span><button class="copy-btn" onclick="copyCode('gmx_box')">コピー</button></div>
+                <pre id="gmx_box"><span class="cm"># 立方体ボックスを作成（分子から 1.0 nm のマージン）</span>
+gmx editconf -f protein.gro -o box.gro -c -d 1.0 -bt cubic
+
+<span class="cm"># ボックスに水分子を充填</span>
+gmx solvate -cp box.gro -cs spc216.gro -o solvated.gro -p topol.top
+
+<span class="cm"># イオンの追加（電荷中性化）</span>
+gmx grompp -f ions.mdp -c solvated.gro -p topol.top -o ions.tpr
+gmx genion -s ions.tpr -o ionized.gro -p topol.top -pname NA -nname CL -neutral</pre>
+              </div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-body"><strong>エネルギー最小化</strong>
+              <div class="code-wrap" style="margin-top:8px;">
+                <div class="code-title"><span>Terminal</span></div>
+                <pre>gmx grompp -f em.mdp -c ionized.gro -p topol.top -o em.tpr
+gmx mdrun -v -deffnm em</pre>
+              </div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-body"><strong>NVT 平衡化</strong>（温度を目標値に緩和）
+              <div class="code-wrap" style="margin-top:8px;">
+                <div class="code-title"><span>Terminal</span></div>
+                <pre>gmx grompp -f nvt.mdp -c em.gro -r em.gro -p topol.top -o nvt.tpr
+gmx mdrun -deffnm nvt</pre>
+              </div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">5</div>
+            <div class="step-body"><strong>NPT 平衡化</strong>（圧力を目標値に緩和）
+              <div class="code-wrap" style="margin-top:8px;">
+                <div class="code-title"><span>Terminal</span></div>
+                <pre>gmx grompp -f npt.mdp -c nvt.gro -r nvt.gro -t nvt.cpt -p topol.top -o npt.tpr
+gmx mdrun -deffnm npt</pre>
+              </div>
+            </div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">6</div>
+            <div class="step-body"><strong>本計算（Production MD）</strong>
+              <div class="code-wrap" style="margin-top:8px;">
+                <div class="code-title"><span>Terminal</span></div>
+                <pre>gmx grompp -f md.mdp -c npt.gro -t npt.cpt -p topol.top -o md.tpr
+gmx mdrun -deffnm md</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="section" id="sec5">
+        <h2>5. mdp ファイルの設定</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>md.mdp — 本計算用パラメータ（NPT, 300K, 1bar）</span><button class="copy-btn" onclick="copyCode('gmx_mdp')">コピー</button></div>
+          <pre id="gmx_mdp">; 実行制御
+integrator  = md          ; リープフロッグ積分
+nsteps      = 50000000    ; ステップ数（× 2 fs = 100 ns）
+dt          = 0.002       ; 時間刻み [ps]
+
+; 出力制御
+nstxout-compressed = 5000   ; XTC 出力間隔（10 ps ごと）
+nstenergy          = 5000   ; エネルギー出力間隔
+nstlog             = 5000   ; ログ出力間隔
+
+; 結合拘束（LINCS）
+constraints         = h-bonds  ; H 含む結合を拘束
+constraint-algorithm = lincs
+
+; 近距離相互作用
+cutoff-scheme = Verlet
+nstlist       = 10
+ns-type       = grid
+rlist         = 1.0
+
+; 静電気（PME）
+coulombtype   = PME
+rcoulomb      = 1.0
+ewald-rtol    = 1e-5
+
+; van der Waals
+vdwtype       = Cut-off
+rvdw          = 1.0
+
+; 温度制御（V-rescale, 300 K）
+tcoupl          = V-rescale
+tc-grps         = Protein Non-Protein
+tau-t           = 0.1 0.1
+ref-t           = 300 300
+
+; 圧力制御（Parrinello-Rahman, 1 bar）
+pcoupl          = Parrinello-Rahman
+pcoupltype      = isotropic
+tau-p           = 2.0
+ref-p           = 1.0
+compressibility = 4.5e-5
+
+; PBC
+pbc             = xyz</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec6">
+        <h2>6. 解析コマンド</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>よく使う解析コマンド</span><button class="copy-btn" onclick="copyCode('gmx_anal')">コピー</button></div>
+          <pre id="gmx_anal"><span class="cm"># エネルギー・温度・圧力の抽出</span>
+gmx energy -f md.edr -o energy.xvg
+
+<span class="cm"># RMSD（タンパク質の構造変化）</span>
+gmx rms -s md.tpr -f md.xtc -o rmsd.xvg
+
+<span class="cm"># RMSF（残基ごとの揺らぎ）</span>
+gmx rmsf -s md.tpr -f md.xtc -o rmsf.xvg -res
+
+<span class="cm"># 動径分布関数（RDF）</span>
+gmx rdf -f md.xtc -s md.tpr -o rdf.xvg -ref "resname SOL and name OW" -sel "resname SOL and name OW"
+
+<span class="cm"># MSD（拡散係数）</span>
+gmx msd -f md.xtc -s md.tpr -o msd.xvg -lateral z
+
+<span class="cm"># 水素結合数</span>
+gmx hbond -f md.xtc -s md.tpr -num hbnum.xvg
+
+<span class="cm"># 回転自己相関関数</span>
+gmx rotacf -f md.xtc -s md.tpr -o rotacf.xvg
+
+<span class="cm"># トラジェクトリの可視化（VMD, OVITO 用に変換）</span>
+gmx trjconv -f md.xtc -s md.tpr -o md_pbc.xtc -pbc mol -center</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec7">
+        <h2>7. よく使うコマンド</h2>
+        <table>
+          <thead><tr><th>コマンド</th><th>説明</th></tr></thead>
+          <tbody>
+            <tr><td><code>gmx grompp</code></td><td>.mdp + .gro + .top → .tpr（実行ファイル生成）</td></tr>
+            <tr><td><code>gmx mdrun</code></td><td>MD 実行（-ntmpi, -ntomp でスレッド数指定）</td></tr>
+            <tr><td><code>gmx editconf</code></td><td>構造ファイルの変換・ボックス設定</td></tr>
+            <tr><td><code>gmx solvate</code></td><td>溶媒分子の充填</td></tr>
+            <tr><td><code>gmx genion</code></td><td>イオンの追加</td></tr>
+            <tr><td><code>gmx make_ndx</code></td><td>原子グループ（index ファイル）の作成</td></tr>
+            <tr><td><code>gmx trjconv</code></td><td>トラジェクトリの変換・PBC 補正</td></tr>
+            <tr><td><code>gmx check</code></td><td>ファイルの整合性チェック</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="back-link"><a href="index.html">← メンバーメニューに戻る</a></div>
+    </main>
+  </div>
+  <script>
+    function copyCode(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const btn = el.previousElementSibling.querySelector('.copy-btn');
+        if (btn) { btn.textContent = "コピー済み"; setTimeout(() => btn.textContent = "コピー", 2000); }
+      });
+    }
+  </script>
+</body>
+</html>

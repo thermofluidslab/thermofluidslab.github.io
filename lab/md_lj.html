@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>分子動力学法の基礎（LJポテンシャル） | 研究室メンバー専用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+  <!-- MathJax -->
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <style>
+    /* アルゴリズムボックス（このページ専用） */
+    .algo-box {
+      background: #fff;
+      border: 1px solid #d8dde4;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .algo-box .algo-title {
+      font-weight: 700;
+      color: #1b3a6b;
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+    }
+    .algo-step {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 10px;
+      align-items: flex-start;
+    }
+    .algo-step-num {
+      background: #1b3a6b;
+      color: #fff;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .algo-step-body { font-size: 0.92rem; }
+  </style>
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">
+      熱流体力学研究室
+      <span>メンバー専用</span>
+    </div>
+    <div class="header-nav">
+      <a href="index.html">← メニュー</a>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <nav class="toc">
+        <h2>目次</h2>
+        <ol>
+          <li><a href="#sec1">1. 分子動力学法とは</a></li>
+          <li><a href="#sec2">2. LJ ポテンシャル</a>
+            <ol class="toc-sub">
+              <li><a href="#sec2-1">2.1 ポテンシャル関数</a></li>
+              <li><a href="#sec2-2">2.2 LJ 力</a></li>
+              <li><a href="#sec2-3">2.3 無次元化（換算単位）</a></li>
+            </ol>
+          </li>
+          <li><a href="#sec3">3. 運動方程式と数値積分</a>
+            <ol class="toc-sub">
+              <li><a href="#sec3-1">3.1 ニュートンの運動方程式</a></li>
+              <li><a href="#sec3-2">3.2 Velocity Verlet 法</a></li>
+            </ol>
+          </li>
+          <li><a href="#sec4">4. 周期境界条件</a></li>
+          <li><a href="#sec5">5. カットオフ</a></li>
+          <li><a href="#sec6">6. 温度とエネルギー</a></li>
+          <li><a href="#sec7">7. MD アルゴリズム</a></li>
+          <li><a href="#sec8">8. Python プログラム例</a></li>
+          <li><a href="#sec9">9. 参考文献</a></li>
+        </ol>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="article-header">
+        <h1>分子動力学法の基礎<br>— LJ ポテンシャルと MD シミュレーション —</h1>
+        <p class="article-meta">熱流体力学研究室 内部資料 | 2026年4月</p>
+      </div>
+
+      <!-- ===== Section 1 ===== -->
+      <section class="section" id="sec1">
+        <h2>1. 分子動力学法とは</h2>
+        <p>
+          <strong>分子動力学（Molecular Dynamics, MD）法</strong>は，原子・分子をニュートン力学に従う古典粒子として扱い，その運動方程式を数値的に時間積分することで，系の時間発展を求める計算手法です．
+        </p>
+        <p>
+          MD シミュレーションから得られる粒子の軌跡（位置と速度の時系列）に統計力学を適用することで，圧力・温度・熱伝導率・拡散係数などの巨視的物性を計算できます．
+        </p>
+        <p>
+          本資料では，最も基本的なモデルである <strong>Lennard-Jones（LJ）ポテンシャル</strong>を用いた MD シミュレーションの理論と Python による実装を説明します．
+        </p>
+        <div class="point-box">
+          <strong>MD の基本的な考え方：</strong><br>
+          粒子間に相互作用ポテンシャルを定義 → 粒子に働く力を計算 → 運動方程式を時間積分 → 位置・速度を更新 → 繰り返す
+        </div>
+      </section>
+
+      <!-- ===== Section 2 ===== -->
+      <section class="section" id="sec2">
+        <h2>2. Lennard-Jones ポテンシャル</h2>
+
+        <h3 id="sec2-1">2.1 ポテンシャル関数</h3>
+        <p>
+          LJ ポテンシャルは，2粒子間の距離 $r$ の関数として次式で表されます：
+        </p>
+        <div class="eq-block">
+          $$u_\text{LJ}(r) = 4\varepsilon \left[ \left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^{6} \right]$$
+          <div class="eq-label">（式 2.1）</div>
+        </div>
+        <p>
+          ここで，$\varepsilon$ はポテンシャルの深さ（エネルギースケール），$\sigma$ は粒子径（長さスケール）です．
+        </p>
+        <ul class="disc">
+          <li>$r^{-12}$ 項：短距離斥力（パウリ排除則による電子雲の重なりに対応）</li>
+          <li>$r^{-6}$ 項：長距離引力（ロンドン分散力）</li>
+          <li>最小値（ポテンシャルの底）は $r = 2^{1/6}\sigma \approx 1.122\,\sigma$ のとき $u = -\varepsilon$</li>
+        </ul>
+
+        <table>
+          <thead><tr><th>パラメータ</th><th>意味</th><th>アルゴン（Ar）の例</th></tr></thead>
+          <tbody>
+            <tr><td>$\varepsilon / k_\text{B}$</td><td>ポテンシャル深さ / ボルツマン定数</td><td>119.8 K</td></tr>
+            <tr><td>$\sigma$</td><td>粒子径（衝突直径）</td><td>3.405 Å</td></tr>
+            <tr><td>$m$</td><td>粒子質量</td><td>39.948 u (6.634 × 10⁻²⁶ kg)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 id="sec2-2">2.2 LJ 力</h3>
+        <p>
+          粒子 $j$ が粒子 $i$ に及ぼす力は，ポテンシャルの勾配から求められます：
+        </p>
+        <div class="eq-block">
+          $$\mathbf{f}_{ij} = -\frac{du_\text{LJ}}{dr}\hat{\mathbf{r}}_{ij} = \frac{48\varepsilon}{r^2}\left[\left(\frac{\sigma}{r}\right)^{12} - \frac{1}{2}\left(\frac{\sigma}{r}\right)^{6}\right]\mathbf{r}_{ij}$$
+          <div class="eq-label">（式 2.2）</div>
+        </div>
+        <p>
+          ここで $\mathbf{r}_{ij} = \mathbf{r}_i - \mathbf{r}_j$ は粒子 $j$ から粒子 $i$ へ向かうベクトル，$r = |\mathbf{r}_{ij}|$ です．
+          なお，$r^2$ で割った形（$\mathbf{r}_{ij}$ とそのまま掛ける）で表すことで，$\sqrt{}$ の計算を一度省けます．
+        </p>
+
+        <h3 id="sec2-3">2.3 無次元化（換算単位）</h3>
+        <p>
+          MD シミュレーションでは，$\varepsilon$，$\sigma$，$m$ を基本単位とする<strong>換算単位（reduced units）</strong>を使うのが一般的です．これにより数値が $O(1)$ となり，数値計算が安定します．
+        </p>
+        <table>
+          <thead><tr><th>物理量</th><th>換算単位</th><th>記号</th></tr></thead>
+          <tbody>
+            <tr><td>長さ</td><td>$\sigma$</td><td>$r^* = r / \sigma$</td></tr>
+            <tr><td>エネルギー</td><td>$\varepsilon$</td><td>$u^* = u / \varepsilon$</td></tr>
+            <tr><td>質量</td><td>$m$</td><td>$m^* = m / m = 1$</td></tr>
+            <tr><td>時間</td><td>$\tau = \sigma\sqrt{m/\varepsilon}$</td><td>$t^* = t / \tau$</td></tr>
+            <tr><td>温度</td><td>$\varepsilon / k_\text{B}$</td><td>$T^* = k_\text{B} T / \varepsilon$</td></tr>
+            <tr><td>圧力</td><td>$\varepsilon / \sigma^3$</td><td>$P^* = P\sigma^3 / \varepsilon$</td></tr>
+            <tr><td>力</td><td>$\varepsilon / \sigma$</td><td>$f^* = f\sigma / \varepsilon$</td></tr>
+          </tbody>
+        </table>
+        <p>換算単位での LJ ポテンシャルと力は次式となります（上付き $*$ を省略）：</p>
+        <div class="eq-block">
+          $$u(r) = 4\left[\frac{1}{r^{12}} - \frac{1}{r^{6}}\right]$$
+          $$\mathbf{f}_{ij} = \frac{48}{r^2}\left[\frac{1}{r^{12}} - \frac{1}{2r^{6}}\right]\mathbf{r}_{ij}$$
+          <div class="eq-label">（換算単位，式 2.3）</div>
+        </div>
+      </section>
+
+      <!-- ===== Section 3 ===== -->
+      <section class="section" id="sec3">
+        <h2>3. 運動方程式と数値積分</h2>
+
+        <h3 id="sec3-1">3.1 ニュートンの運動方程式</h3>
+        <p>
+          粒子 $i$ の位置 $\mathbf{r}_i$，速度 $\mathbf{v}_i$，質量 $m_i$ に対して，
+        </p>
+        <div class="eq-block">
+          $$m_i \ddot{\mathbf{r}}_i = \mathbf{F}_i = \sum_{j \neq i} \mathbf{f}_{ij}$$
+          <div class="eq-label">（式 3.1）</div>
+        </div>
+        <p>
+          $\mathbf{F}_i$ は粒子 $i$ に働く合力です．換算単位では $m_i = 1$ なので $\ddot{\mathbf{r}}_i = \mathbf{F}_i$ となります．
+        </p>
+
+        <h3 id="sec3-2">3.2 Velocity Verlet 法</h3>
+        <p>
+          時間ステップ $\Delta t$ での数値積分には <strong>Velocity Verlet 法</strong>が広く使われます．エネルギー保存性に優れ，時間反転対称性を持つシンプレクティック積分です．
+        </p>
+        <div class="eq-block">
+          $$\mathbf{r}_i(t+\Delta t) = \mathbf{r}_i(t) + \mathbf{v}_i(t)\,\Delta t + \frac{1}{2}\mathbf{a}_i(t)\,\Delta t^2$$
+          $$\mathbf{v}_i\!\left(t+\frac{\Delta t}{2}\right) = \mathbf{v}_i(t) + \frac{1}{2}\mathbf{a}_i(t)\,\Delta t$$
+          $$\mathbf{a}_i(t+\Delta t) = \frac{\mathbf{F}_i(t+\Delta t)}{m_i}$$
+          $$\mathbf{v}_i(t+\Delta t) = \mathbf{v}_i\!\left(t+\frac{\Delta t}{2}\right) + \frac{1}{2}\mathbf{a}_i(t+\Delta t)\,\Delta t$$
+          <div class="eq-label">（式 3.2）</div>
+        </div>
+        <div class="note-box">
+          <strong>時間刻み $\Delta t$ の選び方：</strong>
+          LJ 系の換算単位では $\Delta t^* \approx 0.001 \sim 0.005$ が一般的です．
+          小さすぎると計算コスト大，大きすぎるとエネルギーが保存しません．
+          目安として，系の特性時間（振動周期）の 1/100 以下を選びます．
+        </div>
+      </section>
+
+      <!-- ===== Section 4 ===== -->
+      <section class="section" id="sec4">
+        <h2>4. 周期境界条件（PBC）</h2>
+        <p>
+          実際の系は $10^{23}$ 個程度の分子を含みますが，MD では高々数千〜数百万個しか扱えません．
+          表面効果を除くために<strong>周期境界条件（Periodic Boundary Conditions, PBC）</strong>を用います．
+        </p>
+        <p>
+          一辺 $L$ の立方体シミュレーションボックスを仮定すると，ある粒子が端から出ると，反対側から入ってきます：
+        </p>
+        <div class="eq-block">
+          $$r_{i,\alpha} \leftarrow r_{i,\alpha} - L \cdot \text{round}\!\left(\frac{r_{i,\alpha}}{L}\right)$$
+          <div class="eq-label">（式 4.1，$\alpha = x, y, z$）</div>
+        </div>
+        <p>
+          粒子間距離の計算には<strong>最近接像規約（minimum image convention）</strong>を使います．
+          粒子 $j$ として，ボックスの周期像のうち最も近いものを選びます：
+        </p>
+        <div class="eq-block">
+          $$\delta r_\alpha = r_{i,\alpha} - r_{j,\alpha} - L \cdot \text{round}\!\left(\frac{r_{i,\alpha} - r_{j,\alpha}}{L}\right)$$
+          <div class="eq-label">（式 4.2）</div>
+        </div>
+      </section>
+
+      <!-- ===== Section 5 ===== -->
+      <section class="section" id="sec5">
+        <h2>5. カットオフ</h2>
+        <p>
+          $N$ 粒子系の全ペア数は $N(N-1)/2$ であり，$N=1000$ でも 50 万ペアに達します．
+          LJ ポテンシャルは距離とともに急速に減衰するため，<strong>カットオフ距離 $r_c$</strong> 以上の相互作用を無視します．
+        </p>
+        <div class="eq-block">
+          $$u(r) = \begin{cases} 4\left[\dfrac{1}{r^{12}} - \dfrac{1}{r^{6}}\right] - u(r_c) & (r \leq r_c) \\ 0 & (r > r_c) \end{cases}$$
+          <div class="eq-label">（式 5.1，シフトカットオフ）</div>
+        </div>
+        <p>
+          $u(r_c)$ を引くことでポテンシャルが $r_c$ で連続になります（シフト法）．
+          一般に $r_c = 2.5\,\sigma$（換算単位）が使われます．
+          カットオフを使うことで計算量を $O(N^2)$ から，セルリストやバーレット法を併用すれば $O(N)$ に近づけられます．
+        </p>
+        <div class="note-box">
+          <strong>注意：</strong>カットオフの影響（切断誤差）を補正するために，長距離補正（tail correction）を圧力・エネルギーに適用することがあります．
+          $r_c = 2.5\,\sigma$ のとき，LJ 系への切断誤差は比較的小さいです．
+        </div>
+      </section>
+
+      <!-- ===== Section 6 ===== -->
+      <section class="section" id="sec6">
+        <h2>6. 温度とエネルギー</h2>
+        <p>
+          <strong>運動エネルギー</strong>と<strong>温度</strong>はエネルギー等分配則より，
+        </p>
+        <div class="eq-block">
+          $$E_k = \frac{1}{2}\sum_{i=1}^{N} m_i |\mathbf{v}_i|^2 = \frac{3}{2} N k_\text{B} T$$
+          <div class="eq-label">（式 6.1）</div>
+        </div>
+        <p>換算単位（$m=1$, $k_\text{B}=1$）では：</p>
+        <div class="eq-block">
+          $$T^* = \frac{2 E_k}{3N}$$
+          <div class="eq-label">（式 6.2）</div>
+        </div>
+        <p>
+          <strong>ポテンシャルエネルギー</strong>：
+        </p>
+        <div class="eq-block">
+          $$E_p = \sum_{i &lt; j} u_\text{LJ}(r_{ij})$$
+          <div class="eq-label">（式 6.3）</div>
+        </div>
+        <p>
+          <strong>速度スケーリング法（温度制御）</strong>：
+          平衡化の初期段階では，各ステップで速度を目標温度 $T_\text{target}$ にリスケールします：
+        </p>
+        <div class="eq-block">
+          $$\lambda = \sqrt{\frac{T_\text{target}}{T_\text{current}}}，\quad \mathbf{v}_i \leftarrow \lambda\,\mathbf{v}_i$$
+          <div class="eq-label">（式 6.4）</div>
+        </div>
+      </section>
+
+      <!-- ===== Section 7 ===== -->
+      <section class="section" id="sec7">
+        <h2>7. MD アルゴリズムの流れ</h2>
+
+        <div class="algo-box">
+          <div class="algo-title">基本的な MD ループ（Velocity Verlet + PBC + カットオフ）</div>
+
+          <div class="algo-step">
+            <div class="algo-step-num">1</div>
+            <div class="algo-step-body"><strong>初期化：</strong>粒子をFCC格子などに配置，Maxwell–Boltzmann 分布に従い速度を初期化（重心速度を 0 に補正）</div>
+          </div>
+          <div class="algo-step">
+            <div class="algo-step-num">2</div>
+            <div class="algo-step-body"><strong>力の計算：</strong>全ペアに対してカットオフ内のみ LJ 力を計算，PBC（最近接像規約）を適用</div>
+          </div>
+          <div class="algo-step">
+            <div class="algo-step-num">3</div>
+            <div class="algo-step-body"><strong>位置の更新（Velocity Verlet step 1）：</strong>$\mathbf{r}(t+\Delta t)$ と $\mathbf{v}(t+\Delta t/2)$ を計算</div>
+          </div>
+          <div class="algo-step">
+            <div class="algo-step-num">4</div>
+            <div class="algo-step-body"><strong>PBC の適用：</strong>ボックス外に出た粒子をボックス内に折り返す</div>
+          </div>
+          <div class="algo-step">
+            <div class="algo-step-num">5</div>
+            <div class="algo-step-body"><strong>力の再計算：</strong>新しい位置で全ペアの力を計算</div>
+          </div>
+          <div class="algo-step">
+            <div class="algo-step-num">6</div>
+            <div class="algo-step-body"><strong>速度の完全更新（Velocity Verlet step 2）：</strong>$\mathbf{v}(t+\Delta t)$ を計算</div>
+          </div>
+          <div class="algo-step">
+            <div class="algo-step-num">7</div>
+            <div class="algo-step-body"><strong>物理量の計算：</strong>運動エネルギー・温度・ポテンシャルエネルギー・圧力などを集計</div>
+          </div>
+          <div class="algo-step">
+            <div class="algo-step-num">8</div>
+            <div class="algo-step-body"><strong>温度制御（平衡化フェーズのみ）：</strong>速度スケーリングにより温度を目標値に近づける</div>
+          </div>
+          <div class="algo-step">
+            <div class="algo-step-num">9</div>
+            <div class="algo-step-body"><strong>ステップ 3 に戻る</strong>（指定ステップ数まで繰り返す）</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Section 8 ===== -->
+      <section class="section" id="sec8">
+        <h2>8. Python プログラム例</h2>
+        <p>
+          以下は NumPy を使った LJ-MD シミュレーションの最小実装例です．
+          換算単位を使用し，3次元 $N$ 粒子系をシミュレートします．
+          教育目的の実装のため，力の計算は $O(N^2)$ の素直な実装です．
+        </p>
+
+        <div class="code-wrap">
+          <div class="code-title">
+            <span>md_lj.py — LJ ポテンシャル MD シミュレーション（換算単位）</span>
+            <button class="copy-btn" onclick="copyCode('code1')">コピー</button>
+          </div>
+          <pre id="code1"><span class="cm">"""
+md_lj.py  —  Lennard-Jones 分子動力学シミュレーション（換算単位）
+教育用実装：NumPy + Velocity Verlet + PBC + カットオフ
+"""</span>
+<span class="op">import</span> numpy <span class="op">as</span> np
+<span class="op">import</span> matplotlib.pyplot <span class="op">as</span> plt
+
+<span class="cm"># ─── パラメータ設定 ──────────────────────────────────────</span>
+<span class="nm">N</span>         = <span class="nm">108</span>          <span class="cm"># 粒子数（FCC: 4*n^3，n=3 → 108）</span>
+<span class="nm">rho</span>       = <span class="nm">0.8</span>          <span class="cm"># 数密度 ρ* = N/V  （換算単位）</span>
+<span class="nm">T_target</span>  = <span class="nm">1.0</span>          <span class="cm"># 目標温度 T*</span>
+<span class="nm">dt</span>        = <span class="nm">0.005</span>        <span class="cm"># 時間刻み Δt*</span>
+<span class="nm">n_equil</span>   = <span class="nm">2000</span>         <span class="cm"># 平衡化ステップ数</span>
+<span class="nm">n_prod</span>    = <span class="nm">5000</span>         <span class="cm"># 本計算ステップ数</span>
+<span class="nm">r_cut</span>     = <span class="nm">2.5</span>          <span class="cm"># カットオフ距離 rc*</span>
+<span class="nm">save_interval</span> = <span class="nm">100</span>      <span class="cm"># 物理量の記録間隔</span>
+
+<span class="cm"># ─── ボックスサイズ ──────────────────────────────────────</span>
+<span class="nm">L</span> = (N / rho) ** (<span class="nm">1.0</span> / <span class="nm">3.0</span>)
+
+<span class="cm"># ─── カットオフでのポテンシャル値（シフト用） ──────────────</span>
+<span class="nm">u_cut</span> = <span class="nm">4.0</span> * (r_cut**-<span class="nm">12</span> - r_cut**-<span class="nm">6</span>)
+
+
+<span class="kw">def</span> <span class="fn">init_fcc</span>(n_cell, L):
+    <span class="st">"""FCC 格子に粒子を配置する"""</span>
+    basis = np.array([
+        [<span class="nm">0.0</span>, <span class="nm">0.0</span>, <span class="nm">0.0</span>], [<span class="nm">0.5</span>, <span class="nm">0.5</span>, <span class="nm">0.0</span>],
+        [<span class="nm">0.5</span>, <span class="nm">0.0</span>, <span class="nm">0.5</span>], [<span class="nm">0.0</span>, <span class="nm">0.5</span>, <span class="nm">0.5</span>],
+    ])
+    a = L / n_cell
+    pos = []
+    <span class="kw">for</span> ix <span class="kw">in</span> range(n_cell):
+        <span class="kw">for</span> iy <span class="kw">in</span> range(n_cell):
+            <span class="kw">for</span> iz <span class="kw">in</span> range(n_cell):
+                <span class="kw">for</span> b <span class="kw">in</span> basis:
+                    pos.append((np.array([ix, iy, iz]) + b) * a)
+    <span class="kw">return</span> np.array(pos[:N])   <span class="cm"># N 粒子分だけ返す</span>
+
+
+<span class="kw">def</span> <span class="fn">init_velocities</span>(N, T):
+    <span class="st">"""Maxwell–Boltzmann 分布で速度初期化，重心速度を 0 に補正"""</span>
+    vel = np.random.randn(N, <span class="nm">3</span>)          <span class="cm"># 標準正規分布</span>
+    vel -= vel.mean(axis=<span class="nm">0</span>)               <span class="cm"># 重心速度を除去</span>
+    T_current = np.sum(vel**<span class="nm">2</span>) / (<span class="nm">3</span> * N)
+    vel *= np.sqrt(T / T_current)          <span class="cm"># 目標温度にスケール</span>
+    <span class="kw">return</span> vel
+
+
+<span class="kw">def</span> <span class="fn">apply_pbc</span>(pos, L):
+    <span class="st">"""周期境界条件：粒子をボックス内に折り返す"""</span>
+    pos -= L * np.floor(pos / L)
+    <span class="kw">return</span> pos
+
+
+<span class="kw">def</span> <span class="fn">calc_forces</span>(pos, L, r_cut, u_cut):
+    <span class="st">"""
+    LJ ポテンシャルによる力とポテンシャルエネルギーを計算
+    Returns: forces (N,3), potential_energy (float)
+    """</span>
+    N = <span class="fn">len</span>(pos)
+    forces = np.zeros((N, <span class="nm">3</span>))
+    pe = <span class="nm">0.0</span>
+    r_cut2 = r_cut**<span class="nm">2</span>
+
+    <span class="kw">for</span> i <span class="kw">in</span> range(N - <span class="nm">1</span>):
+        <span class="kw">for</span> j <span class="kw">in</span> range(i + <span class="nm">1</span>, N):
+            <span class="cm"># 最近接像規約</span>
+            dr = pos[i] - pos[j]
+            dr -= L * np.round(dr / L)
+            r2 = np.dot(dr, dr)
+
+            <span class="kw">if</span> r2 < r_cut2:
+                r2i  = <span class="nm">1.0</span> / r2
+                r6i  = r2i ** <span class="nm">3</span>
+                r12i = r6i ** <span class="nm">2</span>
+                <span class="cm"># ポテンシャルエネルギー（シフト付き）</span>
+                pe += <span class="nm">4.0</span> * (r12i - r6i) - u_cut
+                <span class="cm"># 力（f_ij = 48*(r12i - 0.5*r6i)*r2i * dr）</span>
+                f_mag = <span class="nm">48.0</span> * (<span class="nm">2.0</span> * r12i - r6i) * r2i
+                f_vec = f_mag * dr
+                forces[i] += f_vec
+                forces[j] -= f_vec    <span class="cm"># ニュートン第3法則</span>
+
+    <span class="kw">return</span> forces, pe
+
+
+<span class="kw">def</span> <span class="fn">calc_temperature</span>(vel):
+    <span class="st">"""運動エネルギーから温度を計算（換算単位）"""</span>
+    ke = <span class="nm">0.5</span> * np.sum(vel**<span class="nm">2</span>)
+    T = <span class="nm">2.0</span> * ke / (<span class="nm">3.0</span> * <span class="fn">len</span>(vel))
+    <span class="kw">return</span> ke, T
+
+
+<span class="cm"># ─── 初期化 ──────────────────────────────────────────────</span>
+np.random.seed(<span class="nm">42</span>)
+n_cell = <span class="fn">round</span>(N ** (<span class="nm">1.0</span>/<span class="nm">3.0</span>) / <span class="nm">4</span>**(<span class="nm">1.0</span>/<span class="nm">3.0</span>))   <span class="cm"># FCC セル数</span>
+pos = init_fcc(n_cell, L)
+vel = init_velocities(N, T_target)
+forces, pe = calc_forces(pos, L, r_cut, u_cut)
+
+<span class="cm"># ─── 記録用リスト ─────────────────────────────────────────</span>
+t_list, T_list, Ek_list, Ep_list, Etot_list = [], [], [], [], []
+
+<span class="kw">print</span>(<span class="st">f"N={N}, L={L:.3f}, rho={rho}, T_target={T_target}"</span>)
+<span class="kw">print</span>(<span class="st">f"dt={dt}, n_equil={n_equil}, n_prod={n_prod}"</span>)
+<span class="kw">print</span>(<span class="st">"Step        T*      Ek*     Ep*    Etot*"</span>)
+
+<span class="cm"># ─── 平衡化ループ ─────────────────────────────────────────</span>
+<span class="kw">for</span> step <span class="kw">in</span> range(n_equil):
+    <span class="cm"># Velocity Verlet step 1</span>
+    vel_half = vel + <span class="nm">0.5</span> * forces * dt
+    pos += vel_half * dt
+    pos = apply_pbc(pos, L)
+
+    <span class="cm"># 力の再計算</span>
+    forces, pe = calc_forces(pos, L, r_cut, u_cut)
+
+    <span class="cm"># Velocity Verlet step 2</span>
+    vel = vel_half + <span class="nm">0.5</span> * forces * dt
+
+    <span class="cm"># 速度スケーリング（温度制御）</span>
+    ke, T_cur = calc_temperature(vel)
+    vel *= np.sqrt(T_target / T_cur)
+
+    <span class="kw">if</span> step % save_interval == <span class="nm">0</span>:
+        ke, T_cur = calc_temperature(vel)
+        <span class="kw">print</span>(<span class="st">f"[EQ] {step:5d}  {T_cur:.4f}  {ke/N:.4f}  {pe/N:.4f}  {(ke+pe)/N:.4f}"</span>)
+
+<span class="cm"># ─── 本計算ループ ─────────────────────────────────────────</span>
+<span class="kw">for</span> step <span class="kw">in</span> range(n_prod):
+    <span class="cm"># Velocity Verlet step 1</span>
+    vel_half = vel + <span class="nm">0.5</span> * forces * dt
+    pos += vel_half * dt
+    pos = apply_pbc(pos, L)
+
+    <span class="cm"># 力の再計算</span>
+    forces, pe = calc_forces(pos, L, r_cut, u_cut)
+
+    <span class="cm"># Velocity Verlet step 2</span>
+    vel = vel_half + <span class="nm">0.5</span> * forces * dt
+
+    <span class="cm"># 物理量の記録</span>
+    <span class="kw">if</span> step % save_interval == <span class="nm">0</span>:
+        ke, T_cur = calc_temperature(vel)
+        etot = ke + pe
+        t_list.append(step * dt)
+        T_list.append(T_cur)
+        Ek_list.append(ke / N)
+        Ep_list.append(pe / N)
+        Etot_list.append(etot / N)
+        <span class="kw">print</span>(<span class="st">f"[MD] {step:5d}  {T_cur:.4f}  {ke/N:.4f}  {pe/N:.4f}  {etot/N:.4f}"</span>)
+
+<span class="cm"># ─── 結果のプロット ───────────────────────────────────────</span>
+fig, axes = plt.subplots(<span class="nm">3</span>, <span class="nm">1</span>, figsize=(<span class="nm">8</span>, <span class="nm">9</span>), sharex=<span class="kw">True</span>)
+
+axes[<span class="nm">0</span>].plot(t_list, T_list, color=<span class="st">"tab:red"</span>)
+axes[<span class="nm">0</span>].axhline(T_target, ls=<span class="st">"--"</span>, color=<span class="st">"gray"</span>)
+axes[<span class="nm">0</span>].set_ylabel(<span class="st">"Temperature T*"</span>)
+
+axes[<span class="nm">1</span>].plot(t_list, Ep_list, label=<span class="st">"Potential"</span>, color=<span class="st">"tab:blue"</span>)
+axes[<span class="nm">1</span>].plot(t_list, Ek_list, label=<span class="st">"Kinetic"</span>, color=<span class="st">"tab:orange"</span>)
+axes[<span class="nm">1</span>].legend()
+axes[<span class="nm">1</span>].set_ylabel(<span class="st">"Energy per particle E*/N"</span>)
+
+axes[<span class="nm">2</span>].plot(t_list, Etot_list, color=<span class="st">"tab:green"</span>)
+axes[<span class="nm">2</span>].set_ylabel(<span class="st">"Total Energy E*_tot/N"</span>)
+axes[<span class="nm">2</span>].set_xlabel(<span class="st">"Time t*"</span>)
+
+<span class="kw">for</span> ax <span class="kw">in</span> axes:
+    ax.grid(<span class="kw">True</span>, alpha=<span class="nm">0.3</span>)
+
+fig.suptitle(<span class="st">f"LJ-MD: N={N}, ρ*={rho}, T*_target={T_target}"</span>)
+plt.tight_layout()
+plt.savefig(<span class="st">"md_lj_result.png"</span>, dpi=<span class="nm">150</span>)
+plt.show()
+<span class="kw">print</span>(<span class="st">"Done. → md_lj_result.png"</span>)</pre>
+        </div>
+
+        <h3>実行方法</h3>
+        <div class="code-wrap">
+          <div class="code-title">
+            <span>Terminal</span>
+          </div>
+          <pre><span class="cm"># 必要なライブラリ（未インストールの場合）</span>
+pip install numpy matplotlib
+
+<span class="cm"># 実行</span>
+python md_lj.py</pre>
+        </div>
+
+        <div class="note-box">
+          <strong>計算時間の目安：</strong>
+          $N=108$, ステップ数 7000 で，素の Python ループ（$O(N^2)$）では数分〜十数分かかります．
+          高速化したい場合は，力の計算ループを <code>numba</code> の <code>@jit</code> で JIT コンパイルするか，
+          NumPy のブロードキャスト演算（全ペアを一括計算）に書き換えると 10〜100 倍高速になります．
+        </div>
+
+        <h3>NumPy ベクトル化版：力の計算（高速版）</h3>
+        <p>上のコードの <code>calc_forces</code> 関数を以下に置き換えると NumPy の配列演算で高速化できます：</p>
+        <div class="code-wrap">
+          <div class="code-title">
+            <span>NumPy ベクトル化版 calc_forces（O(N²) だが高速）</span>
+            <button class="copy-btn" onclick="copyCode('code2')">コピー</button>
+          </div>
+          <pre id="code2"><span class="kw">def</span> <span class="fn">calc_forces</span>(pos, L, r_cut, u_cut):
+    <span class="st">"""NumPy ベクトル化版：全ペアを一括計算"""</span>
+    N = <span class="fn">len</span>(pos)
+    <span class="cm"># 全ペアの変位ベクトル (N, N, 3)</span>
+    dr = pos[:, np.newaxis, :] - pos[np.newaxis, :, :]
+    <span class="cm"># 最近接像規約</span>
+    dr -= L * np.round(dr / L)
+    <span class="cm"># 距離の二乗 (N, N)</span>
+    r2 = np.sum(dr**<span class="nm">2</span>, axis=-<span class="nm">1</span>)
+    np.fill_diagonal(r2, np.inf)   <span class="cm"># 自己相互作用を除外</span>
+
+    mask = r2 < r_cut**<span class="nm">2</span>
+    r2_masked = np.where(mask, r2, <span class="nm">1.0</span>)   <span class="cm"># 0除算防止</span>
+    r2i  = <span class="nm">1.0</span> / r2_masked
+    r6i  = r2i ** <span class="nm">3</span>
+    r12i = r6i ** <span class="nm">2</span>
+
+    <span class="cm"># ポテンシャルエネルギー（上三角のみ和を取って二重計算を避ける）</span>
+    ij_mask = mask & (np.arange(N)[:, <span class="kw">None</span>] < np.arange(N)[<span class="kw">None</span>, :])
+    pe = np.sum((<span class="nm">4.0</span> * (r12i - r6i) - u_cut) * ij_mask)
+
+    <span class="cm"># 力 f_ij = 48*(2*r12i - r6i)*r2i * dr  (antisymmetric)</span>
+    f_scalar = np.where(mask, <span class="nm">48.0</span> * (<span class="nm">2.0</span> * r12i - r6i) * r2i, <span class="nm">0.0</span>)
+    forces = np.sum(f_scalar[:, :, np.newaxis] * dr, axis=<span class="nm">1</span>)
+
+    <span class="kw">return</span> forces, pe</pre>
+        </div>
+      </section>
+
+      <!-- ===== Section 9 ===== -->
+      <section class="section" id="sec9">
+        <h2>9. 参考文献</h2>
+        <ol class="decimal">
+          <li>D. Frenkel and B. Smit, <em>Understanding Molecular Simulation: From Algorithms to Applications</em>, 2nd ed., Academic Press (2002).</li>
+          <li>M. P. Allen and D. J. Tildesley, <em>Computer Simulation of Liquids</em>, 2nd ed., Oxford University Press (2017).</li>
+          <li>J. M. Haile, <em>Molecular Dynamics Simulation: Elementary Methods</em>, Wiley-Interscience (1992).</li>
+          <li>池田進, <em>分子動力学シミュレーションの基礎</em>, 裳華房 (2003).</li>
+          <li>泰岡顕治, <em>分子シミュレーション工学</em>, 養賢堂 (2013).</li>
+        </ol>
+      </section>
+
+      <div class="back-link">
+        <a href="index.html">← メンバーメニューに戻る</a>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function copyCode(id) {
+      const el = document.getElementById(id);
+      const text = el.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = el.previousElementSibling
+                      ? el.parentElement.querySelector('.copy-btn') : null;
+        if (btn) { btn.textContent = "コピー済み"; setTimeout(() => btn.textContent = "コピー", 2000); }
+      });
+    }
+  </script>
+</body>
+</html>

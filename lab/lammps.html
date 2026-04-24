@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>LAMMPS チュートリアル | 研究室メンバー専用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">熱流体力学研究室 <span>メンバー専用</span></div>
+    <div class="header-nav">
+      <a href="index.html">← メニュー</a>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <nav class="toc">
+        <h2>目次</h2>
+        <ul>
+          <li><a href="#sec1">1. LAMMPS とは</a></li>
+          <li><a href="#sec2">2. インストール</a></li>
+          <li><a href="#sec3">3. 入力ファイルの構成</a></li>
+          <li><a href="#sec4">4. LJ 系のチュートリアル</a></li>
+          <li><a href="#sec5">5. 水のシミュレーション（SPC/E）</a></li>
+          <li><a href="#sec6">6. 出力ファイルと解析</a></li>
+          <li><a href="#sec7">7. 並列計算</a></li>
+          <li><a href="#sec8">8. よく使うコマンド一覧</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="article-header">
+        <h1>LAMMPS チュートリアル</h1>
+        <p class="article-meta">熱流体力学研究室 内部資料 | 2026年4月</p>
+        <div class="article-tags"><span class="tag">LAMMPS</span><span class="tag">MD</span><span class="tag">古典MD</span></div>
+      </div>
+
+      <section class="section" id="sec1">
+        <h2>1. LAMMPS とは</h2>
+        <p>
+          <strong>LAMMPS（Large-scale Atomic/Molecular Massively Parallel Simulator）</strong>は
+          Sandia 国立研究所が開発したオープンソースの古典 MD シミュレーションソフトウェアです．
+          多様な力場・アンサンブル・解析手法をサポートし，大規模並列計算（MPI）に対応しています．
+        </p>
+        <table>
+          <thead><tr><th>特徴</th><th>内容</th></tr></thead>
+          <tbody>
+            <tr><td>ライセンス</td><td>GPL（オープンソース）</td></tr>
+            <tr><td>並列化</td><td>MPI + OpenMP + GPU (KOKKOS)</td></tr>
+            <tr><td>対応力場</td><td>LJ, EAM, ReaxFF, MACE, SNAP, GAP など多数</td></tr>
+            <tr><td>公式ドキュメント</td><td>docs.lammps.org</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec2">
+        <h2>2. インストール</h2>
+        <h3>Ubuntu (WSL2) へのインストール</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>Ubuntu (WSL2)</span><button class="copy-btn" onclick="copyCode('lmp_inst')">コピー</button></div>
+          <pre id="lmp_inst"><span class="cm"># conda からインストール（簡単）</span>
+conda install -c conda-forge lammps
+
+<span class="cm"># または apt から（バージョンが古い場合あり）</span>
+sudo apt install lammps
+
+<span class="cm"># 動作確認</span>
+lammps -h</pre>
+        </div>
+        <div class="note-box">
+          <strong>ソースビルド：</strong>MACE・KOKKOS（GPU）など特定パッケージが必要な場合はソースからのビルドが必要です．
+          公式ドキュメントの "Build LAMMPS" セクションを参照してください．
+        </div>
+      </section>
+
+      <section class="section" id="sec3">
+        <h2>3. 入力ファイルの構成</h2>
+        <p>LAMMPS の入力ファイル（<code>in.xxx</code>）はコマンドを上から順番に実行します．</p>
+        <div class="file-tree">
+<span class="dir">simulation/</span>
+├── <span class="file">in.lj</span>         <span class="desc">← メイン入力ファイル</span>
+├── <span class="file">data.lj</span>       <span class="desc">← 原子座標・結合情報</span>
+├── <span class="file">log.lammps</span>    <span class="desc">← 実行ログ（自動生成）</span>
+├── <span class="file">dump.lammpstrj</span> <span class="desc">← トラジェクトリ（dump コマンドで出力）</span>
+└── <span class="file">thermo.dat</span>    <span class="desc">← 熱力学量（fix print で出力）</span>
+        </div>
+
+        <h3>入力ファイルのセクション構成</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>in.lj — 入力ファイルの基本構造</span></div>
+          <pre><span class="cm"># ── 1. 初期設定 ──────────────────────────────────</span>
+units        lj          <span class="cm"># 換算単位</span>
+dimension    3
+atom_style   atomic
+
+<span class="cm"># ── 2. シミュレーションボックスと原子配置 ──────────</span>
+lattice      fcc 0.8442  <span class="cm"># FCC, 密度 ρ*=0.8442</span>
+region       box block 0 5 0 5 0 5
+create_box   1 box
+create_atoms 1 box
+
+<span class="cm"># ── 3. 力場の設定 ────────────────────────────────</span>
+pair_style   lj/cut 2.5
+pair_coeff   1 1 1.0 1.0 2.5   <span class="cm"># ε σ rc (換算単位)</span>
+
+<span class="cm"># ── 4. 速度の初期化 ──────────────────────────────</span>
+velocity     all create 1.44 87287 loop geom
+
+<span class="cm"># ── 5. アンサンブルと時間積分 ────────────────────</span>
+fix          1 all nve
+fix          2 all temp/rescale 100 1.44 1.44 0.02 1.0
+
+<span class="cm"># ── 6. 出力設定 ──────────────────────────────────</span>
+thermo_style custom step temp pe ke etotal press
+thermo       100
+dump         1 all atom 500 dump.lammpstrj
+
+<span class="cm"># ── 7. 実行 ──────────────────────────────────────</span>
+timestep     0.005
+run          10000</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec4">
+        <h2>4. LJ 系のチュートリアル（完全版）</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>in.lj_full — LJ 液体（NVT, 平衡化 + 本計算）</span><button class="copy-btn" onclick="copyCode('lmp_lj')">コピー</button></div>
+          <pre id="lmp_lj"><span class="cm"># LJ 液体シミュレーション（換算単位）
+# 条件: N=500, ρ*=0.8, T*=1.0</span>
+
+units        lj
+atom_style   atomic
+boundary     p p p     <span class="cm"># 全方向周期境界</span>
+
+<span class="cm"># 初期構造</span>
+lattice      fcc 0.8
+region       simbox block 0 5 0 5 0 5
+create_box   1 simbox
+create_atoms 1 box
+
+mass         1 1.0
+
+<span class="cm"># LJ ポテンシャル（rc=2.5σ, シフト補正あり）</span>
+pair_style   lj/cut 2.5
+pair_coeff   1 1 1.0 1.0
+pair_modify  shift yes   <span class="cm"># rc でポテンシャルをシフト</span>
+
+<span class="cm"># 速度初期化 (T*=1.0)</span>
+velocity     all create 1.0 12345 dist gaussian
+
+<span class="cm"># ── 平衡化フェーズ (NVT) ─────────────────────────</span>
+fix          NVT all nvt temp 1.0 1.0 0.5
+thermo_style custom step temp pe ke etotal press vol
+thermo       200
+timestep     0.005
+run          20000
+
+<span class="cm"># 平衡化後に速度を再初期化</span>
+velocity     all scale 1.0
+
+<span class="cm"># ── 本計算フェーズ (NVE) ─────────────────────────</span>
+unfix        NVT
+fix          NVE all nve
+dump         trj all custom 100 dump.lammpstrj id type x y z vx vy vz
+dump_modify  trj sort id
+thermo       100
+run          50000
+
+write_data   final.data   <span class="cm"># 最終構造を保存</span></pre>
+        </div>
+
+        <h3>実行コマンド</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>Terminal</span></div>
+          <pre><span class="cm"># シリアル実行</span>
+lammps -in in.lj_full
+
+<span class="cm"># MPI 並列実行（4コア）</span>
+mpirun -np 4 lammps -in in.lj_full</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec5">
+        <h2>5. 水のシミュレーション（SPC/E モデル）</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>in.water_spce — SPC/E 水モデル</span><button class="copy-btn" onclick="copyCode('lmp_water')">コピー</button></div>
+          <pre id="lmp_water">units        real          <span class="cm"># Å, kcal/mol, fs</span>
+atom_style   full
+boundary     p p p
+
+read_data    water.data    <span class="cm"># 座標・結合情報を外部ファイルから読み込み</span>
+
+<span class="cm"># SPC/E 力場</span>
+pair_style   lj/cut/coul/long 9.0 9.0
+pair_coeff   1 1 0.1553 3.166    <span class="cm"># O-O: ε(kcal/mol), σ(Å)</span>
+pair_coeff   1 2 0.0    0.0      <span class="cm"># O-H</span>
+pair_coeff   2 2 0.0    0.0      <span class="cm"># H-H</span>
+
+kspace_style pppm 1.0e-4  <span class="cm"># 長距離静電気（PPPM）</span>
+kspace_modify mesh 32 32 32 order 4
+
+<span class="cm"># 結合・角度（SHAKE で O-H 距離・H-O-H 角度を拘束）</span>
+bond_style   harmonic
+angle_style  harmonic
+fix          SHAKE all shake 1e-4 20 0 b 1 a 1
+
+<span class="cm"># NVT (T=300K)</span>
+velocity     all create 300.0 4928459
+fix          NVT all nvt temp 300.0 300.0 100.0
+timestep     2.0          <span class="cm"># [fs] SHAKE 使用で 2 fs 可</span>
+thermo       500
+run          500000        <span class="cm"># 1 ns</span></pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec6">
+        <h2>6. 出力ファイルと解析</h2>
+        <h3>OVITO による可視化</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>Terminal — OVITO で dump ファイルを開く</span></div>
+          <pre>ovito dump.lammpstrj    <span class="cm"># GUI で可視化</span></pre>
+        </div>
+
+        <h3>Python による解析（MSD, RDF）</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>analyze_lammps.py</span><button class="copy-btn" onclick="copyCode('lmp_anal')">コピー</button></div>
+          <pre id="lmp_anal"><span class="op">import</span> numpy <span class="op">as</span> np
+<span class="op">from</span> ase.io.lammpsrun <span class="op">import</span> read_lammps_dump_text
+
+<span class="cm"># トラジェクトリの読み込み</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"dump.lammpstrj"</span>) <span class="kw">as</span> f:
+    traj = list(read_lammps_dump_text(f, index=slice(<span class="nm">None</span>)))
+
+<span class="kw">print</span>(<span class="st">f"フレーム数: {len(traj)}, 原子数: {len(traj[0])}"</span>)
+
+<span class="cm"># MSD の計算</span>
+pos0 = traj[<span class="nm">0</span>].get_positions()
+msd = [np.mean(np.sum((t.get_positions() - pos0)**<span class="nm">2</span>, axis=<span class="nm">1</span>))
+       <span class="kw">for</span> t <span class="kw">in</span> traj]
+
+<span class="op">import</span> matplotlib.pyplot <span class="op">as</span> plt
+plt.plot(msd)
+plt.xlabel(<span class="st">"Frame"</span>); plt.ylabel(<span class="st">"MSD (Å²)"</span>)
+plt.savefig(<span class="st">"msd.png"</span>, dpi=<span class="nm">150</span>)
+plt.show()</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec7">
+        <h2>7. 並列計算</h2>
+        <table>
+          <thead><tr><th>方法</th><th>コマンド</th><th>適した用途</th></tr></thead>
+          <tbody>
+            <tr><td>MPI</td><td><code>mpirun -np N lammps -in in.xxx</code></td><td>大規模系（空間分割）</td></tr>
+            <tr><td>OpenMP</td><td><code>lammps -sf omp -pk omp 4 -in in.xxx</code></td><td>小規模・1ノード内</td></tr>
+            <tr><td>GPU (KOKKOS)</td><td><code>lammps -pk kokkos -sf kk -in in.xxx</code></td><td>GPU サーバー</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec8">
+        <h2>8. よく使うコマンド一覧</h2>
+        <table>
+          <thead><tr><th>コマンド</th><th>説明</th></tr></thead>
+          <tbody>
+            <tr><td><code>fix ID all nve</code></td><td>NVE アンサンブル（エネルギー保存）</td></tr>
+            <tr><td><code>fix ID all nvt temp T T tau</code></td><td>NVT（Nosé-Hoover）</td></tr>
+            <tr><td><code>fix ID all npt temp T T tau iso P P tau2</code></td><td>NPT アンサンブル</td></tr>
+            <tr><td><code>compute ID all rdf Nbin cutoff</code></td><td>動径分布関数 (RDF)</td></tr>
+            <tr><td><code>compute ID all msd</code></td><td>平均二乗変位 (MSD)</td></tr>
+            <tr><td><code>compute ID all vacf</code></td><td>速度自己相関関数 (VACF)</td></tr>
+            <tr><td><code>minimize etol ftol maxiter</code></td><td>エネルギー最小化</td></tr>
+            <tr><td><code>write_data file</code></td><td>構造をデータファイルに保存</td></tr>
+            <tr><td><code>write_restart file</code></td><td>リスタートファイル保存</td></tr>
+            <tr><td><code>read_restart file</code></td><td>リスタートファイルから再開</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="back-link"><a href="index.html">← メンバーメニューに戻る</a></div>
+    </main>
+  </div>
+  <script>
+    function copyCode(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const btn = el.previousElementSibling.querySelector('.copy-btn');
+        if (btn) { btn.textContent = "コピー済み"; setTimeout(() => btn.textContent = "コピー", 2000); }
+      });
+    }
+  </script>
+</body>
+</html>

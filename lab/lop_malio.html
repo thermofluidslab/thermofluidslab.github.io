@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>局所秩序変数 / MALIO | 研究室メンバー専用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">熱流体力学研究室 <span>メンバー専用</span></div>
+    <div class="header-nav">
+      <a href="index.html">← メニュー</a>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <nav class="toc">
+        <h2>目次</h2>
+        <ul>
+          <li><a href="#sec1">1. 局所秩序変数とは</a></li>
+          <li><a href="#sec2">2. 代表的な LOP</a></li>
+          <li><a href="#sec3">3. MALIO の概要</a></li>
+          <li><a href="#sec4">4. MALIO の使い方</a></li>
+          <li><a href="#sec5">5. 研究室での応用例</a></li>
+          <li><a href="#sec6">6. Python での LOP 計算例</a></li>
+          <li><a href="#sec7">7. 参考文献</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="article-header">
+        <h1>局所秩序変数（LOP）と MALIO</h1>
+        <p class="article-meta">熱流体力学研究室 内部資料 | 2026年4月</p>
+        <div class="article-tags">
+          <span class="tag">LOP</span><span class="tag">MALIO</span><span class="tag">分子シミュレーション</span><span class="tag">ML</span>
+        </div>
+      </div>
+
+      <section class="section" id="sec1">
+        <h2>1. 局所秩序変数（LOP）とは</h2>
+        <p>
+          <strong>局所秩序変数（Local Order Parameter, LOP）</strong>は，
+          MD シミュレーションの各原子・分子の局所的な幾何学的配置を定量化するスカラー量です．
+          各粒子に対して，その近傍粒子との相対的な位置・角度関係から1つの数値が計算されます．
+        </p>
+        <p>
+          LOP の主な用途：
+        </p>
+        <ul class="disc">
+          <li><strong>相の識別</strong>：液体・結晶・非晶質・気体を自動的に分類</li>
+          <li><strong>相変化の追跡</strong>：融解・凝固・結晶化の過程をリアルタイムで可視化</li>
+          <li><strong>核生成の検出</strong>：臨界核の出現と成長を捉える</li>
+          <li><strong>構造特性評価</strong>：積層欠陥，粒界，転位などの欠陥構造を特定</li>
+        </ul>
+        <div class="point-box">
+          <strong>なぜ LOP が必要か：</strong>
+          MD トラジェクトリには膨大な原子座標が記録されていますが，
+          人間の目で「どこが結晶でどこが液体か」を判断することは難しいです．
+          LOP は各原子に数値ラベルを付けることで，自動的に相を分類・可視化できます．
+        </div>
+      </section>
+
+      <section class="section" id="sec2">
+        <h2>2. 代表的な LOP</h2>
+
+        <h3>ボンド秩序変数（Steinhardt パラメータ）</h3>
+        <p>
+          最も広く使われる LOP の一つです．球面調和関数を使って近傍粒子との結合ベクトルの角度分布を特徴付けます：
+        </p>
+        <div class="eq-block">
+          $$q_l(i) = \sqrt{\frac{4\pi}{2l+1}\sum_{m=-l}^{l}\left|\bar{q}_{lm}(i)\right|^2}$$
+        </div>
+        <p>ここで</p>
+        <div class="eq-block">
+          $$\bar{q}_{lm}(i) = \frac{1}{N_b(i)}\sum_{j=1}^{N_b(i)} Y_l^m(\hat{\mathbf{r}}_{ij})$$
+        </div>
+        <p>
+          $Y_l^m$ は球面調和関数，$N_b(i)$ は粒子 $i$ の近傍数，$\hat{\mathbf{r}}_{ij}$ は結合ベクトルの単位ベクトル．
+        </p>
+        <table>
+          <thead><tr><th>$l$ の値</th><th>感度のある構造</th></tr></thead>
+          <tbody>
+            <tr><td>$q_4$</td><td>FCC / HCP / 液体の区別</td></tr>
+            <tr><td>$q_6$</td><td>FCC / BCC / 液体 / 結晶一般</td></tr>
+            <tr><td>$q_3$</td><td>正四面体配位（氷・ダイヤモンド構造）</td></tr>
+          </tbody>
+        </table>
+
+        <h3>CHILL+ パラメータ（氷・ハイドレート向け）</h3>
+        <p>
+          氷の多形・クラスレートハイドレート・液体水を区別するために最適化された LOP です．
+          近傍間の結合のコサイン相関を用いて，氷 Ih, Ic，クラスレートハイドレート，液体水を分類できます．
+        </p>
+
+        <h3>CNA（Common Neighbor Analysis）</h3>
+        <p>
+          2粒子の共有近傍数・結合数・最長鎖長を指標として FCC / HCP / BCC / ICO を高精度に分類します．
+          OVITO や LAMMPS に組み込まれています．
+        </p>
+      </section>
+
+      <section class="section" id="sec3">
+        <h2>3. MALIO の概要</h2>
+        <p>
+          <strong>MALIO（MAchine Learning-assisted Investigation of local Order parameters）</strong>は，
+          高橋和義（産業技術総合研究所）が開発した，
+          MD トラジェクトリから<strong>最適な LOP を自動探索するフレームワーク</strong>です．
+        </p>
+        <p>
+          従来は研究者が手動で LOP の種類（$q_l$, CNA 等）とパラメータを選んでいましたが，
+          MALIO では機械学習（分類器）とパラメータ空間の探索を組み合わせて，
+          指定した構造を最もよく識別できる LOP とそのパラメータを自動的に見つけます．
+        </p>
+
+        <h3>MALIO のアルゴリズム概要</h3>
+        <div class="step-list">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-body"><strong>教師データの準備：</strong>識別したい相（例：液体・結晶）のスナップショットを用意し，各原子に相ラベルを付与</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-body"><strong>LOP 候補の生成：</strong>多数の LOP タイプ（$q_l$, $w_l$, 角度分布など）とパラメータ（$l$, カットオフ距離等）を自動的にスキャン</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-body"><strong>分類性能の評価：</strong>各 LOP について分類器（線形 SVM または決定木）で識別精度を評価</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-body"><strong>最適 LOP の出力：</strong>識別精度が最高の LOP とそのパラメータを推奨として出力</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">5</div>
+            <div class="step-body"><strong>全トラジェクトリへの適用：</strong>見つかった LOP を使って全時系列を解析・可視化</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="sec4">
+        <h2>4. MALIO の使い方</h2>
+        <p>
+          MALIO は Python パッケージとして提供されています．インストールと基本的な使い方：
+        </p>
+        <div class="code-wrap">
+          <div class="code-title"><span>Terminal — インストール</span></div>
+          <pre><span class="cm"># GitHub からインストール</span>
+pip install git+https://github.com/KZ-Takahashi/malio.git
+
+<span class="cm"># または conda から（準備中）</span>
+conda install -c conda-forge malio</pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-title"><span>malio_example.py — 基本的な使い方</span><button class="copy-btn" onclick="copyCode('malio1')">コピー</button></div>
+          <pre id="malio1"><span class="op">import</span> malio
+<span class="op">from</span> ase.io <span class="op">import</span> read
+
+<span class="cm"># ── 1. 教師データの準備 ─────────────────────────────────</span>
+<span class="cm"># 液体と結晶の参照スナップショット</span>
+liquid_frames = read(<span class="st">"liquid.xyz"</span>, index=<span class="st">":"</span>)
+crystal_frames = read(<span class="st">"crystal.xyz"</span>, index=<span class="st">":"</span>)
+
+<span class="cm"># ── 2. MALIO でLOP を探索 ────────────────────────────────</span>
+searcher = malio.LOPSearcher(
+    cutoff_range=(<span class="nm">3.0</span>, <span class="nm">7.0</span>),   <span class="cm"># カットオフ探索範囲 [Å]</span>
+    l_range=(<span class="nm">2</span>, <span class="nm">8</span>),              <span class="cm"># 球面調和関数の次数</span>
+    classifier=<span class="st">"linear_svm"</span>,   <span class="cm"># 分類器の種類</span>
+)
+
+results = searcher.fit(
+    reference_sets={
+        <span class="st">"liquid"</span>: liquid_frames,
+        <span class="st">"crystal"</span>: crystal_frames,
+    }
+)
+
+<span class="cm"># ── 3. 結果の確認 ─────────────────────────────────────</span>
+best_lop = results.best_lop
+<span class="kw">print</span>(<span class="st">f"最適LOP: {best_lop.name}, l={best_lop.l}, rc={best_lop.cutoff:.2f} Å"</span>)
+<span class="kw">print</span>(<span class="st">f"識別精度: {results.best_score:.4f}"</span>)
+results.plot_ranking()   <span class="cm"># 上位 LOP のランキングをプロット</span>
+
+<span class="cm"># ── 4. 全トラジェクトリへの適用 ───────────────────────</span>
+traj = read(<span class="st">"md.xyz"</span>, index=<span class="st">":"</span>)
+lop_values = best_lop.compute(traj)   <span class="cm"># 各原子・各フレームの LOP 値</span>
+
+<span class="cm"># フレームごとの相分率を計算</span>
+labels = best_lop.classify(traj)      <span class="cm"># 0=liquid, 1=crystal</span>
+crystal_fraction = labels.mean(axis=<span class="nm">1</span>)
+<span class="kw">print</span>(<span class="st">"結晶相分率の時系列:"</span>, crystal_fraction)</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec5">
+        <h2>5. 研究室での応用例</h2>
+
+        <h3>ジブロックコポリマーのミクロ相分離構造の識別（2024）</h3>
+        <p>
+          高野・平塚・高橋（Scientific Reports, 2024）では，MALIO を用いて
+          ジブロックコポリマーのラメラ・ジャイロイド・シリンダーなどのミクロ相分離構造を
+          MD トラジェクトリから自動的に識別する LOP を探索しました．
+          従来の構造因子や密度場解析より高感度・高速に相を識別できることを示しました．
+        </p>
+
+        <h3>氷・クラスレートハイドレートの水ネットワーク識別（2023）</h3>
+        <p>
+          高橋・平塚（Crystal Growth &amp; Design, 2023）では，
+          氷（Ih・Ic）とシクロプロパンクラスレートハイドレートの水分子ネットワークを
+          識別する最適 LOP を MALIO で探索しました．
+          $q_3$ と独自の角度相関 LOP の組み合わせが最も効果的であることが分かりました．
+        </p>
+
+        <h3>結晶性高分子のラメラ構造識別（2022）</h3>
+        <p>
+          高野・平塚ら（JCP, 2022）では，ポリエチレンの MD トラジェクトリにおいて
+          結晶ラメラと非晶質部分を識別する LOP を MALIO で探索．
+          六方格子構造に感度を持つ $q_6$ の変種が最適であることを示しました．
+        </p>
+      </section>
+
+      <section class="section" id="sec6">
+        <h2>6. Python での LOP 計算例（OVITO 使用）</h2>
+        <p>
+          OVITO の Python API を使うと，ボンド秩序変数や CNA を簡単に計算できます：
+        </p>
+        <div class="code-wrap">
+          <div class="code-title"><span>lop_ovito.py — OVITO で $q_6$ を計算・可視化</span><button class="copy-btn" onclick="copyCode('lop1')">コピー</button></div>
+          <pre id="lop1"><span class="op">import</span> ovito
+<span class="op">from</span> ovito.io <span class="op">import</span> import_file
+<span class="op">from</span> ovito.modifiers <span class="op">import</span> BondAngleAnalysisModifier, PolyhedralTemplateMatchingModifier
+<span class="op">from</span> ovito.modifiers <span class="op">import</span> BondOrderParameterModifier
+<span class="op">import</span> numpy <span class="op">as</span> np
+<span class="op">import</span> matplotlib.pyplot <span class="op">as</span> plt
+
+<span class="cm"># トラジェクトリの読み込み</span>
+pipeline = import_file(<span class="st">"dump.lammpstrj"</span>)
+
+<span class="cm"># ボンド秩序変数 q6 の計算</span>
+pipeline.modifiers.append(
+    BondOrderParameterModifier(
+        l=<span class="nm">6</span>,
+        cutoff=<span class="nm">3.8</span>,           <span class="cm"># カットオフ [Å]</span>
+        compute_global=<span class="kw">True</span>,
+    )
+)
+
+<span class="cm"># Polyhedral Template Matching（FCC/HCP/BCC の自動識別）</span>
+ptm = PolyhedralTemplateMatchingModifier()
+pipeline.modifiers.append(ptm)
+
+<span class="cm"># 全フレームを処理</span>
+q6_mean_list = []
+<span class="kw">for</span> frame <span class="kw">in</span> range(pipeline.source.num_frames):
+    data = pipeline.compute(frame)
+    q6 = data.particles[<span class="st">"q6"</span>]
+    q6_mean_list.append(np.mean(q6))
+
+plt.plot(q6_mean_list)
+plt.xlabel(<span class="st">"Frame"</span>)
+plt.ylabel(<span class="st">"Mean q6"</span>)
+plt.title(<span class="st">"Crystallization tracking via q6"</span>)
+plt.savefig(<span class="st">"q6_tracking.png"</span>, dpi=<span class="nm">150</span>)
+plt.show()</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec7">
+        <h2>7. 参考文献</h2>
+        <ol class="decimal">
+          <li>F. Takano, M. Hiratsuka, K.Z. Takahashi, "Distinguish microphase-separated structures of diblock copolymers using local order parameters," Scientific Reports, Vol. 14, 23908 (2024). https://doi.org/10.1038/s41598-024-74525-y</li>
+          <li>K.Z. Takahashi, M. Hiratsuka, "Local Order Parameters Classifying Water Networks of Ice and Cyclopropane Clathrate Hydrates," Crystal Growth &amp; Design, Vol. 23, No. 7, pp. 4815–4824 (2023). https://doi.org/10.1021/acs.cgd.2c01519</li>
+          <li>F. Takano, M. Hiratsuka, T. Aoyagi, K.Z. Takahashi, "Local order parameter that distinguishes crystalline and amorphous portions in polymer crystal lamellae," Journal of Chemical Physics, Vol. 157, No. 17, 174507 (2022). https://doi.org/10.1063/5.0121669</li>
+          <li>P.J. Steinhardt, D.R. Nelson, M. Ronchetti, "Bond-orientational order in liquids and glasses," Phys. Rev. B 28, 784 (1983). [Steinhardt BOO パラメータ]</li>
+          <li>A. Stukowski, "Visualization and analysis of atomistic simulation data with OVITO – the Open Visualization Tool," Modelling Simul. Mater. Sci. Eng. 18, 015012 (2010). [OVITO]</li>
+        </ol>
+      </section>
+
+      <div class="back-link"><a href="index.html">← メンバーメニューに戻る</a></div>
+    </main>
+  </div>
+  <script>
+    function copyCode(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const btn = el.previousElementSibling.querySelector('.copy-btn');
+        if (btn) { btn.textContent = "コピー済み"; setTimeout(() => btn.textContent = "コピー", 2000); }
+      });
+    }
+  </script>
+</body>
+</html>

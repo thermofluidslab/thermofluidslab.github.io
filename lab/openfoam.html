@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HGZ2VLQ2GP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HGZ2VLQ2GP');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>OpenFOAM チュートリアル | 研究室メンバー専用</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <script src="auth.js"></script>
+  <script>requireAuth();</script>
+
+  <header>
+    <div class="header-title">熱流体力学研究室 <span>メンバー専用</span></div>
+    <div class="header-nav">
+      <a href="index.html">← メニュー</a>
+      <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <nav class="toc">
+        <h2>目次</h2>
+        <ul>
+          <li><a href="#sec1">1. OpenFOAM とは</a></li>
+          <li><a href="#sec2">2. インストール</a></li>
+          <li><a href="#sec3">3. ケース構造</a></li>
+          <li><a href="#sec4">4. 定常計算（simpleFoam）</a></li>
+          <li><a href="#sec5">5. 非定常計算（pimpleFoam）</a></li>
+          <li><a href="#sec6">6. メッシュ生成</a></li>
+          <li><a href="#sec7">7. 後処理（ParaView）</a></li>
+          <li><a href="#sec8">8. よく使うコマンド</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="article-header">
+        <h1>OpenFOAM チュートリアル</h1>
+        <p class="article-meta">熱流体力学研究室 内部資料 | 2026年4月</p>
+        <div class="article-tags"><span class="tag">OpenFOAM</span><span class="tag">CFD</span><span class="tag">FVM</span></div>
+      </div>
+
+      <section class="section" id="sec1">
+        <h2>1. OpenFOAM とは</h2>
+        <p>
+          <strong>OpenFOAM（Open Field Operation And Manipulation）</strong>は，
+          有限体積法（FVM）ベースのオープンソース CFD フレームワークです．
+          C++ で記述されており，ソルバーのカスタマイズが可能です．
+          定常・非定常，圧縮性・非圧縮性，乱流・層流，熱伝達，多相流など幅広い問題に対応しています．
+        </p>
+        <table>
+          <thead><tr><th>ディストリビューション</th><th>開発元</th><th>特徴</th></tr></thead>
+          <tbody>
+            <tr><td>OpenFOAM.org</td><td>OpenFOAM Foundation</td><td>コア開発版</td></tr>
+            <tr><td>OpenFOAM.com (ESI)</td><td>ESI Group</td><td>機能が豊富，企業サポートあり</td></tr>
+            <tr><td>foam-extend</td><td>コミュニティ</td><td>実験的機能多数</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sec2">
+        <h2>2. インストール</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>Ubuntu (WSL2) — OpenFOAM v12 のインストール</span><button class="copy-btn" onclick="copyCode('of_inst')">コピー</button></div>
+          <pre id="of_inst">curl https://dl.openfoam.org/gpg.key | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/openfoam.gpg
+sudo add-apt-repository http://dl.openfoam.org/ubuntu
+sudo apt update
+sudo apt install openfoam12
+
+<span class="cm"># 環境変数の設定（毎回 source するか ~/.bashrc に追記）</span>
+source /opt/openfoam12/etc/bashrc
+
+<span class="cm"># 動作確認</span>
+icoFoam -help</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec3">
+        <h2>3. ケース構造</h2>
+        <div class="file-tree">
+<span class="dir">myCase/</span>
+├── <span class="dir">0/</span>                  <span class="desc">← 初期条件（時刻 0 の場の値）</span>
+│   ├── <span class="file">U</span>               <span class="desc">速度場</span>
+│   ├── <span class="file">p</span>               <span class="desc">圧力場</span>
+│   ├── <span class="file">k</span>               <span class="desc">乱流エネルギー</span>
+│   └── <span class="file">omega</span>           <span class="desc">乱流周波数（k-ω SST 使用時）</span>
+├── <span class="dir">constant/</span>           <span class="desc">← 物性・メッシュ情報</span>
+│   ├── <span class="file">transportProperties</span>  <span class="desc">粘度など</span>
+│   ├── <span class="file">turbulenceProperties</span>  <span class="desc">乱流モデルの選択</span>
+│   └── <span class="dir">polyMesh/</span>        <span class="desc">メッシュデータ</span>
+└── <span class="dir">system/</span>             <span class="desc">← 計算設定</span>
+    ├── <span class="file">controlDict</span>     <span class="desc">実行制御（時間刻み・出力設定）</span>
+    ├── <span class="file">fvSchemes</span>       <span class="desc">離散化スキーム</span>
+    └── <span class="file">fvSolution</span>      <span class="desc">線形ソルバー設定</span>
+        </div>
+      </section>
+
+      <section class="section" id="sec4">
+        <h2>4. 定常計算（simpleFoam）</h2>
+        <p>
+          <code>simpleFoam</code> は非圧縮性定常乱流ソルバーです（SIMPLE アルゴリズム）．
+          主に外部空気力学（車，スポーツ球体）や室内換気の定常解析に使います．
+        </p>
+
+        <h3>controlDict（定常）</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>system/controlDict</span><button class="copy-btn" onclick="copyCode('of_ctrl')">コピー</button></div>
+          <pre id="of_ctrl">application     simpleFoam;
+
+startFrom       startTime;
+startTime       0;
+stopAt          endTime;
+endTime         500;           // 反復回数
+
+deltaT          1;             // 定常計算では 1
+writeControl    timeStep;
+writeInterval   50;
+purgeWrite      3;             // 最新3つのみ保存
+
+runTimeModifiable yes;
+
+functions
+{
+    forceCoeffs
+    {
+        type        forceCoeffs;
+        libs        ( forces );
+        patches     ( ball );       // 力を求める面
+        rho         rhoInf;
+        rhoInf      1.225;          // 空気密度 [kg/m³]
+        liftDir     (0 1 0);
+        dragDir     (1 0 0);
+        CofR        (0 0 0);
+        pitchAxis   (0 0 1);
+        magUInf     20;             // 代表速度 [m/s]
+        lRef        0.22;           // 代表長さ（ボール直径）
+        Aref        0.038;          // 代表面積 [m²]
+    }
+}</pre>
+        </div>
+
+        <h3>0/U（速度場の初期・境界条件）</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>0/U</span><button class="copy-btn" onclick="copyCode('of_U')">コピー</button></div>
+          <pre id="of_U">dimensions      [0 1 -1 0 0 0 0];   // m/s
+
+internalField   uniform (20 0 0);   // 初期値
+
+boundaryField
+{
+    inlet
+    {
+        type            fixedValue;
+        value           uniform (20 0 0);
+    }
+    outlet
+    {
+        type            zeroGradient;
+    }
+    ball
+    {
+        type            noSlip;     // 壁面すべり無し
+    }
+    sides
+    {
+        type            slip;       // 外部境界はすべり
+    }
+}</pre>
+        </div>
+
+        <h3>実行</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>Terminal</span></div>
+          <pre>blockMesh           <span class="cm"># メッシュ生成</span>
+checkMesh           <span class="cm"># メッシュ品質確認</span>
+simpleFoam          <span class="cm"># 計算実行</span>
+simpleFoam | tee log.simpleFoam  <span class="cm"># ログを保存しながら実行</span>
+
+<span class="cm"># 並列計算（4コア）</span>
+decomposePar
+mpirun -np 4 simpleFoam -parallel
+reconstructPar</pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec5">
+        <h2>5. 非定常計算（pimpleFoam）</h2>
+        <p>
+          <code>pimpleFoam</code> は非圧縮性非定常乱流ソルバー（PIMPLE = PISO + SIMPLE アルゴリズム）です．
+          後流の渦放出，球体の非定常揚力など時間変化する現象に使います．
+        </p>
+        <div class="code-wrap">
+          <div class="code-title"><span>system/controlDict（非定常）</span></div>
+          <pre>application     pimpleFoam;
+
+startTime       0;
+endTime         2.0;            // [s]
+deltaT          1e-4;           // 時間刻み [s]
+adjustTimeStep  yes;
+maxCo           0.8;            // Courant 数の上限
+
+writeControl    adjustableRunTime;
+writeInterval   0.01;           // 0.01 秒ごとに出力</pre>
+        </div>
+
+        <div class="point-box">
+          <strong>Courant 数（CFL 条件）：</strong>
+          $Co = U \Delta t / \Delta x \leq 1$ が安定条件の目安です．
+          OpenFOAM では <code>adjustTimeStep yes</code> で自動調整できます．
+        </div>
+      </section>
+
+      <section class="section" id="sec6">
+        <h2>6. メッシュ生成</h2>
+        <h3>blockMesh（構造格子）</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>system/blockMeshDict — 直方体ボックスの例</span><button class="copy-btn" onclick="copyCode('of_mesh')">コピー</button></div>
+          <pre id="of_mesh">scale   1;
+
+vertices
+(
+    (-1.0 -0.5 -0.5)  // 0
+    ( 2.0 -0.5 -0.5)  // 1
+    ( 2.0  0.5 -0.5)  // 2
+    (-1.0  0.5 -0.5)  // 3
+    (-1.0 -0.5  0.5)  // 4
+    ( 2.0 -0.5  0.5)  // 5
+    ( 2.0  0.5  0.5)  // 6
+    (-1.0  0.5  0.5)  // 7
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7)
+    (60 20 20)                  // セル数 (x y z)
+    simpleGrading (1 1 1)
+);
+
+boundary
+(
+    inlet  { type patch; faces ((0 4 7 3)); }
+    outlet { type patch; faces ((1 2 6 5)); }
+    sides  { type patch; faces ((0 1 5 4)(3 7 6 2)(0 3 2 1)(4 5 6 7)); }
+);</pre>
+        </div>
+
+        <h3>snappyHexMesh（STL 形状のメッシュ化）</h3>
+        <div class="code-wrap">
+          <div class="code-title"><span>概要</span></div>
+          <pre><span class="cm"># 1. STL ファイルを constant/triSurface/ に配置</span>
+<span class="cm"># 2. system/snappyHexMeshDict を設定</span>
+<span class="cm"># 3. 実行</span>
+blockMesh           <span class="cm"># 背景メッシュ</span>
+surfaceFeatureExtract  <span class="cm"># 稜線抽出</span>
+snappyHexMesh -overwrite  <span class="cm"># メッシュ生成</span></pre>
+        </div>
+      </section>
+
+      <section class="section" id="sec7">
+        <h2>7. 後処理（ParaView）</h2>
+        <div class="code-wrap">
+          <div class="code-title"><span>Terminal</span></div>
+          <pre><span class="cm"># ParaView 用の .foam ファイルを作成</span>
+touch case.foam
+
+<span class="cm"># ParaView を起動して case.foam を開く</span>
+paraview case.foam &</pre>
+        </div>
+        <p>ParaView での主な操作：</p>
+        <ul class="disc">
+          <li><strong>StreamTracer</strong>：流線の可視化</li>
+          <li><strong>Glyph</strong>：速度ベクトルの表示</li>
+          <li><strong>Contour</strong>：等値面（圧力，速度等）</li>
+          <li><strong>Slice</strong>：断面表示</li>
+          <li><strong>PlotOverLine</strong>：線上のデータをグラフ化</li>
+        </ul>
+      </section>
+
+      <section class="section" id="sec8">
+        <h2>8. よく使うコマンド</h2>
+        <table>
+          <thead><tr><th>コマンド</th><th>説明</th></tr></thead>
+          <tbody>
+            <tr><td><code>blockMesh</code></td><td>blockMeshDict からメッシュ生成</td></tr>
+            <tr><td><code>checkMesh</code></td><td>メッシュの品質チェック</td></tr>
+            <tr><td><code>snappyHexMesh</code></td><td>STL から非構造メッシュ生成</td></tr>
+            <tr><td><code>simpleFoam</code></td><td>定常非圧縮性乱流ソルバー</td></tr>
+            <tr><td><code>pimpleFoam</code></td><td>非定常非圧縮性乱流ソルバー</td></tr>
+            <tr><td><code>icoFoam</code></td><td>非定常層流ソルバー（チュートリアル向け）</td></tr>
+            <tr><td><code>postProcess -func forceCoeffs</code></td><td>後処理（力係数の再計算）</td></tr>
+            <tr><td><code>foamToVTK</code></td><td>結果を VTK 形式に変換</td></tr>
+            <tr><td><code>decomposePar</code></td><td>並列計算用にケースを分割</td></tr>
+            <tr><td><code>reconstructPar</code></td><td>並列計算後に結果を統合</td></tr>
+            <tr><td><code>foamCleanTutorials</code></td><td>チュートリアルのクリーンアップ</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="back-link"><a href="index.html">← メンバーメニューに戻る</a></div>
+    </main>
+  </div>
+  <script>
+    function copyCode(id) {
+      const el = document.getElementById(id);
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        const btn = el.previousElementSibling.querySelector('.copy-btn');
+        if (btn) { btn.textContent = "コピー済み"; setTimeout(() => btn.textContent = "コピー", 2000); }
+      });
+    }
+  </script>
+</body>
+</html>
