@@ -70,60 +70,63 @@
     const introEl = document.getElementById("researchIntro");
     if (introEl) introEl.textContent = c.research.intro;
 
-    const scaleEl = document.getElementById("researchScale");
-    if (scaleEl) {
-      scaleEl.innerHTML = c.research.scale
+    const methodsEl = document.getElementById("researchMethods");
+    if (methodsEl) {
+      methodsEl.innerHTML = c.research.methods
         .map(
-          (item) => `<div class="research-scale-item">
-            <span>${escHtml(item.label)}</span>
-            <strong>${escHtml(item.detail)}</strong>
+          (method) => `<div class="research-method-row">
+            <span class="research-method-code">${escHtml(method.code)}</span>
+            <div>
+              <h3>${escHtml(method.label)}</h3>
+              <p>${escHtml(method.description)}</p>
+            </div>
           </div>`
         )
         .join("");
     }
 
-    const methodsEl = document.getElementById("researchMethods");
-    if (methodsEl) {
-      methodsEl.innerHTML = c.research.methods
-        .map(
-          (method) => `<article class="research-method-card">
-            <span class="research-method-code">${escHtml(method.code)}</span>
-            <h3>${escHtml(method.label)}</h3>
-            <p>${escHtml(method.description)}</p>
-          </article>`
-        )
-        .join("");
-    }
-
-    // research.html: 研究対象を4分野に整理して展開
     const topicsEl = document.getElementById("researchTopics");
     if (topicsEl) {
       topicsEl.innerHTML = c.research.topics
-        .map(
-          (t) => `<article class="research-domain" id="research-${escHtml(t.id)}">
-            <figure class="research-domain-visual">
-              <img src="${escHtml(t.image)}" alt="${escHtml(t.imageAlt)}" loading="lazy">
-              <figcaption>${escHtml(t.figureLabel)}</figcaption>
-            </figure>
-            <div class="research-domain-content">
-              <span class="research-domain-number">${escHtml(t.number)}</span>
+        .map((t) => {
+          const figures = (t.figures || [])
+            .map(
+              (figure) => `<figure class="research-figure">
+                <div class="research-figure-frame">
+                  <img src="${escHtml(figure.image)}" alt="${escHtml(figure.alt)}" loading="lazy">
+                </div>
+                <figcaption>${escHtml(figure.caption)}</figcaption>
+              </figure>`
+            )
+            .join("");
+          const layoutClass = figures ? "research-topic-layout" : "research-topic-layout research-topic-layout--text-only";
+
+          return `<article class="research-topic" id="research-${escHtml(t.id)}">
+            <div class="research-topic-heading">
+              <span>${escHtml(c.research.topicLabel)} ${escHtml(t.number)}</span>
               <h3>${escHtml(t.title)}</h3>
-              <p class="research-domain-question">${escHtml(t.question)}</p>
-              <p class="research-domain-summary">${escHtml(t.body)}</p>
-              <div class="research-domain-details">
-                <div>
+              <p>${escHtml(t.question)}</p>
+            </div>
+            <div class="${layoutClass}">
+              <div class="research-topic-text">
+                <p class="research-topic-summary">${escHtml(t.body)}</p>
+                <div class="research-topic-detail">
                   <h4>${escHtml(c.research.focusHeading)}</h4>
                   <ul>${t.focus.map((item) => `<li>${escHtml(item)}</li>`).join("")}</ul>
                 </div>
-                <div>
+                <div class="research-topic-detail">
                   <h4>${escHtml(c.research.topicMethodsHeading)}</h4>
-                  <p class="research-domain-tags">${t.methods.map((item) => `<span>${escHtml(item)}</span>`).join("")}</p>
+                  <p>${t.methods.map((item) => escHtml(item)).join(" ／ ")}</p>
+                </div>
+                <div class="research-topic-detail research-topic-goal">
+                  <h4>${escHtml(c.research.goalHeading)}</h4>
+                  <p>${escHtml(t.goal)}</p>
                 </div>
               </div>
-              <p class="research-domain-goal"><strong>${escHtml(c.research.goalHeading)}</strong>${escHtml(t.goal)}</p>
+              ${figures ? `<div class="research-figures">${figures}</div>` : ""}
             </div>
-          </article>`
-        )
+          </article>`;
+        })
         .join("");
       return;
     }
@@ -136,10 +139,10 @@
         const imgHtml = t.image
           ? `<div class="research-card-img"><img src="${escHtml(t.image)}" alt="${escHtml(t.imageAlt || "")}" loading="lazy"></div>`
           : "";
-        return `<a href="research.html#research-${escHtml(t.id)}" class="research-card">
+        return `<a href="research.html#research-${escHtml(t.id)}" class="research-card${t.image ? "" : " research-card--text-only"}">
             ${imgHtml}
             <div class="research-card-body">
-              <div class="research-card-number">${escHtml(t.number)}</div>
+              <div class="research-card-number">${escHtml(c.research.topicLabel)} ${escHtml(t.number)}</div>
               <h3>${escHtml(t.title)}</h3>
               <p>${escHtml(t.cardBody || t.body)}</p>
               <span class="card-readmore">${escHtml(c.research.readMore)}</span>
