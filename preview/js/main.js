@@ -67,62 +67,81 @@
   }
 
   function renderResearch(c) {
-    // research.html: 全テーマをインライン展開
+    const introEl = document.getElementById("researchIntro");
+    if (introEl) introEl.textContent = c.research.intro;
+
+    const scaleEl = document.getElementById("researchScale");
+    if (scaleEl) {
+      scaleEl.innerHTML = c.research.scale
+        .map(
+          (item) => `<div class="research-scale-item">
+            <span>${escHtml(item.label)}</span>
+            <strong>${escHtml(item.detail)}</strong>
+          </div>`
+        )
+        .join("");
+    }
+
+    const methodsEl = document.getElementById("researchMethods");
+    if (methodsEl) {
+      methodsEl.innerHTML = c.research.methods
+        .map(
+          (method) => `<article class="research-method-card">
+            <span class="research-method-code">${escHtml(method.code)}</span>
+            <h3>${escHtml(method.label)}</h3>
+            <p>${escHtml(method.description)}</p>
+          </article>`
+        )
+        .join("");
+    }
+
+    // research.html: 研究対象を4分野に整理して展開
     const topicsEl = document.getElementById("researchTopics");
     if (topicsEl) {
       topicsEl.innerHTML = c.research.topics
-        .map((t) => {
-          const proj = c.research.projects && c.research.projects[t.id];
-          if (!proj) return "";
-
-          const bodyHtml = proj.body
-            .split("\n\n")
-            .map((para) => {
-              const html = escHtml(para).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-              return `<p>${html}</p>`;
-            })
-            .join("");
-
-          const imgHtml = proj.image
-            ? `<div class="rt-img"><img src="${escHtml(proj.image)}" alt="${escHtml(proj.imageAlt || "")}" loading="lazy"></div>`
-            : "";
-
-          const kwHtml = proj.keywords && proj.keywords.length
-            ? `<p class="rt-keywords">${proj.keywords.map((k) => `<span class="keyword-tag">${escHtml(k)}</span>`).join("")}</p>`
-            : "";
-
-          const pubsHtml = proj.relatedPublications && proj.relatedPublications.length
-            ? `<ul class="rt-pubs">${proj.relatedPublications.map((p) => `<li>${escHtml(p)}</li>`).join("")}</ul>`
-            : "";
-
-          return `<div class="rt-section">
-            <h3 class="rt-title">${t.icon ? `<span class="rt-icon">${t.icon}</span>` : ""}${escHtml(proj.title)}</h3>
-            <div class="rt-inner">
-              ${imgHtml}
-              <div class="rt-body">${bodyHtml}${kwHtml}</div>
+        .map(
+          (t) => `<article class="research-domain" id="research-${escHtml(t.id)}">
+            <figure class="research-domain-visual">
+              <img src="${escHtml(t.image)}" alt="${escHtml(t.imageAlt)}" loading="lazy">
+              <figcaption>${escHtml(t.figureLabel)}</figcaption>
+            </figure>
+            <div class="research-domain-content">
+              <span class="research-domain-number">${escHtml(t.number)}</span>
+              <h3>${escHtml(t.title)}</h3>
+              <p class="research-domain-question">${escHtml(t.question)}</p>
+              <p class="research-domain-summary">${escHtml(t.body)}</p>
+              <div class="research-domain-details">
+                <div>
+                  <h4>${escHtml(c.research.focusHeading)}</h4>
+                  <ul>${t.focus.map((item) => `<li>${escHtml(item)}</li>`).join("")}</ul>
+                </div>
+                <div>
+                  <h4>${escHtml(c.research.topicMethodsHeading)}</h4>
+                  <p class="research-domain-tags">${t.methods.map((item) => `<span>${escHtml(item)}</span>`).join("")}</p>
+                </div>
+              </div>
+              <p class="research-domain-goal"><strong>${escHtml(c.research.goalHeading)}</strong>${escHtml(t.goal)}</p>
             </div>
-            ${pubsHtml}
-          </div>`;
-        })
+          </article>`
+        )
         .join("");
       return;
     }
 
-    // 旧カードグリッド（後方互換）
+    // ホームページの研究カード
     const grid = document.getElementById("researchGrid");
     if (!grid) return;
     grid.innerHTML = c.research.topics
       .map((t) => {
-        const proj = c.research.projects && c.research.projects[t.id];
-        const imgHtml = (proj && proj.image)
-          ? `<div class="research-card-img"><img src="${escHtml(proj.image)}" alt="${escHtml(proj.imageAlt || "")}" loading="lazy"></div>`
+        const imgHtml = t.image
+          ? `<div class="research-card-img"><img src="${escHtml(t.image)}" alt="${escHtml(t.imageAlt || "")}" loading="lazy"></div>`
           : "";
-        return `<a href="project.html?id=${escHtml(t.id)}" class="research-card">
+        return `<a href="research.html#research-${escHtml(t.id)}" class="research-card">
             ${imgHtml}
             <div class="research-card-body">
-              <div class="research-icon">${t.icon}</div>
+              <div class="research-card-number">${escHtml(t.number)}</div>
               <h3>${escHtml(t.title)}</h3>
-              <p>${escHtml(t.body)}</p>
+              <p>${escHtml(t.cardBody || t.body)}</p>
               <span class="card-readmore">${escHtml(c.research.readMore)}</span>
             </div>
           </a>`;

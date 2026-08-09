@@ -183,7 +183,17 @@ def build() -> None:
 
     content = (ROOT / "data" / "content.js").read_text(encoding="utf-8")
     content = content.replace('image: "images/', 'image: "../images/')
+    content = content.replace(
+        'image: "../images/research-concepts/',
+        'image: "images/research-concepts/',
+    )
     write_text(PREVIEW / "data" / "content.js", content)
+
+    concept_images = ROOT / "images" / "research-concepts"
+    preview_concepts = PREVIEW / "images" / "research-concepts"
+    preview_concepts.mkdir(parents=True, exist_ok=True)
+    for image in sorted(concept_images.glob("*.webp")):
+        shutil.copy2(image, preview_concepts / image.name)
 
     source_images = ROOT / "images" / "test-research-visuals" / "vmd_rendered"
     preview_images = PREVIEW / "images" / "test-research-visuals" / "vmd_rendered"
