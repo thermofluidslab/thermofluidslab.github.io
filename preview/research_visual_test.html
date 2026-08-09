@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="description" content="工学院大学 熱流体力学研究室の研究紹介画像候補を確認するためのテストページです。">
+  <title>研究紹介画像テスト | 熱流体力学研究室</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/preview.css">
+</head>
+<body class="preview-site">
+  <aside class="preview-banner" aria-label="プレビュー版のお知らせ">
+    <strong>PREVIEW / 確認用</strong>
+    <span class="preview-banner__note">正式公開前の内容です</span>
+    <nav aria-label="プレビュー操作">
+      <a href="index.html">確認用トップ</a>
+      <a href="research_visual_test.html">研究画像候補</a>
+      <a href="../index.html">公開中サイト</a>
+    </nav>
+  </aside>
+  <script src="js/header.js"></script>
+  <script>initSharedLayout('research');</script>
+
+  <main class="page-main">
+    <div class="container">
+      <h1 class="page-title">研究紹介画像テスト</h1>
+      <p class="section-lead">
+        研究ページの画像差し替え候補を確認するためのページです。本番ページにはまだ反映していません。
+        分子・粒子系の候補はPDB座標をVMD/Tachyonでレンダリングし、実験系は既存の実験写真を使っています。
+      </p>
+
+      <h2 class="section-sub mt-lg">候補画像</h2>
+
+      <section class="rt-section">
+        <h3 class="rt-title">マイクロ・ナノスケールの熱流体</h3>
+        <div class="rt-inner">
+          <div class="rt-img">
+            <img src="images/test-research-visuals/vmd_rendered/nano_water_on_graphene_vmd_web.webp" alt="VMDで可視化したグラフェン状炭素格子上の水分子群" loading="lazy">
+          </div>
+          <div class="rt-body">
+            <p>
+              グラフェン状の炭素格子上に水分子を配置した座標ベースの模式図です。
+              水は酸素1原子と水素2原子で構成し、O-H距離とH-O-H角を固定しています。
+            </p>
+            <p>
+              <strong>作成方法：</strong>PythonでPDB座標を生成し、VMD 1.9.4とTachyonでレンダリングしました。
+              流速場、温度場、電荷分布は描いていません。
+            </p>
+            <p class="rt-keywords">
+              <span class="keyword-tag">VMD/Tachyon</span>
+              <span class="keyword-tag">水115分子</span>
+              <span class="keyword-tag">炭素480原子</span>
+              <span class="keyword-tag">座標ベース模式図</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="rt-section">
+        <h3 class="rt-title">スポーツ熱流体力学</h3>
+        <div class="rt-inner">
+          <div class="rt-img">
+            <img src="../images/research_sports_g004.png" alt="サッカーボールの風洞実験の様子" loading="lazy">
+          </div>
+          <div class="rt-body">
+            <p>
+              スポーツ系は分子可視化ソフトの対象ではないため、流線や渦構造を推測で描かず、既存の風洞実験写真を候補にしています。
+              画像だけから層流・乱流、剥離位置、PIVベクトル場を読み取れるような表現は避けています。
+            </p>
+            <p>
+              <strong>作成方法：</strong>既存サイトで使用している実験写真をそのまま参照しています。
+              本番ページで使う場合は、写真のキャプションを「風洞実験の様子」として扱うのが安全です。
+            </p>
+            <p class="rt-keywords">
+              <span class="keyword-tag">風洞実験</span>
+              <span class="keyword-tag">既存写真</span>
+              <span class="keyword-tag">人工的な流線なし</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="rt-section">
+        <h3 class="rt-title">相変化を用いたエネルギー輸送・貯蔵</h3>
+        <div class="rt-inner">
+          <div class="rt-img">
+            <img src="images/test-research-visuals/vmd_rendered/hydrate_cages_methane_vmd_web.webp" alt="VMDで可視化した5^12クラスレートケージとメタン分子" loading="lazy">
+          </div>
+          <div class="rt-body">
+            <p>
+              5<sup>12</sup>クラスレートケージの酸素ネットワークと、ケージ中心のメタン分子を可視化した模式図です。
+              水素位置が一意に定まらないケージ水分子は、酸素ネットワークとして表現しています。
+            </p>
+            <p>
+              <strong>作成方法：</strong>正十二面体ケージ3個とメタン3分子のPDB座標を生成し、VMD/Tachyonでレンダリングしました。
+              実際の結晶単位胞やMDスナップショットではありません。
+            </p>
+            <p class="rt-keywords">
+              <span class="keyword-tag">VMD/Tachyon</span>
+              <span class="keyword-tag">5^12ケージ</span>
+              <span class="keyword-tag">メタン3分子</span>
+              <span class="keyword-tag">酸素ネットワーク</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="rt-section">
+        <h3 class="rt-title">機械学習・計算科学との融合</h3>
+        <div class="rt-inner">
+          <div class="rt-img">
+            <img src="images/test-research-visuals/vmd_rendered/block_copolymer_morphology_vmd_web.webp" alt="VMDで可視化した二成分粗視化粒子モデル" loading="lazy">
+          </div>
+          <div class="rt-body">
+            <p>
+              二成分の粗視化粒子配置を可視化し、局所構造や形態の分類を扱う計算科学・機械学習研究のイメージとして示しています。
+              青と橙は異なる粒子タイプを表します。
+            </p>
+            <p>
+              <strong>作成方法：</strong>粗視化粒子モデルのPDB座標を生成し、VMD/Tachyonでレンダリングしました。
+              実験データや特定のMDスナップショットではなく、研究テーマ説明用の模式座標です。
+            </p>
+            <p class="rt-keywords">
+              <span class="keyword-tag">VMD/Tachyon</span>
+              <span class="keyword-tag">粗視化粒子</span>
+              <span class="keyword-tag">二成分形態</span>
+              <span class="keyword-tag">機械学習向け特徴抽出</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <h2 class="section-sub mt-lg">生成・確認用ファイル</h2>
+      <div class="pub-section">
+        <ol class="pub-list">
+          <li>座標生成スクリプト：images/test-research-visuals/vmd_sources/generate_vmd_structures.py</li>
+          <li>VMD用PDB：images/test-research-visuals/vmd_sources/*.pdb</li>
+          <li>VMDレンダリング画像：images/test-research-visuals/vmd_rendered/*_web.webp</li>
+          <li>このページは確認専用です。採用する画像が決まるまで、研究ページの画像参照は変更しません。</li>
+        </ol>
+      </div>
+    </div>
+  </main>
+
+  <footer><div class="container footer-inner"><p id="footerCopy"></p></div></footer>
+
+  <script src="data/content.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.title = "研究紹介画像テスト | 熱流体力学研究室";
+    });
+  </script>
+</body>
+</html>

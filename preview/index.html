@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="description" content="工学院大学 熱流体力学研究室。分子動力学、CFD、風洞実験、PIV、機械学習を用いて、エネルギー、スポーツ工学、材料プロセスの熱流体現象を研究しています。">
+  <title>熱流体力学研究室 | 工学院大学</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/preview.css">
+</head>
+<body class="preview-site">
+  <aside class="preview-banner" aria-label="プレビュー版のお知らせ">
+    <strong>PREVIEW / 確認用</strong>
+    <span class="preview-banner__note">正式公開前の内容です</span>
+    <nav aria-label="プレビュー操作">
+      <a href="index.html">確認用トップ</a>
+      <a href="research_visual_test.html">研究画像候補</a>
+      <a href="../index.html">公開中サイト</a>
+    </nav>
+  </aside>
+  <script src="js/header.js"></script>
+  <script>initSharedLayout('home');</script>
+
+  <!-- ─── フルワイドスライドショー ─────────────────────────── -->
+  <div class="slideshow-wrap" id="mainSlideshow">
+    <div class="slideshow-inner">
+      <div class="slide active">
+        <img src="../images/headfig000.png" alt="クラスレートハイドレートのかご型構造" loading="eager">
+      </div>
+      <div class="slide">
+        <img src="../images/headfig001.png" alt="ナノ構造面の分子動力学シミュレーション" loading="lazy">
+      </div>
+      <div class="slide">
+        <img src="../images/headfig002.png" alt="風洞試験でのサッカーボール空気力学実験" loading="lazy">
+      </div>
+<!--
+      <div class="slide">
+        <img src="../images/research_ml_fig6.png" alt="機械学習によるブロック共重合体のミクロ相分離構造" loading="lazy">
+      </div>
+      <div class="slide">
+        <img src="../images/research1.webp" alt="熱流体力学研究室 研究テーマ" loading="lazy">
+      </div>
+-->
+    </div>
+    <button class="slide-prev" aria-label="前へ">&#10094;</button>
+    <button class="slide-next" aria-label="次へ">&#10095;</button>
+    <div class="slide-dots" id="slideDots"></div>
+    <div class="slide-caption">
+      <span data-i18n="hero.title"></span>
+      <span class="slide-caption-sep">|</span>
+      <span data-i18n="hero.affiliation"></span>
+    </div>
+  </div>
+
+  <!-- ─── 研究室概要 ────────────────────────────────────────── -->
+  <section id="intro">
+    <div class="container">
+      <div class="intro-wrap">
+        <p id="homeIntro" class="home-intro-text"></p>
+        <p class="home-prof-line">
+          <span data-i18n="about.profName"></span>
+          <span class="home-prof-sub" data-i18n="about.profTitle"></span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── お知らせ ──────────────────────────────────────────── -->
+  <section id="news">
+    <div class="container">
+      <h2 data-i18n="news.title"></h2>
+      <ul class="news-list" id="newsList"></ul>
+    </div>
+  </section>
+
+  <footer><div class="container footer-inner"><p id="footerCopy"></p></div></footer>
+
+  <script src="data/content.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/slideshow.js"></script>
+  <script>
+    (function () {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.07 });
+      document.querySelectorAll("#intro, #news").forEach(function (s) { obs.observe(s); });
+    })();
+  </script>
+</body>
+</html>
