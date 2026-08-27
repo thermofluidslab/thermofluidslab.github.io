@@ -68,7 +68,12 @@
 
   function renderResearch(c) {
     const introEl = document.getElementById("researchIntro");
-    if (introEl) introEl.textContent = c.research.intro;
+    if (introEl) {
+      introEl.innerHTML = c.research.intro
+        .split("\n\n")
+        .map((paragraph) => `<p>${escHtml(paragraph)}</p>`)
+        .join("");
+    }
 
     const methodsEl = document.getElementById("researchMethods");
     if (methodsEl) {
@@ -102,26 +107,12 @@
           const layoutClass = figures ? "research-topic-layout" : "research-topic-layout research-topic-layout--text-only";
 
           return `<article class="research-topic" id="research-${escHtml(t.id)}">
-            <div class="research-topic-heading">
-              <span>${escHtml(c.research.topicLabel)} ${escHtml(t.number)}</span>
-              <h3>${escHtml(t.title)}</h3>
-              <p>${escHtml(t.question)}</p>
-            </div>
+            <h3 class="research-topic-heading">${escHtml(t.title)}</h3>
             <div class="${layoutClass}">
               <div class="research-topic-text">
-                <p class="research-topic-summary">${escHtml(t.body)}</p>
-                <div class="research-topic-detail">
-                  <h4>${escHtml(c.research.focusHeading)}</h4>
-                  <ul>${t.focus.map((item) => `<li>${escHtml(item)}</li>`).join("")}</ul>
-                </div>
-                <div class="research-topic-detail">
-                  <h4>${escHtml(c.research.topicMethodsHeading)}</h4>
-                  <p>${t.methods.map((item) => escHtml(item)).join(" ／ ")}</p>
-                </div>
-                <div class="research-topic-detail research-topic-goal">
-                  <h4>${escHtml(c.research.goalHeading)}</h4>
-                  <p>${escHtml(t.goal)}</p>
-                </div>
+                <p class="research-topic-lead">${escHtml(t.question)}</p>
+                <p>${escHtml(t.body)}</p>
+                <p>${escHtml(t.approach)}</p>
               </div>
               ${figures ? `<div class="research-figures">${figures}</div>` : ""}
             </div>
@@ -142,7 +133,6 @@
         return `<a href="research.html#research-${escHtml(t.id)}" class="research-card${t.image ? "" : " research-card--text-only"}">
             ${imgHtml}
             <div class="research-card-body">
-              <div class="research-card-number">${escHtml(c.research.topicLabel)} ${escHtml(t.number)}</div>
               <h3>${escHtml(t.title)}</h3>
               <p>${escHtml(t.cardBody || t.body)}</p>
               <span class="card-readmore">${escHtml(c.research.readMore)}</span>

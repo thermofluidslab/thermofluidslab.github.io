@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Acoustically levitated multicomponent droplet</title>
+  <desc id="desc">A scientific line schematic showing a droplet held at an acoustic pressure node between a reflector and an ultrasonic transducer, with evaporation from the droplet surface.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6d7f8f"/>
+    </marker>
+    <clipPath id="drop-clip">
+      <circle cx="600" cy="358" r="94"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <rect x="220" y="62" width="760" height="24" fill="#263b4e"/>
+  <rect x="260" y="657" width="680" height="38" fill="#263b4e"/>
+  <rect x="310" y="695" width="580" height="18" fill="#8e9aa5"/>
+
+  <g fill="none" stroke="#a8b3bd" stroke-width="3">
+    <path d="M410 100 C350 145 470 190 410 235 C350 280 470 325 410 370 C350 415 470 460 410 505 C350 550 470 595 410 640"/>
+    <path d="M790 100 C850 145 730 190 790 235 C850 280 730 325 790 370 C850 415 730 460 790 505 C850 550 730 595 790 640"/>
+  </g>
+  <g fill="#a8b3bd">
+    <circle cx="410" cy="235" r="5"/>
+    <circle cx="410" cy="505" r="5"/>
+    <circle cx="790" cy="235" r="5"/>
+    <circle cx="790" cy="505" r="5"/>
+  </g>
+  <line x1="330" y1="358" x2="870" y2="358" stroke="#b8c0c8" stroke-width="2" stroke-dasharray="8 9"/>
+
+  <circle cx="600" cy="358" r="94" fill="#dcebf4" stroke="#193b5a" stroke-width="5"/>
+  <g clip-path="url(#drop-clip)">
+    <path d="M505 386 C548 346 569 388 611 349 C657 307 685 333 718 291 L730 455 L493 455 Z" fill="#b8d4e4"/>
+    <path d="M499 308 C548 278 572 318 610 295 C648 272 684 280 718 247 L722 314 C684 344 653 325 617 351 C574 381 546 346 503 391 Z" fill="#f1c28f"/>
+    <g fill="#ffffff" stroke="#607789" stroke-width="2">
+      <circle cx="548" cy="328" r="8"/>
+      <circle cx="592" cy="404" r="9"/>
+      <circle cx="647" cy="333" r="7"/>
+      <circle cx="674" cy="402" r="8"/>
+      <circle cx="535" cy="422" r="6"/>
+    </g>
+  </g>
+
+  <g fill="none" stroke="#6d7f8f" stroke-width="3" marker-end="url(#arrow)">
+    <path d="M548 249 L522 196"/>
+    <path d="M600 240 L600 179"/>
+    <path d="M652 249 L678 196"/>
+    <path d="M503 309 L447 280"/>
+    <path d="M697 309 L753 280"/>
+    <path d="M501 410 L445 438"/>
+    <path d="M699 410 L755 438"/>
+  </g>
+
+  <g fill="#263b4e">
+    <path d="M550 637 L600 610 L650 637 Z"/>
+    <rect x="540" y="637" width="120" height="12"/>
+  </g>
+  <g stroke="#8e9aa5" stroke-width="2">
+    <line x1="305" y1="116" x2="305" y2="628"/>
+    <line x1="895" y1="116" x2="895" y2="628"/>
+    <line x1="296" y1="116" x2="314" y2="116"/>
+    <line x1="296" y1="628" x2="314" y2="628"/>
+    <line x1="886" y1="116" x2="904" y2="116"/>
+    <line x1="886" y1="628" x2="904" y2="628"/>
+  </g>
+</svg>

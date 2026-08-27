@@ -453,130 +453,91 @@ a.research-card p  { font-size: 0.875rem; color: var(--text-light); line-height:
 
 /* ── 研究紹介 ─────────────────────────────────────────────── */
 .research-introduction {
-  max-width: 880px;
-  padding: 8px 0 38px;
+  max-width: 900px;
+  padding: 8px 0 42px;
   border-bottom: 1px solid var(--border);
 }
 .research-introduction h2 {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   color: var(--primary);
   font-size: clamp(1.45rem, 3.2vw, 2rem);
   font-weight: 700;
   line-height: 1.55;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.02em;
 }
 .research-introduction-text {
   color: var(--text);
   font-size: 0.96rem;
   line-height: 2;
 }
+.research-introduction-text p + p { margin-top: 14px; }
 .research-topics-section,
-.research-methods-section { margin-top: 64px; }
-.research-topic-list { margin-top: 36px; }
+.research-methods-section { margin-top: 66px; }
+.research-topic-list { margin-top: 34px; }
 .research-topic {
-  padding: 48px 0 54px;
+  padding: 38px 0 50px;
   border-top: 2px solid var(--primary);
+  scroll-margin-top: calc(var(--header-h) + 24px);
 }
-.research-topic + .research-topic { margin-top: 14px; }
+.research-topic + .research-topic { margin-top: 18px; }
 .research-topic-heading {
-  display: grid;
-  grid-template-columns: 110px minmax(0, 1fr);
-  align-items: baseline;
-  column-gap: 24px;
-  margin-bottom: 30px;
-}
-.research-topic-heading > span {
-  grid-row: 1 / span 2;
-  color: var(--text-light);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.research-topic-heading h3 {
+  margin-bottom: 26px;
   color: var(--primary);
   font-size: clamp(1.3rem, 2.6vw, 1.65rem);
   line-height: 1.5;
-}
-.research-topic-heading p {
-  margin-top: 6px;
-  color: var(--primary-light);
-  font-size: 0.95rem;
-  font-weight: 500;
-  line-height: 1.75;
+  letter-spacing: 0.015em;
 }
 .research-topic-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
-  gap: 48px;
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 430px);
+  gap: clamp(36px, 5vw, 62px);
   align-items: start;
-  padding-left: 134px;
 }
-.research-topic-layout--text-only {
-  grid-template-columns: minmax(0, 720px);
-}
-.research-topic-summary {
-  margin-bottom: 28px;
-  font-size: 0.91rem;
+.research-topic-layout--text-only { grid-template-columns: minmax(0, 760px); }
+.research-topic-text {
+  color: var(--text);
+  font-size: 0.9rem;
   line-height: 1.95;
 }
-.research-topic-detail {
-  display: grid;
-  grid-template-columns: 128px minmax(0, 1fr);
-  gap: 18px;
-  padding: 14px 0;
-  border-top: 1px solid var(--border);
+.research-topic-text p + p { margin-top: 17px; }
+.research-topic-lead {
+  color: var(--primary-light);
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.85;
 }
-.research-topic-detail h4 {
-  color: var(--primary);
-  font-size: 0.78rem;
-  line-height: 1.7;
-}
-.research-topic-detail p,
-.research-topic-detail li {
-  color: var(--text-light);
-  font-size: 0.79rem;
-  line-height: 1.75;
-}
-.research-topic-detail ul { list-style: none; }
-.research-topic-detail li + li { margin-top: 3px; }
-.research-topic-detail li::before {
-  content: "—";
-  margin-right: 8px;
-  color: #8b96a5;
-}
-.research-topic-goal { border-bottom: 1px solid var(--border); }
-.research-figures { display: grid; gap: 26px; }
+.research-figures { display: grid; gap: 24px; }
 .research-figure-frame {
-  padding: 9px;
+  overflow: hidden;
   border: 1px solid #cbd2dc;
   background: #fff;
 }
 .research-figure img {
+  display: block;
   width: 100%;
-  max-height: 330px;
+  max-height: 340px;
   object-fit: contain;
   background: #fff;
 }
 .research-figure figcaption {
-  margin-top: 9px;
+  margin-top: 8px;
   color: var(--text-light);
-  font-size: 0.7rem;
-  line-height: 1.65;
+  font-size: 0.72rem;
+  line-height: 1.6;
 }
 .research-methods-list { border-top: 2px solid var(--primary); }
 .research-method-row {
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
-  gap: 24px;
-  padding: 19px 14px;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 26px;
+  padding: 19px 12px;
   border-bottom: 1px solid var(--border);
 }
 .research-method-code {
   color: var(--primary);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
 }
 .research-method-row h3 {
   margin-bottom: 3px;
@@ -588,28 +549,9 @@ a.research-card p  { font-size: 0.875rem; color: var(--text-light); line-height:
   font-size: 0.79rem;
   line-height: 1.7;
 }
-.research-visual-note {
-  margin-top: 26px;
-  padding-top: 16px;
-  color: var(--text-light);
-  border-top: 1px solid var(--border);
-  font-size: 0.72rem;
-  line-height: 1.7;
-}
-.research-card-number {
-  margin-bottom: 8px;
-  color: var(--text-light);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
 
 @media (max-width: 900px) {
-  .research-topic-layout {
-    grid-template-columns: 1fr;
-    padding-left: 0;
-  }
+  .research-topic-layout { grid-template-columns: 1fr; }
   .research-topic-layout--text-only { grid-template-columns: 1fr; }
   .research-figures {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -620,17 +562,11 @@ a.research-card p  { font-size: 0.875rem; color: var(--text-light); line-height:
 @media (max-width: 620px) {
   .research-topics-section,
   .research-methods-section { margin-top: 50px; }
-  .research-topic { padding: 38px 0 42px; }
-  .research-topic-heading {
-    grid-template-columns: 1fr;
-    row-gap: 6px;
-  }
-  .research-topic-heading > span { grid-row: auto; }
-  .research-topic-heading p { margin-top: 0; }
-  .research-topic-layout { gap: 32px; }
-  .research-topic-detail { grid-template-columns: 1fr; gap: 5px; }
+  .research-topic { padding: 32px 0 40px; }
+  .research-topic-heading { margin-bottom: 20px; }
+  .research-topic-layout { gap: 28px; }
   .research-figures { grid-template-columns: 1fr; }
-  .research-method-row { grid-template-columns: 90px minmax(0, 1fr); gap: 14px; }
+  .research-method-row { grid-template-columns: 1fr; gap: 5px; }
 }
 
 /* ── メンバーページ ──────────────────────────────────────── */
