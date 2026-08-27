@@ -44,7 +44,7 @@ const SITE_CONTENT = {
     news: {
       title: "お知らせ",
       items: [
-        { date: "2026-04-20", text: "研究室ホームページを公開しました．研究内容，メンバー，業績情報を順次更新していきます．" },
+        { date: "2026-05-26", text: "第63回日本伝熱シンポジウムにて，M1の田口凱大さんが発表しました．" },
         { date: "2026-03-13", text: "日本機械学会関東支部学生会卒業研究発表講演会にて，B4の坂本さん，鈴木雅峰さん，田口さん，細田さん，光松さんが発表しました．" },
         { date: "2026-03-01", text: "Scientific Reports に結晶性高分子モデルのラメラ構造と結晶化度に関する論文が掲載されました．" },
       ],
@@ -615,7 +615,7 @@ Students develop skills in programming, simulation, measurement, data analysis, 
     news: {
       title: "News",
       items: [
-        { date: "2026-04-20", text: "Our laboratory website has been launched. Research themes, members, and publication information will be updated continuously." },
+        { date: "2026-05-26", text: "Kaito Taguchi (M1) presented his research at the 63rd National Heat Transfer Symposium of Japan." },
         { date: "2026-03-13", text: "Five undergraduate students presented their graduation research at the JSME Kanto Student Conference." },
         { date: "2026-03-01", text: "A paper on lamellar morphology and crystallinity in a crystallizable polymer model was published in Scientific Reports." },
       ],
