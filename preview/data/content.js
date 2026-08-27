@@ -20,7 +20,7 @@ const SITE_CONTENT = {
     },
 
     home: {
-      intro: "当研究室では，原子・分子の運動からスポーツ用具まわりの流れまで，スケールの異なる熱流体現象を「測る・見る・計算する」ことで理解し，設計へつなげる研究を進めています．分子動力学シミュレーション，CFD，風洞実験，PIV計測，機械学習を組み合わせ，エネルギー貯蔵・輸送，機能性表面，スポーツ工学，材料プロセスに関わる課題に取り組んでいます．",
+      intro: "当研究室では，原子・分子の運動から液滴や流体装置内の流れまで，スケールの異なる熱流体現象の支配機構を明らかにし，材料・表面・プロセスの設計へつなげる研究を進めています．分子動力学シミュレーション，第一原理計算，CFD，流体計測，機械学習を組み合わせ，エネルギー貯蔵・輸送，機能性表面，相変化・自己組織化，環境・材料プロセスに関わる課題に取り組んでいます．",
     },
 
     hero: {
@@ -605,7 +605,7 @@ const SITE_CONTENT = {
     },
 
     home: {
-      intro: "We study thermal-fluid phenomena across scales, from atomic and molecular motion to flows around sports equipment. By measuring, visualizing, and simulating heat and flow, we connect fundamental mechanisms to engineering design. Our work combines molecular dynamics, CFD, wind tunnel experiments, PIV measurements, and machine learning to address energy storage and transport, functional surfaces, sports engineering, and materials processing.",
+      intro: "We investigate thermal-fluid phenomena across scales, from atomic and molecular motion to droplets and flows inside fluid systems, and translate the governing mechanisms into the design of materials, surfaces, and processes. Our work combines molecular dynamics, first-principles calculations, CFD, flow measurements, and machine learning to address energy storage and transport, functional surfaces, phase change and self-organization, and environmental and materials processes.",
     },
 
     hero: {
