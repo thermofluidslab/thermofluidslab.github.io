@@ -8,7 +8,7 @@
 const SITE_CONTENT = {
   ja: {
     lang: "ja",
-    siteName: "工学院大学 熱流体力学研究室（準備中）",
+    siteName: "工学院大学 熱流体力学研究室",
     pageTitle: "熱流体力学研究室 | 工学院大学",
 
     nav: {
@@ -44,7 +44,7 @@ const SITE_CONTENT = {
     news: {
       title: "お知らせ",
       items: [
-        { date: "2026-04-20", text: "研究室ホームページを公開しました．" },
+        { date: "2026-05-26", text: "第63回日本伝熱シンポジウムにて，M1の田口凱大さんが発表しました．" },
         { date: "2026-03-13", text: "日本機械学会関東支部学生会卒業研究発表講演会にてB4の坂本さん，鈴木雅峰さん，田口さん，細田さん，光松さんが発表しました．" },
         { date: "2026-3-01", text: "Scientific Reports にブロック共重合体の局所秩序変数に関する論文が掲載されました．" },
       ],
@@ -533,7 +533,7 @@ const SITE_CONTENT = {
   // ════════════════════════════════════════════════════════════
   en: {
     lang: "en",
-    siteName: "Thermo-Fluid Dynamics Lab | Kogakuin University (Under Construction)",
+    siteName: "Thermo-Fluid Dynamics Lab | Kogakuin University",
     pageTitle: "Thermo-Fluid Dynamics Laboratory | Kogakuin University",
 
     nav: {
@@ -569,7 +569,7 @@ Students are encouraged to work independently, and we actively participate in do
     news: {
       title: "News",
       items: [
-        { date: "2026-01-01", text: "Our laboratory website has been launched." },
+        { date: "2026-05-26", text: "Kaito Taguchi (M1) presented his research at the 63rd National Heat Transfer Symposium of Japan." },
         { date: "2025-10-13", text: "A paper on local order parameters for block copolymers has been published in Scientific Reports." },
         { date: "2024-04-01", text: "JSPS Grant-in-Aid for Scientific Research (C) adopted: \"Molecular elucidation of gas encapsulation in semi-clathrate hydrates using machine learning force fields\" (2024–2027)." },
         { date: "2023-05-01", text: "Received the Commendation Award from the Visualization Society of Japan." },
