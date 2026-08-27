@@ -507,7 +507,7 @@ const SITE_CONTENT = {
       title: "アクセス・連絡先",
       address: {
         label: "所在地",
-        value: "〒163-8677 東京都新宿区西新宿1-24-2\n工学院大学 新宿キャンパス 工学部 機械工学科",
+        value: "〒163-8677 東京都新宿区西新宿1-24-2\n工学院大学 新宿キャンパス 工学部 機械工学科\n教員居室：A-1776\n学生居室：A-1823",
       },
       email: { label: "Email", value: "hiratsuka[at]cc.kogakuin.ac.jp" },
       tel: { label: "Tel（代表）", value: "03-3340-0679" },
@@ -1031,7 +1031,7 @@ For **semi-clathrate hydrates** (tetrabutylammonium salt–containing compounds)
       title: "Access & Contact",
       address: {
         label: "Address",
-        value: "1-24-2 Nishi-shinjuku, Shinjuku-ku, Tokyo 163-8677, Japan\nKogakuin University Shinjuku Campus\nDept. of Mechanical Engineering, Faculty of Engineering",
+        value: "1-24-2 Nishi-shinjuku, Shinjuku-ku, Tokyo 163-8677, Japan\nKogakuin University Shinjuku Campus\nDept. of Mechanical Engineering, Faculty of Engineering\nFaculty Office: A-1776\nStudent Room: A-1823",
       },
       email: { label: "Email", value: "hiratsuka[at]cc.kogakuin.ac.jp" },
       tel: { label: "Tel (Main)", value: "+81-3-3340-0679"},
