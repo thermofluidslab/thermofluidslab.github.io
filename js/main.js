@@ -199,7 +199,17 @@
     set("accessAddressValue", a.address.value);
     set("accessEmailLabel", a.email.label);
     const emailEl = document.getElementById("accessEmailValue");
-    if (emailEl) emailEl.innerHTML = `<a href="mailto:${escHtml(a.email.value)}">${escHtml(a.email.value)}</a>`;
+    if (emailEl) {
+      emailEl.innerHTML = String(a.email.value)
+        .split(/\r?\n/)
+        .map((displayEmail) => displayEmail.trim())
+        .filter(Boolean)
+        .map((displayEmail) => {
+          const mailtoEmail = displayEmail.replace(/\[at\]/gi, "@");
+          return `<a href="mailto:${escHtml(mailtoEmail)}">${escHtml(displayEmail)}</a>`;
+        })
+        .join("<br>");
+    }
     set("accessTelLabel", a.tel.label);
     const telEl = document.getElementById("accessTelValue");
     if (telEl) telEl.innerHTML = `<a href="tel:${escHtml(a.tel.value)}">${escHtml(a.tel.value)}</a>`;
