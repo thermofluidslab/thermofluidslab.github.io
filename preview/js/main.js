@@ -67,70 +67,80 @@
   }
 
   function renderResearch(c) {
-    const introEl = document.getElementById("researchIntro");
-    if (introEl) {
-      introEl.innerHTML = c.research.intro
-        .split("\n\n")
+    const renderParagraphs = (paragraphs) => {
+      const values = Array.isArray(paragraphs)
+        ? paragraphs
+        : String(paragraphs || "").split("\n\n");
+      return values
+        .filter(Boolean)
         .map((paragraph) => `<p>${escHtml(paragraph)}</p>`)
         .join("");
-    }
+    };
+
+    const introEl = document.getElementById("researchIntro");
+    if (introEl) introEl.innerHTML = renderParagraphs(c.research.intro);
 
     const methodsEl = document.getElementById("researchMethods");
     if (methodsEl) {
-      methodsEl.innerHTML = c.research.methods
+      methodsEl.innerHTML = (c.research.methods || [])
         .map(
           (method) => `<div class="research-method-row">
-            <span class="research-method-code">${escHtml(method.code)}</span>
-            <div>
-              <h3>${escHtml(method.label)}</h3>
-              <p>${escHtml(method.description)}</p>
-            </div>
+            <h3>${escHtml(method.label)}</h3>
+            <p>${escHtml(method.description)}</p>
           </div>`
         )
         .join("");
     }
 
-    const topicsEl = document.getElementById("researchTopics");
-    if (topicsEl) {
-      topicsEl.innerHTML = c.research.topics
-        .map((t) => {
-          const figures = (t.figures || [])
-            .map(
-              (figure) => `<figure class="research-figure">
-                <div class="research-figure-frame">
-                  <img src="${escHtml(figure.image)}" alt="${escHtml(figure.alt)}" loading="lazy">
-                </div>
-                <figcaption>${escHtml(figure.caption)}</figcaption>
-              </figure>`
-            )
-            .join("");
-          const layoutClass = figures ? "research-topic-layout" : "research-topic-layout research-topic-layout--text-only";
-
-          return `<article class="research-topic" id="research-${escHtml(t.id)}">
-            <h3 class="research-topic-heading">${escHtml(t.title)}</h3>
-            <div class="${layoutClass}">
-              <div class="research-topic-text">
-                <p class="research-topic-lead">${escHtml(t.question)}</p>
-                <p>${escHtml(t.body)}</p>
-                <p>${escHtml(t.approach)}</p>
-              </div>
-              ${figures ? `<div class="research-figures">${figures}</div>` : ""}
+    const groupsEl = document.getElementById("researchGroups");
+    if (groupsEl) {
+      groupsEl.innerHTML = (c.research.groups || [])
+        .map(
+          (group) => `<section class="research-domain" id="research-domain-${escHtml(group.id)}">
+            <div class="research-domain-heading">
+              <h3>${escHtml(group.title)}</h3>
+              <p>${escHtml(group.intro)}</p>
             </div>
-          </article>`;
-        })
+            <div class="research-project-list">
+              ${(group.projects || [])
+                .map(
+                  (project) => `<article class="research-project" id="research-project-${escHtml(project.id)}">
+                    <h4>${escHtml(project.title)}</h4>
+                    <div class="research-project-body">${renderParagraphs(project.body)}</div>
+                  </article>`
+                )
+                .join("")}
+            </div>
+          </section>`
+        )
         .join("");
-      return;
     }
 
-    // ホームページの研究カード
+    const collaborationEl = document.getElementById("researchCollaboration");
+    if (collaborationEl) {
+      const collaboration = c.research.collaboration || { items: [] };
+      collaborationEl.innerHTML = (collaboration.items || [])
+        .map(
+          (project) => `<article class="research-collaboration-item">
+            <h3>${escHtml(project.title)}</h3>
+            <div>${renderParagraphs(project.body)}</div>
+          </article>`
+        )
+        .join("");
+    }
+
+    if (groupsEl) return;
+
+    // ホームページの研究概要
     const grid = document.getElementById("researchGrid");
     if (!grid) return;
-    grid.innerHTML = c.research.topics
+    const homeTopics = c.research.homeTopics || c.research.topics || [];
+    grid.innerHTML = homeTopics
       .map((t) => {
         const imgHtml = t.image
           ? `<div class="research-card-img"><img src="${escHtml(t.image)}" alt="${escHtml(t.imageAlt || "")}" loading="lazy"></div>`
           : "";
-        return `<a href="research.html#research-${escHtml(t.id)}" class="research-card${t.image ? "" : " research-card--text-only"}">
+        return `<a href="research.html#research-domain-${escHtml(t.id)}" class="research-card${t.image ? "" : " research-card--text-only"}">
             ${imgHtml}
             <div class="research-card-body">
               <h3>${escHtml(t.title)}</h3>
