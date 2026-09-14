@@ -61,8 +61,7 @@ body.preview-site .page-main {
     font-size: 0.72rem;
   }
 
-  .preview-banner__note,
-  .preview-banner a:nth-child(2) {
+  .preview-banner__note {
     display: none;
   }
 
