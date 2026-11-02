@@ -115,8 +115,9 @@ const SITE_CONTENT = {
               id: "pyrolysis",
               title: "熱分解と資源循環",
               body: [
-                "工学院大学リサイクル工学研究室と共同で, バイオマスや廃プラスチックの熱分解を研究しています. 当研究室では主に分子シミュレーションによる反応過程の解析を担当し, 原料の分子構造と生成物の関係を調べています.",
-                "反応分子動力学を用い, リグニン・セルロース・ヘミセルロースなどのバイオマス成分や, 汎用プラスチック, 衣類用繊維, ポリ塩化ビニル（PVC）などを解析しています. 単一成分の熱分解と混合系の共熱分解, 反応雰囲気の違い, 揮発性生成物と炭化物（チャー）の生成バランスを比較し, 資源循環プロセスの基礎となる反応経路を整理しています."
+                "バイオマスや廃プラスチックの熱分解を研究しています. 当研究室では主に分子シミュレーションによる反応過程の解析を担当し, 原料の分子構造と生成物の関係を調べています.",
+                "反応分子動力学を用い, リグニン・セルロース・ヘミセルロースなどのバイオマス成分や, 汎用プラスチック, 衣類用繊維, ポリ塩化ビニル（PVC）などを解析しています. 単一成分の熱分解と混合系の共熱分解, 反応雰囲気の違い, 揮発性生成物と炭化物（チャー）の生成バランスを比較し, 資源循環プロセスの基礎となる反応経路を整理しています.",
+                "（工学院大学リサイクル工学研究室との共同研究）"
               ]
             },
             {
@@ -146,7 +147,8 @@ const SITE_CONTENT = {
               title: "物体まわりの流れと空気力",
               body: [
                 "球体の表面形状や回転, 変形は, 境界層の遷移や剥離位置を変化させ, 抗力・揚力・後流構造, さらには飛翔軌道に影響します. 表面のわずかな縫い目やパネル形状の違いも, 抵抗危機や不規則飛翔の発生条件を左右します.",
-                "工学院大学スポーツ流体工学研究室と共同で, 風洞での空気力計測, PIV（粒子画像流速測定法）, 高速度撮影, 数値流体解析（CFD）を用い, スポーツボールや回転球の空気力学を研究しています. 現在は, ソフトテニスボールの変形と「ふく」現象, 球に働くマグナス力, 後流構造の関係を調べています."
+                "風洞での空気力計測, PIV（粒子画像流速測定法）, 高速度撮影, 数値流体解析（CFD）を用い, スポーツボールや回転球の空気力学を研究しています. 現在は, ソフトテニスボールの変形と「ふく」現象, 球に働くマグナス力, 後流構造の関係を調べています.",
+                "（工学院大学スポーツ流体工学研究室との共同研究）"
               ]
             },
             {
@@ -802,8 +804,9 @@ Students develop skills in programming, simulation, measurement, data analysis, 
               id: "pyrolysis",
               title: "Pyrolysis and Resource Circulation",
               body: [
-                "We study biomass and waste-plastic pyrolysis in collaboration with the recycling engineering laboratory at Kogakuin University. Our laboratory mainly contributes molecular simulations of reaction processes to examine the relationship between feedstock structure and product formation.",
-                "Reactive molecular dynamics is applied to biomass components such as lignin, cellulose, and hemicellulose, as well as commodity plastics, textile fibers, and polyvinyl chloride (PVC). We compare single-component pyrolysis and co-pyrolysis of mixtures, reaction atmospheres, and the balance between volatile products and char to identify reaction pathways relevant to resource-circulation processes."
+                "We study biomass and waste-plastic pyrolysis. Our laboratory mainly contributes molecular simulations of reaction processes to examine the relationship between feedstock structure and product formation.",
+                "Reactive molecular dynamics is applied to biomass components such as lignin, cellulose, and hemicellulose, as well as commodity plastics, textile fibers, and polyvinyl chloride (PVC). We compare single-component pyrolysis and co-pyrolysis of mixtures, reaction atmospheres, and the balance between volatile products and char to identify reaction pathways relevant to resource-circulation processes.",
+                "(Collaborative research with the recycling engineering laboratory at Kogakuin University)"
               ]
             },
             {
@@ -833,7 +836,8 @@ Students develop skills in programming, simulation, measurement, data analysis, 
               title: "Flow Around Bodies and Aerodynamic Forces",
               body: [
                 "Surface geometry, rotation, and deformation of a sphere alter boundary-layer transition and separation, affecting drag, lift, wake structures, and flight trajectories. Even small differences in seams and panel geometry can change the conditions for a drag crisis or irregular flight.",
-                "In collaboration with the sports fluid engineering laboratory at Kogakuin University, we study the aerodynamics of sports balls and rotating spheres using wind-tunnel force measurements, particle image velocimetry (PIV), high-speed imaging, and computational fluid dynamics (CFD). Current work examines deformation and the flight behavior known as “fuku” in soft-tennis balls, Magnus forces on spheres, and their relation to wake structure."
+                "We study the aerodynamics of sports balls and rotating spheres using wind-tunnel force measurements, particle image velocimetry (PIV), high-speed imaging, and computational fluid dynamics (CFD). Current work examines deformation and the flight behavior known as “fuku” in soft-tennis balls, Magnus forces on spheres, and their relation to wake structure.",
+                "(Collaborative research with the sports fluid engineering laboratory at Kogakuin University)"
               ]
             },
             {
