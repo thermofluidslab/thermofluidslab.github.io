@@ -52,108 +52,120 @@ const SITE_CONTENT = {
 
     research: {
       title: "研究内容",
-      statement: "熱と流れに関わる現象を，分子と連続体の両面から研究する",
-      intro: "当研究室では，分子シミュレーション，流体実験，数値解析を用いて，相変化，材料構造，界面現象，流れと輸送を研究しています．\n\n水分子がつくる結晶や高分子の階層構造から，物体まわりの流れ，トンネル内の換気，液滴の蒸発まで，対象に応じた尺度で現象を捉えます．",
+      statement: "熱と流れに関わる現象を, 分子と連続体の両面から解明する",
+      intro: "当研究室では, 分子シミュレーション, 流体実験, 数値解析を用いて, 相変化, 材料構造, 界面現象, 流れと物質輸送を研究しています.\n\n水分子がつくる結晶や高分子の階層構造から, 物体まわりの流れやトンネル換気まで, 対象に応じた手法で現象の仕組みを調べています.",
       groupsHeading: "研究領域とプロジェクト",
-      groupsIntro: "研究課題を，原子・分子の配置と運動を扱う研究と，連続体としての流れと輸送を扱う研究に分けて紹介します．",
+      groupsIntro: "研究内容を「分子スケールの相・構造・反応」と「流れ・相界面・輸送」に分けて紹介します.",
       methodsHeading: "主な手法・設備",
-      methodsIntro: "研究対象と必要な空間・時間スケールに応じて，計算，実験，計測，データ解析を組み合わせます．",
+      methodsIntro: "研究対象や着目する空間・時間スケールに応じて, シミュレーション, 実験計測, データ解析を組み合わせます.",
       readMore: "研究内容を見る →",
       methods: [
-        { label: "分子シミュレーション", description: "古典・粗視化分子動力学，第一原理分子動力学，反応分子動力学，機械学習力場を用います．" },
-        { label: "構造・スペクトル解析", description: "局所秩序変数，振動解析，ラマンスペクトル，分子軌跡の解析により，構造変化と相状態を調べます．" },
-        { label: "数値流体解析", description: "数値流体力学，粒子追跡，飛翔軌道計算により，物体まわりと装置内部の流れを解析します．" },
-        { label: "実験・流れ計測", description: "風洞での空気力計測，PIV，高速度撮影を用いて，物体まわりの流れや運動を調べます．" },
+        {
+          label: "分子シミュレーション",
+          description: "古典・粗視化分子動力学, 第一原理分子動力学, 反応分子動力学, 機械学習力場を用います."
+        },
+        {
+          label: "構造・スペクトル解析",
+          description: "局所秩序変数, 振動解析, ラマンスペクトル, 分子軌跡の解析により, 構造変化と相状態を調べます."
+        },
+        {
+          label: "数値流体解析",
+          description: "数値流体力学（CFD）, 粒子追跡, 飛翔軌道計算により, 物体まわりや装置内部, トンネル内の流れを解析します."
+        },
+        {
+          label: "実験・流れ計測",
+          description: "風洞での空気力計測, PIV, 高速度撮影を用いて, 物体まわりの流れや運動を調べます."
+        }
       ],
       homeTopics: [
         {
           id: "molecular",
           title: "分子スケールの相・構造・反応",
-          cardBody: "ハイドレート，高分子，熱分解，分子界面を，原子・分子の配置と運動から調べます．",
+          cardBody: "ハイドレート, 高分子, 熱分解, 分子界面, 自己治癒セラミックスを, 原子・分子の配置と運動から調べます."
         },
         {
           id: "transport",
           title: "流れ・相界面・輸送",
-          cardBody: "物体まわりの流れと空気力，トンネル換気，液滴の蒸発を研究しています．",
-        },
+          cardBody: "物体まわりの流れと空気力, トンネル換気, 液滴の蒸発を研究しています."
+        }
       ],
       groups: [
         {
           id: "molecular",
           title: "分子スケールの相・構造・反応",
-          intro: "原子・分子の配置と運動を追跡し，相変化，構造形成，化学反応，界面特性が生じる過程を調べます．",
+          intro: "原子・分子の配置と運動を追跡し, 相変化, 構造形成, 化学反応, 界面特性が生じる仕組みを調べます.",
           projects: [
             {
               id: "hydrate",
               title: "クラスレートハイドレート",
               body: [
-                "クラスレートハイドレートは，水分子が形成するかご状構造にメタンや二酸化炭素などを取り込んだ結晶です．ガスの分離・貯蔵や冷熱利用に関わる材料として，包接される分子と水分子骨格の相互作用を調べています．",
-                "第一原理分子動力学と古典分子動力学を用い，ゲスト分子の振動，ゲスト分子と水分子骨格の相互作用，ケージ占有率，結晶成長を解析してきました．現在は，CO₂セミクラスレートハイドレートを対象に，機械学習力場と局所秩序変数を用いた相分類・結晶成長解析を進めています．",
-              ],
+                "クラスレートハイドレートは, 水分子がつくるかご状の骨格構造に, メタンや二酸化炭素などのガス分子を取り込んだ結晶です. ガスの分離・貯蔵や冷熱利用への応用を見据え, 取り込まれる分子（ゲスト分子）と水分子骨格の相互作用を調べています.",
+                "これまで, 第一原理分子動力学や古典分子動力学を用い, ゲスト分子の振動特性や水分子骨格との相互作用, ケージ占有率, 結晶成長過程を解析してきました. 現在はCO₂セミクラスレートハイドレートを対象に, 機械学習力場と局所秩序変数を用いた相分類や結晶成長の解析を進めています."
+              ]
             },
             {
               id: "polymer",
               title: "高分子の結晶化・自己組織化",
               body: [
-                "結晶性高分子では，分子鎖が折りたたまれてラメラ構造を形成し，結晶領域と非晶領域が階層的に分布します．ブロック共重合体では，異なる成分の相分離によって多様な周期構造が現れます．",
-                "粗視化分子動力学と局所秩序変数を用い，冷却・加熱に伴う結晶化と融解，ラメラの大きさと結晶化度，ミクロ相分離構造を解析しています．分子鎖の結び目や有限サイズが構造と力学応答に及ぼす影響も研究対象です．",
-              ],
+                "結晶性高分子では, 分子鎖が折りたたまれてラメラ構造を形成し, 結晶領域と非晶領域が階層的に分布します. また, ブロック共重合体では, 異なる成分の相分離によって多様な周期構造が現れます.",
+                "粗視化分子動力学と局所秩序変数を用いて, 冷却・加熱に伴う結晶化と融解, ラメラのサイズと結晶化度, ミクロ相分離構造を解析しています. さらに, 分子鎖の結び目や有限サイズ効果が, 高次構造や力学応答に及ぼす影響も調べています."
+              ]
             },
             {
               id: "pyrolysis",
               title: "熱分解と資源循環",
               body: [
-                "工学院大学リサイクル工学研究室と共同で，バイオマスやプラスチックの熱分解に関する研究に取り組んでいます．当研究室は，主に分子シミュレーションによる反応過程の解析を担当し，原料の分子構造と生成物の関係を調べています．",
-                "反応分子動力学を用いて，リグニン，セルロース，ヘミセルロース，プラスチック，衣類用繊維，ポリ塩化ビニルを扱います．単一成分と共熱分解，反応雰囲気，揮発性生成物とチャー形成の違いを比較し，資源循環プロセスの基礎となる反応経路を整理します．",
-              ],
+                "工学院大学リサイクル工学研究室と共同で, バイオマスや廃プラスチックの熱分解を研究しています. 当研究室では主に分子シミュレーションによる反応過程の解析を担当し, 原料の分子構造と生成物の関係を調べています.",
+                "反応分子動力学を用い, リグニン・セルロース・ヘミセルロースなどのバイオマス成分や, 汎用プラスチック, 衣類用繊維, ポリ塩化ビニル（PVC）などを解析しています. 単一成分の熱分解と混合系の共熱分解, 反応雰囲気の違い, 揮発性生成物と炭化物（チャー）の生成バランスを比較し, 資源循環プロセスの基礎となる反応経路を整理しています."
+              ]
             },
             {
               id: "interfaces",
               title: "分子界面と振動特性",
               body: [
-                "固体表面に接する分子の配列と結合状態は，ぬれ，凝縮，吸着，分子振動に影響します．表面の原子構造と界面に形成される分子集団を対応づけ，観測される物性の起源を調べます．",
-                "ナノ構造表面上の水のぬれ・凝縮，ナノ流路内の輸送，グラフェン上に形成されるペプチド結晶のラマンスペクトルを対象とし，分子動力学，第一原理計算，振動解析を用いて研究しています．",
-              ],
+                "固体表面に接する分子の配向や結合状態は, ぬれ, 凝縮, 吸着, 分子振動などに影響します. 固体表面の原子構造と界面近傍の分子集団の挙動を対応づけ, 観測される物性の起源を調べます.",
+                "ナノ構造表面における水のぬれ・凝縮現象, ナノ流路内の物質輸送, グラフェン上のペプチド結晶が示すラマンスペクトルなどを対象に, 分子動力学, 第一原理計算, 振動解析を組み合わせて研究しています."
+              ]
             },
             {
               id: "self-healing-ceramics",
               title: "自己治癒セラミックス",
               body: [
-                "自己治癒セラミックスでは，酸化生成物がき裂を充填・接合する過程を対象に，アコースティックエミッションによる治癒状態の評価と，第一原理計算による酸化生成物・母材界面の接合性評価を行っています．",
-              ],
-            },
-          ],
+                "き裂を酸化生成物で充填・接合して機能を回復する自己治癒セラミックスを対象としています. アコースティックエミッション（AE）計測による治癒状態の評価と, 第一原理計算による酸化生成物と母材の界面の接合性評価を行っています."
+              ]
+            }
+          ]
         },
         {
           id: "transport",
           title: "流れ・相界面・輸送",
-          intro: "物体に働く空気力，トンネル内の気流，液滴の蒸発を対象に，実験と数値解析を用いて研究しています．",
+          intro: "物体に働く空気力やトンネル内の気流, 液滴の蒸発現象を対象に, 実験や数値解析を用いて研究しています.",
           projects: [
             {
               id: "aerodynamics",
               title: "物体まわりの流れと空気力",
               body: [
-                "球体の表面形状，回転，変形は，境界層の遷移と剥離位置を変え，抗力，揚力，後流，飛翔軌道に影響します．小さな縫い目やパネルの違いも，抵抗危機や不規則飛翔の発生条件を変えます．",
-                "工学院大学スポーツ流体工学研究室との共同研究として，風洞での空気力計測，PIV，高速度撮影，数値流体解析を用い，ボールや回転球の空気力学に取り組んでいます．現在は，ソフトテニスボールの変形とふく現象，球に働くマグナス力，後流構造の関係を調べています．",
-              ],
+                "球体の表面形状や回転, 変形は, 境界層の遷移や剥離位置を変化させ, 抗力・揚力・後流構造, さらには飛翔軌道に影響します. 表面のわずかな縫い目やパネル形状の違いも, 抵抗危機や不規則飛翔の発生条件を左右します.",
+                "工学院大学スポーツ流体工学研究室と共同で, 風洞での空気力計測, PIV（粒子画像流速測定法）, 高速度撮影, 数値流体解析（CFD）を用い, スポーツボールや回転球の空気力学を研究しています. 現在は, ソフトテニスボールの変形と「ふく」現象, 球に働くマグナス力, 後流構造の関係を調べています."
+              ]
             },
             {
               id: "process-flow",
               title: "トンネル換気とジェットファン",
               body: [
-                "トンネル内の換気では，ジェットファンがつくる噴流とトンネル全体の気流が関わり，ファンの設置角度，停止車両，トンネル形状によって換気性能が変化します．",
-                "数値流体解析を用いて，偏向ジェットファンによる気流の形成や，停止車両が換気性能に及ぼす影響を調べています．トンネル内の流速分布と圧力損失を解析し，ファンの配置や運転条件を検討します．",
-              ],
+                "道路トンネル内の換気では, ジェットファンが生み出す噴流とトンネル全体の気流が相互に影響します. ファンの設置角度や停止車両の有無, トンネル形状によって換気性能が変化します.",
+                "数値流体解析を用いて, 偏向ジェットファンによる気流の形成過程や, 停止車両が換気性能に及ぼす影響を評価しています. トンネル内の流速分布や圧力損失を解析し, ファンの配置や運転条件を検討しています."
+              ]
             },
             {
               id: "droplets",
               title: "液滴の蒸発",
               body: [
-                "液滴の蒸発について，分子シミュレーションによる研究に取り組んでいます．自由界面での分子の挙動を追跡し，振動や電場が蒸発過程に及ぼす影響を調べています．",
-              ],
-            },
-          ],
-        },
+                "液滴の蒸発現象について, 分子シミュレーションを用いて研究しています. 気液自由界面における分子の挙動を追跡し, 振動や電場が蒸発過程に及ぼす影響を調べています."
+              ]
+            }
+          ]
+        }
       ],
       topics: [
         {
@@ -727,77 +739,89 @@ Students develop skills in programming, simulation, measurement, data analysis, 
 
     research: {
       title: "Research",
-      statement: "Thermal-fluid phenomena from molecular and continuum perspectives",
-      intro: "Our laboratory studies phase change, material structure, interfacial phenomena, flow, and transport using molecular simulation, fluid experiments, and numerical analysis.\n\nWe examine each phenomenon at an appropriate scale, from water-based crystals and hierarchical polymer structures to flow around bodies, tunnel ventilation, and droplet evaporation.",
+      statement: "Understanding thermal-fluid phenomena from molecular and continuum perspectives",
+      intro: "Our laboratory studies phase change, material structure, interfacial phenomena, flow, and mass transport using molecular simulation, fluid experiments, and numerical analysis.\n\nOur subjects range from water-based crystals and hierarchical polymer structures to flow around bodies and tunnel ventilation. We select methods suited to each subject to investigate the mechanisms involved.",
       groupsHeading: "Research Areas and Projects",
-      groupsIntro: "Our projects are organized into molecular-scale studies of atomic and molecular configurations and motion, and continuum-scale studies of flow and transport.",
+      groupsIntro: "Our research is presented in two areas: molecular-scale phases, structures, and reactions; and flow, phase interfaces, and transport.",
       methodsHeading: "Main Methods and Facilities",
-      methodsIntro: "We combine computation, experiments, measurement, and data analysis according to the spatial and temporal scales of each problem.",
+      methodsIntro: "We combine simulation, experimental measurement, and data analysis according to the spatial and temporal scales of each problem.",
       readMore: "View research →",
       methods: [
-        { label: "Molecular Simulation", description: "We use classical and coarse-grained molecular dynamics, first-principles molecular dynamics, reactive molecular dynamics, and machine-learning force fields." },
-        { label: "Structural and Spectral Analysis", description: "Local order parameters, vibrational analysis, Raman spectra, and trajectory analysis are used to identify structural change and phase states." },
-        { label: "Computational Fluid Dynamics", description: "Computational fluid dynamics, particle tracking, and trajectory calculations resolve flows around bodies and inside fluid systems." },
-        { label: "Experiments and Flow Measurement", description: "Wind-tunnel force measurements, particle image velocimetry, and high-speed imaging are used to study flow and motion around bodies." },
+        {
+          label: "Molecular Simulation",
+          description: "We use classical and coarse-grained molecular dynamics, first-principles molecular dynamics, reactive molecular dynamics, and machine-learning force fields."
+        },
+        {
+          label: "Structural and Spectral Analysis",
+          description: "Local order parameters, vibrational analysis, Raman spectra, and trajectory analysis are used to examine structural changes and phase states."
+        },
+        {
+          label: "Computational Fluid Dynamics",
+          description: "Computational fluid dynamics (CFD), particle tracking, and flight-trajectory calculations are used to analyze flows around bodies, inside devices, and in tunnels."
+        },
+        {
+          label: "Experiments and Flow Measurement",
+          description: "Wind-tunnel force measurements, particle image velocimetry (PIV), and high-speed imaging are used to study flow and motion around bodies."
+        }
       ],
       homeTopics: [
         {
           id: "molecular",
           title: "Molecular-Scale Phases, Structures, and Reactions",
-          cardBody: "We study hydrates, polymers, pyrolysis, and molecular interfaces through atomic and molecular configurations and motion.",
+          cardBody: "We study hydrates, polymers, pyrolysis, molecular interfaces, and self-healing ceramics through atomic and molecular configurations and motion."
         },
         {
           id: "transport",
           title: "Flow, Phase Interfaces, and Transport",
-          cardBody: "We study flow around bodies and aerodynamic forces, tunnel ventilation, and droplet evaporation.",
-        },
+          cardBody: "We study flow around bodies and aerodynamic forces, tunnel ventilation, and droplet evaporation."
+        }
       ],
       groups: [
         {
           id: "molecular",
           title: "Molecular-Scale Phases, Structures, and Reactions",
-          intro: "We track atomic and molecular configurations and motion to examine the processes that produce phase change, structure formation, chemical reactions, and interfacial properties.",
+          intro: "We track atomic and molecular configurations and motion to investigate the mechanisms of phase change, structure formation, chemical reactions, and interfacial properties.",
           projects: [
             {
               id: "hydrate",
               title: "Clathrate Hydrates",
               body: [
-                "Clathrate hydrates are crystalline solids in which cage-like networks of water molecules enclose guest molecules such as methane and carbon dioxide. We study interactions between guest molecules and the water framework in relation to gas separation, storage, and cold-energy applications.",
-                "First-principles and classical molecular dynamics have been used to analyze guest-molecule vibrations, guest-framework interactions, cage occupancy, and crystal growth. Current work examines CO₂ semiclathrate hydrates using machine-learning force fields and local order parameters for phase identification and crystal-growth analysis.",
-              ],
+                "Clathrate hydrates are crystals in which cage-like frameworks of water molecules enclose gas molecules such as methane and carbon dioxide. With applications in gas separation, storage, and cold-energy utilization in mind, we study interactions between the enclosed guest molecules and the water framework.",
+                "We have used first-principles and classical molecular dynamics to analyze guest-molecule vibrations, guest-framework interactions, cage occupancy, and crystal growth. Current work examines CO₂ semiclathrate hydrates using machine-learning force fields and local order parameters for phase identification and crystal-growth analysis."
+              ]
             },
             {
               id: "polymer",
               title: "Crystallization and Self-Organization of Polymers",
               body: [
-                "In crystalline polymers, folded molecular chains form lamellae, producing hierarchical distributions of crystalline and amorphous regions. Block copolymers form a variety of periodic structures through microphase separation between their components.",
-                "Using coarse-grained molecular dynamics and local order parameters, we analyze crystallization and melting during cooling and heating, lamellar dimensions and crystallinity, and microphase-separated structures. We also study how molecular-chain knots and finite system size affect structure and mechanical response.",
-              ],
+                "In crystalline polymers, folded molecular chains form lamellae, producing hierarchical distributions of crystalline and amorphous regions. Block copolymers also form a variety of periodic structures through phase separation between their components.",
+                "Using coarse-grained molecular dynamics and local order parameters, we analyze crystallization and melting during cooling and heating, lamellar size and crystallinity, and microphase-separated structures. We also examine how molecular-chain knots and finite-size effects influence higher-order structures and mechanical response."
+              ]
             },
             {
               id: "pyrolysis",
               title: "Pyrolysis and Resource Circulation",
               body: [
-                "We study biomass and plastic pyrolysis in collaboration with the recycling engineering laboratory at Kogakuin University. Our laboratory mainly contributes molecular simulations of reaction processes to examine the relationship between feedstock structure and product formation.",
-                "Reactive molecular dynamics is applied to lignin, cellulose, hemicellulose, plastics, textile fibers, and polyvinyl chloride. By comparing single-component and co-pyrolysis systems, reaction atmospheres, volatile products, and char formation, we identify reaction pathways that underlie resource-circulation processes.",
-              ],
+                "We study biomass and waste-plastic pyrolysis in collaboration with the recycling engineering laboratory at Kogakuin University. Our laboratory mainly contributes molecular simulations of reaction processes to examine the relationship between feedstock structure and product formation.",
+                "Reactive molecular dynamics is applied to biomass components such as lignin, cellulose, and hemicellulose, as well as commodity plastics, textile fibers, and polyvinyl chloride (PVC). We compare single-component pyrolysis and co-pyrolysis of mixtures, reaction atmospheres, and the balance between volatile products and char to identify reaction pathways relevant to resource-circulation processes."
+              ]
             },
             {
               id: "interfaces",
               title: "Molecular Interfaces and Vibrational Properties",
               body: [
-                "The arrangement and bonding of molecules at solid surfaces influence wetting, condensation, adsorption, and molecular vibration. We relate atomic surface structure and interfacial molecular assemblies to the physical properties observed at larger scales.",
-                "Our subjects include wetting and condensation of water on nanostructured surfaces, transport in nanochannels, and Raman spectra of peptide crystals formed on graphene. Molecular dynamics, first-principles calculations, and vibrational analysis are used in these studies.",
-              ],
+                "The orientation and bonding of molecules at solid surfaces affect wetting, condensation, adsorption, and molecular vibration. We relate atomic surface structure and the behavior of interfacial molecular assemblies to the origins of observed physical properties.",
+                "Our subjects include wetting and condensation of water on nanostructured surfaces, mass transport in nanochannels, and Raman spectra of peptide crystals on graphene. These studies combine molecular dynamics, first-principles calculations, and vibrational analysis."
+              ]
             },
             {
               id: "self-healing-ceramics",
               title: "Self-Healing Ceramics",
               body: [
-                "For self-healing ceramics, we study how oxidation products fill and reconnect cracks. Healing is assessed by acoustic emission, while first-principles calculations are used to evaluate bonding at interfaces between oxidation products and the ceramic matrix.",
-              ],
-            },
-          ],
+                "We study self-healing ceramics that recover their function as oxidation products fill and reconnect cracks. Acoustic emission (AE) measurements are used to assess healing, while first-principles calculations evaluate bonding at interfaces between oxidation products and the ceramic matrix."
+              ]
+            }
+          ]
         },
         {
           id: "transport",
@@ -808,27 +832,27 @@ Students develop skills in programming, simulation, measurement, data analysis, 
               id: "aerodynamics",
               title: "Flow Around Bodies and Aerodynamic Forces",
               body: [
-                "Surface geometry, rotation, and deformation of a sphere alter boundary-layer transition and separation, thereby changing drag, lift, wakes, and flight trajectories. Even small differences in seams and panels can change the conditions for a drag crisis or irregular flight.",
-                "In collaboration with the sports fluid engineering laboratory at Kogakuin University, we study the aerodynamics of balls and rotating spheres using wind-tunnel force measurements, particle image velocimetry, high-speed imaging, and computational fluid dynamics. Current work examines deformation and unsteady aerodynamic behavior of soft-tennis balls, Magnus forces on spheres, and their relation to wake structure.",
-              ],
+                "Surface geometry, rotation, and deformation of a sphere alter boundary-layer transition and separation, affecting drag, lift, wake structures, and flight trajectories. Even small differences in seams and panel geometry can change the conditions for a drag crisis or irregular flight.",
+                "In collaboration with the sports fluid engineering laboratory at Kogakuin University, we study the aerodynamics of sports balls and rotating spheres using wind-tunnel force measurements, particle image velocimetry (PIV), high-speed imaging, and computational fluid dynamics (CFD). Current work examines deformation and the flight behavior known as “fuku” in soft-tennis balls, Magnus forces on spheres, and their relation to wake structure."
+              ]
             },
             {
               id: "process-flow",
               title: "Tunnel Ventilation and Jet Fans",
               body: [
-                "Tunnel ventilation involves interactions between jet-fan flows and airflow throughout the tunnel. Fan inclination, stationary vehicles, and tunnel geometry affect ventilation performance.",
-                "We use computational fluid dynamics to study airflow generated by inclined jet fans and the influence of stationary vehicles on ventilation performance. Velocity distributions and pressure losses are analyzed to examine fan layout and operating conditions.",
-              ],
+                "In road-tunnel ventilation, jet-fan flows interact with airflow throughout the tunnel. Fan inclination, the presence of stationary vehicles, and tunnel geometry affect ventilation performance.",
+                "We use computational fluid dynamics to evaluate airflow formation by inclined jet fans and the influence of stationary vehicles on ventilation performance. Velocity distributions and pressure losses in the tunnel are analyzed to examine fan layout and operating conditions."
+              ]
             },
             {
               id: "droplets",
               title: "Droplet Evaporation",
               body: [
-                "We are investigating droplet evaporation using molecular simulation. By tracking molecular behavior at free interfaces, we study how vibration and electric fields affect the evaporation process.",
-              ],
-            },
-          ],
-        },
+                "We study droplet evaporation using molecular simulation. By tracking molecular behavior at the liquid-vapor free interface, we investigate how vibration and electric fields affect the evaporation process."
+              ]
+            }
+          ]
+        }
       ],
       topics: [
         {
