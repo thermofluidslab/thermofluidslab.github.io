@@ -98,13 +98,6 @@ const SITE_CONTENT = {
             {
               id: "hydrate",
               title: "クラスレートハイドレート",
-              figure: {
-                image: "images/research-assets/hydrate-si-initial.png",
-                alt: "水368分子とメタン64分子からなるsIハイドレートの初期構造",
-                width: 1400,
-                height: 1050,
-                caption: "sIメタンハイドレートの初期構造. 水368分子とメタン64分子を含む, 一辺2.406 nmの周期セル. 赤は酸素, 白は水素, 濃灰色は炭素を表します."
-              },
               body: [
                 "クラスレートハイドレートは, 水分子がつくるかご状の骨格構造に, メタンや二酸化炭素などのガス分子を取り込んだ結晶です. ガスの分離・貯蔵や冷熱利用への応用を見据え, 取り込まれる分子（ゲスト分子）と水分子骨格の相互作用を調べています.",
                 "これまで, 第一原理分子動力学や古典分子動力学を用い, ゲスト分子の振動特性や水分子骨格との相互作用, ケージ占有率, 結晶成長過程を解析してきました. 現在はCO₂セミクラスレートハイドレートを対象に, 機械学習力場と局所秩序変数を用いた相分類や結晶成長の解析を進めています."
@@ -823,13 +816,6 @@ Students develop skills in programming, simulation, measurement, data analysis, 
             {
               id: "hydrate",
               title: "Clathrate Hydrates",
-              figure: {
-                image: "images/research-assets/hydrate-si-initial.png",
-                alt: "Initial sI methane hydrate structure containing 368 water molecules and 64 methane molecules",
-                width: 1400,
-                height: 1050,
-                caption: "Initial sI methane hydrate structure: 368 water and 64 methane molecules in a cubic periodic cell of side length 2.406 nm. Red, white, and dark gray denote oxygen, hydrogen, and carbon, respectively."
-              },
               body: [
                 "Clathrate hydrates are crystals in which cage-like frameworks of water molecules enclose gas molecules such as methane and carbon dioxide. With applications in gas separation, storage, and cold-energy utilization in mind, we study interactions between the enclosed guest molecules and the water framework.",
                 "We have used first-principles and classical molecular dynamics to analyze guest-molecule vibrations, guest-framework interactions, cage occupancy, and crystal growth. Current work examines CO₂ semiclathrate hydrates using machine-learning force fields and local order parameters for phase identification and crystal-growth analysis."
