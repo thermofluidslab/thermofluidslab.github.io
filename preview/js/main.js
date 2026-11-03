@@ -80,6 +80,28 @@
     const introEl = document.getElementById("researchIntro");
     if (introEl) introEl.innerHTML = renderParagraphs(c.research.intro);
 
+    const indexEl = document.getElementById("researchIndex");
+    if (indexEl) {
+      indexEl.innerHTML = (c.research.groups || []).map((group) =>
+        `<div><h2><a href="#research-domain-${escHtml(group.id)}">${escHtml(group.title)}</a></h2>
+          <ul>${(group.projects || []).map((project) =>
+            `<li><a href="#research-project-${escHtml(project.id)}">${escHtml(project.title)}</a></li>`
+          ).join("")}</ul></div>`
+      ).join("");
+    }
+
+    const renderFigure = (figure) => {
+      if (!figure) return "";
+      const source = figure.sourceUrl
+        ? `<a href="${escHtml(figure.sourceUrl)}">${escHtml(figure.sourceLabel)}</a>` : "";
+      const license = figure.licenseUrl
+        ? ` · <a href="${escHtml(figure.licenseUrl)}">${escHtml(figure.licenseLabel)}</a>` : "";
+      return `<figure class="research-project-figure">
+        <a href="${escHtml(figure.image)}"><img src="${escHtml(figure.image)}" alt="${escHtml(figure.alt)}" width="${escHtml(figure.width)}" height="${escHtml(figure.height)}" loading="lazy" decoding="async"></a>
+        <figcaption>${escHtml(figure.caption)}${source ? `<span class="research-figure-credit">${source}${license}</span>` : ""}</figcaption>
+      </figure>`;
+    };
+
     const methodsEl = document.getElementById("researchMethods");
     if (methodsEl) {
       methodsEl.innerHTML = (c.research.methods || [])
@@ -106,7 +128,10 @@
                 .map(
                   (project) => `<article class="research-project" id="research-project-${escHtml(project.id)}">
                     <h4>${escHtml(project.title)}</h4>
-                    <div class="research-project-body">${renderParagraphs(project.body)}</div>
+                    <div class="research-project-content${!project.figure ? " research-project-content--text-only" : project.figure.wide ? " research-project-content--wide" : ""}">
+                      <div class="research-project-body">${renderParagraphs(project.body)}</div>
+                      ${renderFigure(project.figure)}
+                    </div>
                   </article>`
                 )
                 .join("")}

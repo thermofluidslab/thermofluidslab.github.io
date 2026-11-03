@@ -98,6 +98,13 @@ const SITE_CONTENT = {
             {
               id: "hydrate",
               title: "クラスレートハイドレート",
+              figure: {
+                image: "images/research-assets/hydrate-si-initial.png",
+                alt: "水368分子とメタン64分子からなるsIハイドレートの初期構造",
+                width: 1400,
+                height: 1050,
+                caption: "sIメタンハイドレートの初期構造. 水368分子とメタン64分子を含む, 一辺2.406 nmの周期セル. 赤は酸素, 白は水素, 濃灰色は炭素を表します."
+              },
               body: [
                 "クラスレートハイドレートは, 水分子がつくるかご状の骨格構造に, メタンや二酸化炭素などのガス分子を取り込んだ結晶です. ガスの分離・貯蔵や冷熱利用への応用を見据え, 取り込まれる分子（ゲスト分子）と水分子骨格の相互作用を調べています.",
                 "これまで, 第一原理分子動力学や古典分子動力学を用い, ゲスト分子の振動特性や水分子骨格との相互作用, ケージ占有率, 結晶成長過程を解析してきました. 現在はCO₂セミクラスレートハイドレートを対象に, 機械学習力場と局所秩序変数を用いた相分類や結晶成長の解析を進めています."
@@ -106,6 +113,18 @@ const SITE_CONTENT = {
             {
               id: "polymer",
               title: "高分子の結晶化・自己組織化",
+              figure: {
+                image: "images/research-assets/polymer-lamella-2026-fig5.png",
+                alt: "粗視化分子動力学で得られた高分子ラメラ, 一本鎖と結晶・非晶界面を示す共著論文の図5",
+                width: 1684,
+                height: 704,
+                wide: true,
+                caption: "粗視化分子動力学で得られた高分子ラメラ構造. （a）約100万粒子からなる系の全体像, （b）一本の分子鎖, （c）結晶・非晶界面. 青と紫は局所秩序変数による結晶領域と非晶領域, 橙色は鎖末端を表します.",
+                sourceUrl: "https://doi.org/10.1038/s41598-026-43668-5",
+                sourceLabel: "F. Takano, M. Hiratsuka, K. Z. Takahashi, Scientific Reports 16, 15368 (2026), Fig. 5. © The Author(s) 2026",
+                licenseUrl: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                licenseLabel: "CC BY-NC-ND 4.0"
+              },
               body: [
                 "結晶性高分子では, 分子鎖が折りたたまれてラメラ構造を形成し, 結晶領域と非晶領域が階層的に分布します. また, ブロック共重合体では, 異なる成分の相分離によって多様な周期構造が現れます.",
                 "粗視化分子動力学と局所秩序変数を用いて, 冷却・加熱に伴う結晶化と融解, ラメラのサイズと結晶化度, ミクロ相分離構造を解析しています. さらに, 分子鎖の結び目や有限サイズ効果が, 高次構造や力学応答に及ぼす影響も調べています."
@@ -123,6 +142,16 @@ const SITE_CONTENT = {
             {
               id: "interfaces",
               title: "分子界面と振動特性",
+              figure: {
+                image: "../images/research_nano_g006.png",
+                alt: "分子動力学計算で得られた平滑面とナノ構造面上の水の凝縮状態",
+                width: 3076,
+                height: 1197,
+                wide: true,
+                caption: "固体表面のナノ構造によって変化する水の凝縮状態. 分子動力学計算から, 表面形状と界面近傍の水分子配置の関係を調べています.",
+                sourceUrl: "https://doi.org/10.3390/mi10090587",
+                sourceLabel: "M. Hiratsuka et al., Micromachines 10, 587 (2019)"
+              },
               body: [
                 "固体表面に接する分子の配向や結合状態は, ぬれ, 凝縮, 吸着, 分子振動などに影響します. 固体表面の原子構造と界面近傍の分子集団の挙動を対応づけ, 観測される物性の起源を調べます.",
                 "ナノ構造表面における水のぬれ・凝縮現象, ナノ流路内の物質輸送, グラフェン上のペプチド結晶が示すラマンスペクトルなどを対象に, 分子動力学, 第一原理計算, 振動解析を組み合わせて研究しています."
@@ -145,6 +174,13 @@ const SITE_CONTENT = {
             {
               id: "aerodynamics",
               title: "物体まわりの流れと空気力",
+              figure: {
+                image: "../images/research_sports_g004.png",
+                alt: "風洞内に支持したサッカーボールの空気力計測",
+                width: 1531,
+                height: 1144,
+                caption: "風洞におけるボールの空気力計測. 表面形状や流速による抗力・揚力の変化を調べ, 後流の計測や数値解析と比較します."
+              },
               body: [
                 "球体の表面形状や回転, 変形は, 境界層の遷移や剥離位置を変化させ, 抗力・揚力・後流構造, さらには飛翔軌道に影響します. 表面のわずかな縫い目やパネル形状の違いも, 抵抗危機や不規則飛翔の発生条件を左右します.",
                 "風洞での空気力計測, PIV（粒子画像流速測定法）, 高速度撮影, 数値流体解析（CFD）を用い, スポーツボールや回転球の空気力学を研究しています. 現在は, ソフトテニスボールの変形と「ふく」現象, 球に働くマグナス力, 後流構造の関係を調べています.",
@@ -787,6 +823,13 @@ Students develop skills in programming, simulation, measurement, data analysis, 
             {
               id: "hydrate",
               title: "Clathrate Hydrates",
+              figure: {
+                image: "images/research-assets/hydrate-si-initial.png",
+                alt: "Initial sI methane hydrate structure containing 368 water molecules and 64 methane molecules",
+                width: 1400,
+                height: 1050,
+                caption: "Initial sI methane hydrate structure: 368 water and 64 methane molecules in a cubic periodic cell of side length 2.406 nm. Red, white, and dark gray denote oxygen, hydrogen, and carbon, respectively."
+              },
               body: [
                 "Clathrate hydrates are crystals in which cage-like frameworks of water molecules enclose gas molecules such as methane and carbon dioxide. With applications in gas separation, storage, and cold-energy utilization in mind, we study interactions between the enclosed guest molecules and the water framework.",
                 "We have used first-principles and classical molecular dynamics to analyze guest-molecule vibrations, guest-framework interactions, cage occupancy, and crystal growth. Current work examines CO₂ semiclathrate hydrates using machine-learning force fields and local order parameters for phase identification and crystal-growth analysis."
@@ -795,6 +838,18 @@ Students develop skills in programming, simulation, measurement, data analysis, 
             {
               id: "polymer",
               title: "Crystallization and Self-Organization of Polymers",
+              figure: {
+                image: "images/research-assets/polymer-lamella-2026-fig5.png",
+                alt: "Figure 5 from our coauthored paper: a simulated polymer lamella, a single chain, and a crystal–amorphous interface",
+                width: 1684,
+                height: 704,
+                wide: true,
+                caption: "Polymer lamella obtained by coarse-grained molecular dynamics. (a) A system of approximately one million beads, (b) a single chain, and (c) a crystal–amorphous interface. Blue and purple identify crystalline and amorphous regions using a local order parameter; orange indicates chain ends.",
+                sourceUrl: "https://doi.org/10.1038/s41598-026-43668-5",
+                sourceLabel: "F. Takano, M. Hiratsuka, K. Z. Takahashi, Scientific Reports 16, 15368 (2026), Fig. 5. © The Author(s) 2026",
+                licenseUrl: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                licenseLabel: "CC BY-NC-ND 4.0"
+              },
               body: [
                 "In crystalline polymers, folded molecular chains form lamellae, producing hierarchical distributions of crystalline and amorphous regions. Block copolymers also form a variety of periodic structures through phase separation between their components.",
                 "Using coarse-grained molecular dynamics and local order parameters, we analyze crystallization and melting during cooling and heating, lamellar size and crystallinity, and microphase-separated structures. We also examine how molecular-chain knots and finite-size effects influence higher-order structures and mechanical response."
@@ -812,6 +867,16 @@ Students develop skills in programming, simulation, measurement, data analysis, 
             {
               id: "interfaces",
               title: "Molecular Interfaces and Vibrational Properties",
+              figure: {
+                image: "../images/research_nano_g006.png",
+                alt: "Molecular dynamics snapshots of water condensation on flat and nanostructured solid surfaces",
+                width: 3076,
+                height: 1197,
+                wide: true,
+                caption: "Water condensation on solid surfaces with different nanostructures. Molecular dynamics relates surface geometry to molecular arrangements near the interface.",
+                sourceUrl: "https://doi.org/10.3390/mi10090587",
+                sourceLabel: "M. Hiratsuka et al., Micromachines 10, 587 (2019)"
+              },
               body: [
                 "The orientation and bonding of molecules at solid surfaces affect wetting, condensation, adsorption, and molecular vibration. We relate atomic surface structure and the behavior of interfacial molecular assemblies to the origins of observed physical properties.",
                 "Our subjects include wetting and condensation of water on nanostructured surfaces, mass transport in nanochannels, and Raman spectra of peptide crystals on graphene. These studies combine molecular dynamics, first-principles calculations, and vibrational analysis."
@@ -834,6 +899,13 @@ Students develop skills in programming, simulation, measurement, data analysis, 
             {
               id: "aerodynamics",
               title: "Flow Around Bodies and Aerodynamic Forces",
+              figure: {
+                image: "../images/research_sports_g004.png",
+                alt: "A soccer ball supported in a wind tunnel for aerodynamic force measurements",
+                width: 1531,
+                height: 1144,
+                caption: "Wind-tunnel measurements of aerodynamic forces on a ball. We examine how surface geometry and flow speed affect drag and lift, and compare the results with wake measurements and numerical analysis."
+              },
               body: [
                 "Surface geometry, rotation, and deformation of a sphere alter boundary-layer transition and separation, affecting drag, lift, wake structures, and flight trajectories. Even small differences in seams and panel geometry can change the conditions for a drag crisis or irregular flight.",
                 "We study the aerodynamics of sports balls and rotating spheres using wind-tunnel force measurements, particle image velocimetry (PIV), high-speed imaging, and computational fluid dynamics (CFD). Current work examines deformation and the flight behavior known as “fuku” in soft-tennis balls, Magnus forces on spheres, and their relation to wake structure.",
