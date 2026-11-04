@@ -98,6 +98,15 @@ const SITE_CONTENT = {
             {
               id: "hydrate",
               title: "クラスレートハイドレート",
+              figure: {
+                image: "images/research-assets/hydrate-si-cage.png",
+                alt: "24個の水分子がメタンを囲むsIハイドレートの大ケージ",
+                width: 1400,
+                height: 990,
+                caption: "sIメタンハイドレートの大ケージ. 公開計算入力から水24分子とメタン1分子を取り出して描画しました. 橙色の球1個でメタン1分子を表し, 青い線は距離3.3 Å以内の酸素同士を結びます.",
+                sourceUrl: "https://www.pyretis.org/current/examples/examples-gromacs-hydrate.html",
+                sourceLabel: "座標出典 PyRETIS / GROMACS公開例"
+              },
               body: [
                 "クラスレートハイドレートは, 水分子がつくるかご状の骨格構造に, メタンや二酸化炭素などのガス分子を取り込んだ結晶です. ガスの分離・貯蔵や冷熱利用への応用を見据え, 取り込まれる分子（ゲスト分子）と水分子骨格の相互作用を調べています.",
                 "これまで, 第一原理分子動力学や古典分子動力学を用い, ゲスト分子の振動特性や水分子骨格との相互作用, ケージ占有率, 結晶成長過程を解析してきました. 現在はCO₂セミクラスレートハイドレートを対象に, 機械学習力場と局所秩序変数を用いた相分類や結晶成長の解析を進めています."
@@ -126,6 +135,15 @@ const SITE_CONTENT = {
             {
               id: "pyrolysis",
               title: "熱分解と資源循環",
+              figure: {
+                image: "images/research-assets/cellulose-ibeta-crystal.png",
+                alt: "7本のセルロース鎖が並ぶセルロースIβの原子構造",
+                width: 1400,
+                height: 990,
+                caption: "バイオマス成分の一つであるセルロースIβの構造モデル. 公開結晶構造に基づく7本の鎖を示します. 赤は酸素, 濃灰は炭素で, 水素は表示から省いています.",
+                sourceUrl: "https://www.crystallography.net/cod/4114994.html",
+                sourceLabel: "結晶構造 Nishiyama, Langan & Chanzy (2002), COD 4114994"
+              },
               body: [
                 "バイオマスや廃プラスチックの熱分解を研究しています. 当研究室では主に分子シミュレーションによる反応過程の解析を担当し, 原料の分子構造と生成物の関係を調べています.",
                 "反応分子動力学を用い, リグニン・セルロース・ヘミセルロースなどのバイオマス成分や, 汎用プラスチック, 衣類用繊維, ポリ塩化ビニル（PVC）などを解析しています. 単一成分の熱分解と混合系の共熱分解, 反応雰囲気の違い, 揮発性生成物と炭化物（チャー）の生成バランスを比較し, 資源循環プロセスの基礎となる反応経路を整理しています.",
@@ -135,16 +153,6 @@ const SITE_CONTENT = {
             {
               id: "interfaces",
               title: "分子界面と振動特性",
-              figure: {
-                image: "../images/research_nano_g006.png",
-                alt: "分子動力学計算で得られた平滑面とナノ構造面上の水の凝縮状態",
-                width: 3076,
-                height: 1197,
-                wide: true,
-                caption: "固体表面のナノ構造によって変化する水の凝縮状態. 分子動力学計算から, 表面形状と界面近傍の水分子配置の関係を調べています.",
-                sourceUrl: "https://doi.org/10.3390/mi10090587",
-                sourceLabel: "M. Hiratsuka et al., Micromachines 10, 587 (2019)"
-              },
               body: [
                 "固体表面に接する分子の配向や結合状態は, ぬれ, 凝縮, 吸着, 分子振動などに影響します. 固体表面の原子構造と界面近傍の分子集団の挙動を対応づけ, 観測される物性の起源を調べます.",
                 "ナノ構造表面における水のぬれ・凝縮現象, ナノ流路内の物質輸送, グラフェン上のペプチド結晶が示すラマンスペクトルなどを対象に, 分子動力学, 第一原理計算, 振動解析を組み合わせて研究しています."
@@ -153,6 +161,15 @@ const SITE_CONTENT = {
             {
               id: "self-healing-ceramics",
               title: "自己治癒セラミックス",
+              figure: {
+                image: "images/research-assets/ceramics-ae-2024.png",
+                alt: "平滑材, 損傷材, 5時間治癒2群, 24時間治癒群の平均累積AEエネルギーを比較した点図",
+                width: 1344,
+                height: 768,
+                caption: "自己治癒セラミックスの3点曲げ試験における平均累積AEエネルギー. 共著論文に報告された試験片5群の平均値を図示しました. 横軸は対数目盛です.",
+                sourceUrl: "https://doi.org/10.1016/j.matchemphys.2024.129922",
+                sourceLabel: "T. Yanaseko et al., Materials Chemistry and Physics 328, 129922 (2024)"
+              },
               body: [
                 "き裂を酸化生成物で充填・接合して機能を回復する自己治癒セラミックスを対象としています. アコースティックエミッション（AE）計測による治癒状態の評価と, 第一原理計算による酸化生成物と母材の界面の接合性評価を行っています."
               ]
@@ -816,6 +833,15 @@ Students develop skills in programming, simulation, measurement, data analysis, 
             {
               id: "hydrate",
               title: "Clathrate Hydrates",
+              figure: {
+                image: "images/research-assets/hydrate-si-cage.png",
+                alt: "A large sI hydrate cage of 24 water molecules enclosing methane",
+                width: 1400,
+                height: 990,
+                caption: "Large cage of sI methane hydrate: 24 water molecules and one methane selected from a public simulation input. The orange sphere represents united-atom methane. Blue edges connect oxygen sites within 3.3 Å.",
+                sourceUrl: "https://www.pyretis.org/current/examples/examples-gromacs-hydrate.html",
+                sourceLabel: "Coordinates: PyRETIS / GROMACS example"
+              },
               body: [
                 "Clathrate hydrates are crystals in which cage-like frameworks of water molecules enclose gas molecules such as methane and carbon dioxide. With applications in gas separation, storage, and cold-energy utilization in mind, we study interactions between the enclosed guest molecules and the water framework.",
                 "We have used first-principles and classical molecular dynamics to analyze guest-molecule vibrations, guest-framework interactions, cage occupancy, and crystal growth. Current work examines CO₂ semiclathrate hydrates using machine-learning force fields and local order parameters for phase identification and crystal-growth analysis."
@@ -844,6 +870,15 @@ Students develop skills in programming, simulation, measurement, data analysis, 
             {
               id: "pyrolysis",
               title: "Pyrolysis and Resource Circulation",
+              figure: {
+                image: "images/research-assets/cellulose-ibeta-crystal.png",
+                alt: "Atomic model of seven chains in a cellulose Iβ crystallite",
+                width: 1400,
+                height: 990,
+                caption: "A structural model of cellulose Iβ, a biomass constituent. Seven chains are constructed from a public crystal structure. Oxygen is red, carbon is dark gray, and hydrogen is omitted from the view.",
+                sourceUrl: "https://www.crystallography.net/cod/4114994.html",
+                sourceLabel: "Crystal structure: Nishiyama, Langan & Chanzy (2002), COD 4114994"
+              },
               body: [
                 "We study biomass and waste-plastic pyrolysis. Our laboratory mainly contributes molecular simulations of reaction processes to examine the relationship between feedstock structure and product formation.",
                 "Reactive molecular dynamics is applied to biomass components such as lignin, cellulose, and hemicellulose, as well as commodity plastics, textile fibers, and polyvinyl chloride (PVC). We compare single-component pyrolysis and co-pyrolysis of mixtures, reaction atmospheres, and the balance between volatile products and char to identify reaction pathways relevant to resource-circulation processes.",
@@ -853,16 +888,6 @@ Students develop skills in programming, simulation, measurement, data analysis, 
             {
               id: "interfaces",
               title: "Molecular Interfaces and Vibrational Properties",
-              figure: {
-                image: "../images/research_nano_g006.png",
-                alt: "Molecular dynamics snapshots of water condensation on flat and nanostructured solid surfaces",
-                width: 3076,
-                height: 1197,
-                wide: true,
-                caption: "Water condensation on solid surfaces with different nanostructures. Molecular dynamics relates surface geometry to molecular arrangements near the interface.",
-                sourceUrl: "https://doi.org/10.3390/mi10090587",
-                sourceLabel: "M. Hiratsuka et al., Micromachines 10, 587 (2019)"
-              },
               body: [
                 "The orientation and bonding of molecules at solid surfaces affect wetting, condensation, adsorption, and molecular vibration. We relate atomic surface structure and the behavior of interfacial molecular assemblies to the origins of observed physical properties.",
                 "Our subjects include wetting and condensation of water on nanostructured surfaces, mass transport in nanochannels, and Raman spectra of peptide crystals on graphene. These studies combine molecular dynamics, first-principles calculations, and vibrational analysis."
@@ -871,6 +896,15 @@ Students develop skills in programming, simulation, measurement, data analysis, 
             {
               id: "self-healing-ceramics",
               title: "Self-Healing Ceramics",
+              figure: {
+                image: "images/research-assets/ceramics-ae-2024.png",
+                alt: "Mean cumulative AE energy for smooth, damaged, two five-hour healing groups and a 24-hour healing group",
+                width: 1344,
+                height: 768,
+                caption: "Mean cumulative acoustic emission energy in three-point bending tests of self-healing ceramics. The five group means are replotted from our coauthored paper on a logarithmic horizontal axis.",
+                sourceUrl: "https://doi.org/10.1016/j.matchemphys.2024.129922",
+                sourceLabel: "T. Yanaseko et al., Materials Chemistry and Physics 328, 129922 (2024)"
+              },
               body: [
                 "We study self-healing ceramics that recover their function as oxidation products fill and reconnect cracks. Acoustic emission (AE) measurements are used to assess healing, while first-principles calculations evaluate bonding at interfaces between oxidation products and the ceramic matrix."
               ]
