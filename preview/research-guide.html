@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>研究テーマ案内 | 工学院大学 熱流体力学研究室</title>
+<style>
+:root{color-scheme:light;--ink:#263139;--navy:#16394e;--line:#b4c5ce;--pale:#f1f5f7}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font:16px/1.85 system-ui,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif}
+a{color:#165576;text-underline-offset:3px}
+a:focus-visible{outline:3px solid #3783a4;outline-offset:3px}
+.wrap{max-width:1120px;margin:auto;padding-inline:24px}
+header{background:var(--navy);color:#fff;border-top:4px solid #709eb2;padding:13px 0}
+.mast{display:flex;justify-content:space-between;align-items:baseline;gap:.2rem 1rem;flex-wrap:wrap}
+small{font-size:.84rem}
+main{padding-block:32px 60px}
+h1,h2,h3{color:var(--navy);line-height:1.45}
+h1{font-size:clamp(1.85rem,4vw,2.65rem);margin:0 0 .35rem}
+nav{background:var(--pale);border-block:1px solid var(--line);padding:.7rem .9rem;margin:1.4rem 0}
+nav ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.2rem .9rem;list-style:none;padding:0;margin:.3rem 0 0}
+.domain{border-bottom:2px solid var(--navy);font-size:1.32rem;margin:2rem 0 0;padding:.2rem 0}
+article{padding:1.15rem 0;border-bottom:1px solid var(--line);scroll-margin-top:1rem}
+article h2{font-size:1.2rem;margin:0 0 .5rem;padding-left:.65rem;border-left:4px solid #45738a}
+p{margin:.2rem 0 .7rem}
+.topic.has-figure{display:grid;grid-template-columns:minmax(0,1.07fr) minmax(0,1fr);gap:24px;align-items:start}
+figure{margin:0}
+figure img,figure svg{display:block;max-width:100%;width:100%;height:auto;border:1px solid var(--line)}
+figure img{max-height:420px;object-fit:contain}
+figcaption,.terms,.papers{font-size:.88rem;overflow-wrap:anywhere}
+figcaption{margin-top:.38rem}
+.papers h3{font-size:.93rem;margin:.9rem 0 .2rem}
+.papers ul{margin:0;padding-left:1.15rem}
+.papers li+li{margin-top:.3rem}
+footer{border-top:1px solid var(--line);background:var(--pale);padding:.8rem 0}
+@media(max-width:650px){.wrap{padding-inline:15px}.topic.has-figure{grid-template-columns:1fr;gap:.7rem}}
+@media(max-width:410px){nav ul{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap mast"><strong>工学院大学 熱流体力学研究室</strong><small>確認用 · 初回プレビュー</small></div></header>
+<main class="wrap">
+<h1>研究テーマ案内</h1>
+<p>水分子が作る結晶から道路トンネルの気流まで, 熱や流れに関わる現象を研究しています. 研究対象ごとに, 背景と研究の内容, 使う手法を紹介します.</p>
+<nav aria-label="研究テーマの目次"><strong>研究テーマ</strong><ul><li><a href="#hydrate">クラスレートハイドレート</a></li><li><a href="#polymer">高分子の結晶化・自己組織化</a></li><li><a href="#pyrolysis">熱分解と資源循環</a></li><li><a href="#interface">分子界面と振動特性</a></li><li><a href="#ceramics">自己治癒セラミックス</a></li><li><a href="#ball">物体まわりの流れと空気力</a></li><li><a href="#tunnel">トンネル換気とジェットファン</a></li><li><a href="#droplet">液滴の蒸発</a></li></ul></nav>
+<section><h2 class="domain">分子と材料</h2><article id="hydrate"><h2>クラスレートハイドレート</h2><div class="topic has-figure"><div><p>水分子が作るかごにガス分子が入ると, クラスレートハイドレートと呼ばれる結晶ができます. ゲスト分子の振動, かごへの入りやすさ, 結晶が成長する過程を, 第一原理分子動力学や古典分子動力学で調べています. ガス分離・貯蔵や冷熱利用につながる研究です.</p><p class="terms">キーワード: 水素結合, ゲスト分子, ケージ占有率, 機械学習力場</p><p class="terms">参考文献: <a href="https://doi.org/10.1063/1.3677231">Hiratsuka et al., J. Chem. Phys. 136, 044508 (2012)</a></p></div><figure><a href="images/research-assets/hydrate-si-cage.png"><img loading="lazy" src="images/research-assets/hydrate-si-cage.png" alt="水24分子に囲まれたメタン"></a><figcaption>公開計算入力から描いたsIメタンハイドレートの大かご. 橙はメタンを表す1粒子, 青線は3.3 Å以内の酸素間を結びます. <a href="https://www.pyretis.org/current/examples/examples-gromacs-hydrate.html">PyRETIS / GROMACS 公開入力</a></figcaption></figure></div></article><article id="polymer"><h2>高分子の結晶化・自己組織化</h2><div class="topic has-figure"><div><p>結晶性高分子では, 折りたたまれた分子鎖が薄い結晶層を作ります. 粗視化分子動力学で, 冷却・加熱に伴う結晶化と融解, 層をまたぐ鎖の配置, 計算箱の大きさによる構造の違いを調べています. 成形条件と材料内部の構造を結び付ける研究です.</p><p class="terms">キーワード: ラメラ, 粗視化分子動力学, 局所秩序変数, 結晶化度</p><p class="terms">参考文献: <a href="https://doi.org/10.1038/s41598-026-43668-5">Takano, Hiratsuka &amp; Takahashi, Sci. Rep. 16, 15368 (2026)</a></p></div><figure><a href="images/research-assets/polymer-lamella-2026-fig5.png"><img loading="lazy" src="images/research-assets/polymer-lamella-2026-fig5.png" alt="高分子ラメラ全体, 一本の分子鎖, 結晶と非晶の境界"></a><figcaption>共著論文の図5. 約100万粒子のラメラ構造, 一本鎖, 結晶・非晶界面を示します. 青は結晶, 紫は非晶, 橙は鎖末端です. <a href="https://doi.org/10.1038/s41598-026-43668-5">Takano, Hiratsuka &amp; Takahashi (2026), Fig. 5. © The Author(s) 2026</a>. <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a></figcaption></figure></div></article><article id="pyrolysis"><h2>熱分解と資源循環</h2><div class="topic has-figure"><div><p>バイオマスや廃プラスチックを加熱すると, 結合が切れ, 気体・液体の成分や炭化物が生じます. 反応分子動力学で結合の切断と生成を追い, 原料の分子構造と生成物の関係を調べています. 廃棄物の資源化に向けた反応過程の研究です. （工学院大学リサイクル工学研究室と共同研究）</p><p class="terms">キーワード: ReaxFF, セルロース, リグニン, チャー</p><p class="terms">参考文献: <a href="https://doi.org/10.1016/j.ces.2025.121531">Sakurai et al., Chem. Eng. Sci. 310, 121531 (2025)</a></p></div><figure><a href="images/research-assets/cellulose-ibeta-crystal.png"><img loading="lazy" src="images/research-assets/cellulose-ibeta-crystal.png" alt="セルロースIβ結晶から取り出した7本の分子鎖"></a><figcaption>公開結晶構造から描いたセルロースIβの7本の鎖. 赤は酸素, 濃灰は炭素で, 水素は表示から省いています. <a href="https://www.crystallography.net/cod/4114994.html">結晶構造 Nishiyama, Langan &amp; Chanzy (2002), COD 4114994</a></figcaption></figure></div></article><article id="interface"><h2>分子界面と振動特性</h2><div class="topic"><div><p>固体表面に接する分子は, 表面の形や結合の状態によって向きや動きが変わります. 分子動力学や第一原理計算を用いて, 固体表面のぬれやナノ流路の輸送, グラフェン上のペプチド結晶のRamanスペクトルを調べています. 表面の構造と計測される物性を結び付ける研究です.</p><p class="terms">キーワード: ぬれ, 吸着, グラフェン, Ramanスペクトル</p></div></div></article><article id="ceramics"><h2>自己治癒セラミックス</h2><div class="topic has-figure"><div><p>酸化によって生じる物質がき裂を埋め, 強度が回復するセラミックスを研究しています. 曲げ試験中の弾性波をアコースティックエミッション（AE）計測で捉え, 治癒の状態を評価します. 酸化生成物と母材の接合は第一原理計算で調べています. 高温で使う材料の健全性評価につながります.</p><p class="terms">キーワード: き裂, 酸化, アコースティックエミッション, 界面接合</p><p class="terms">参考文献: <a href="https://doi.org/10.1016/j.matchemphys.2024.129922">Yanaseko et al., Mater. Chem. Phys. 328, 129922 (2024)</a></p></div><figure><a href="images/research-assets/ceramics-ae-2024.png"><img loading="lazy" src="images/research-assets/ceramics-ae-2024.png" alt="3点曲げ試験での平均累積AEの比較"></a><figcaption>共著論文の3点曲げ試験で報告された5群の平均累積AEを再作図. 横軸は対数目盛です. <a href="https://doi.org/10.1016/j.matchemphys.2024.129922">Yanaseko et al., Materials Chemistry and Physics 328, 129922 (2024)</a></figcaption></figure></div></article></section><section><h2 class="domain">流れと輸送</h2><article id="ball"><h2>物体まわりの流れと空気力</h2><div class="topic has-figure"><div><p>球の回転や表面形状が変わると, 流れが表面からはがれる位置と後流が変わり, 抗力・揚力に影響します. 風洞での空気力計測, 粒子画像流速測定（PIV）, 高速度撮影, 数値流体解析を使って, 流れと飛翔の関係を調べています. （工学院大学スポーツ流体工学研究室と共同研究）</p><p class="terms">キーワード: 風洞, PIV, 抗力, マグナス力</p><p class="terms">参考文献: <a href="https://doi.org/10.1299/transjsme.23-00045">多田ほか, 日本機械学会論文集 89(924), 23-00045 (2023)</a></p></div><figure><a href="../images/research_sports_g004.png"><img loading="lazy" src="../images/research_sports_g004.png" alt="球のまわりの流れを調べる風洞実験"></a><figcaption>球まわりの流れを調べる風洞実験. 球を測定部に置き, 周囲に空気を流します.</figcaption></figure></div></article><article id="tunnel"><h2>トンネル換気とジェットファン</h2><div class="topic"><div><p>ジェットファンの噴流は天井や側壁, 車両の影響を受けながらトンネル内の気流を作ります. 数値流体解析で流速分布と圧力損失を調べ, ファンの設置角や車両が換気に与える影響を評価しています. 限られた空間でファンの推力を換気に生かすための研究です.</p><p class="terms">キーワード: ジェットファン, 噴流, 縦流換気, 数値流体解析</p></div></div></article><article id="droplet"><h2>液滴の蒸発</h2><div class="topic"><div><p>液滴の蒸発では, 気液界面を通って分子が液体から気体に移ります. 分子シミュレーションで界面付近の分子運動を追跡し, 振動や電場が蒸発過程に与える影響を調べています. 液滴の乾燥や熱・物質移動の理解につながります.</p><p class="terms">キーワード: 気液界面, 蒸発, 分子動力学, 外部電場</p></div></div></article></section>
+</main>
+<footer><div class="wrap"><small><a href="research.html">研究紹介プレビュー</a></small></div></footer>
+</body>
+</html>
